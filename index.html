@@ -1,148 +1,150 @@
 <!DOCTYPE html>
 <html>
-
 <head>
+<meta name="viewport"
+      content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 
-  <meta name="viewport"
-        content="width=device-width,
-                 initial-scale=1,
-                 maximum-scale=1,
-                 user-scalable=no">
+<title>Stock Scanner</title>
 
-  <title>Stock Scanner</title>
+<script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
 
-  <script src="https://unpkg.com/html5-qrcode"
-          type="text/javascript">
-  </script>
+<style>
+* {
+  box-sizing: border-box;
+}
 
-  <style>
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  background: #000;
+  color: #fff;
+  font-family: Arial, sans-serif;
+  overflow: hidden;
+}
 
-    * {
-      box-sizing: border-box;
-    }
+#app {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
 
-    html,
-    body {
-      margin: 0;
-      padding: 0;
-      width: 100%;
-      height: 100%;
-      background: #000;
-      color: #fff;
-      font-family: Arial, sans-serif;
-      overflow: hidden;
-    }
+#top {
+  background: #111;
+  text-align: center;
+  padding: 8px;
+}
 
-    #app {
-      width: 100%;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-    }
+#title {
+  font-size: 20px;
+  font-weight: bold;
+}
 
-    #top {
-      background: #111;
-      padding: 10px;
-      text-align: center;
-    }
+#column {
+  font-size: 25px;
+  font-weight: bold;
+  margin-top: 4px;
+}
 
-    #title {
-      font-size: 20px;
-      font-weight: bold;
-    }
+#cameraArea {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  background: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
 
-    #column {
-      margin-top: 5px;
-      font-size: 25px;
-      font-weight: bold;
-    }
+#video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
 
-    #reader {
-      flex: 1;
-      min-height: 0;
-      width: 100%;
-      background: #000;
-      overflow: hidden;
-    }
+#scanBox {
+  position: absolute;
+  width: 65vw;
+  height: 65vw;
+  max-width: 330px;
+  max-height: 330px;
+  border: 3px solid #fff;
+  border-radius: 12px;
+  pointer-events: none;
+}
 
-    #bottom {
-      background: #111;
-      text-align: center;
-      padding: 8px;
-    }
+#bottom {
+  background: #111;
+  text-align: center;
+  padding: 8px;
+}
 
-    #lastScan {
-      font-size: 21px;
-      font-weight: bold;
-    }
+#lastScan {
+  font-size: 21px;
+  font-weight: bold;
+}
 
-    #lastType {
-      font-size: 14px;
-      margin-top: 3px;
-    }
+#lastType {
+  font-size: 14px;
+  margin-top: 3px;
+}
 
-    #count {
-      font-size: 13px;
-      color: #aaa;
-      margin-top: 3px;
-    }
+#count {
+  font-size: 13px;
+  color: #aaa;
+  margin-top: 3px;
+}
 
-    #startScreen {
-      position: fixed;
-      inset: 0;
-      background: #111;
-      z-index: 1000;
+#startScreen {
+  position: fixed;
+  inset: 0;
+  background: #111;
+  z-index: 1000;
 
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 
-      text-align: center;
-      padding: 25px;
-    }
+  text-align: center;
+  padding: 25px;
+}
 
-    #startButton {
-      font-size: 22px;
-      font-weight: bold;
+#startButton {
+  font-size: 22px;
+  font-weight: bold;
+  padding: 18px 35px;
+  border: none;
+  border-radius: 12px;
+  background: #fff;
+  color: #000;
+}
 
-      padding: 18px 35px;
+#message {
+  margin-top: 20px;
+  color: #bbb;
+  line-height: 1.5;
+}
 
-      border: none;
-      border-radius: 12px;
+.columnColor {
+  color: #ffd43b;
+}
 
-      background: #fff;
-      color: #000;
-    }
+.itemColor {
+  color: #55ff77;
+}
 
-    #message {
-      margin-top: 20px;
-      color: #bbb;
-      line-height: 1.5;
-    }
-
-    .columnColor {
-      color: #ffd43b;
-    }
-
-    .itemColor {
-      color: #55ff77;
-    }
-
-    .errorColor {
-      color: #ff5555;
-    }
-
-  </style>
-
+.errorColor {
+  color: #ff5555;
+}
+</style>
 </head>
-
 
 <body>
 
-
 <div id="app">
-
 
   <div id="top">
 
@@ -156,9 +158,19 @@
 
   </div>
 
+  <div id="cameraArea">
 
-  <div id="reader"></div>
+    <video id="video"
+           autoplay
+           playsinline
+           muted></video>
 
+    <div id="scanBox"></div>
+
+    <canvas id="canvas"
+            style="display:none;"></canvas>
+
+  </div>
 
   <div id="bottom">
 
@@ -167,7 +179,7 @@
     </div>
 
     <div id="lastType">
-      Scan a column QR
+      Scan Column QR
     </div>
 
     <div id="count">
@@ -175,7 +187,6 @@
     </div>
 
   </div>
-
 
 </div>
 
@@ -187,9 +198,9 @@
   </button>
 
   <div id="message">
-    Tap once to start.
+    Tap once to start the camera.
     <br><br>
-    After that, scanning is automatic.
+    Scanning will then be automatic.
   </div>
 
 </div>
@@ -197,20 +208,30 @@
 
 <script>
 
-
-/* =====================================================
-   APPS SCRIPT BACKEND
-===================================================== */
+/* ============================================
+   GOOGLE APPS SCRIPT
+============================================ */
 
 const APPS_SCRIPT_URL =
-  "https://script.google.com/macros/s/AKfycbwSd26j_QkkD0WiEPgDXAFsLuJx6cAWePwZnT_WV9h8525cjibUVHksF5YbP64Dmzd-eA/exec";
+"https://script.google.com/macros/s/AKfycbwSd26j_QkkD0WiEPgDXAFsLuJx6cAWePwZnT_WV9h8525cjibUVHksF5YbP64Dmzd-eA/exec";
 
 
-/* =====================================================
+/* ============================================
    VARIABLES
-===================================================== */
+============================================ */
 
-let scanner = null;
+let video =
+  document.getElementById("video");
+
+let canvas =
+  document.getElementById("canvas");
+
+let ctx =
+  canvas.getContext("2d", {
+    willReadFrequently: true
+  });
+
+let stream = null;
 
 let currentColumn = "";
 
@@ -220,20 +241,17 @@ let lastValue = "";
 
 let lastScanTime = 0;
 
-
-/*
- * Prevent the camera from reading the
- * same QR many times while it remains
- * in front of the camera.
- */
 const DUPLICATE_DELAY = 1200;
 
 
-/* =====================================================
+/* ============================================
    BEEP
-===================================================== */
+============================================ */
 
-function beep(frequency, duration) {
+function beep(
+  frequency = 900,
+  duration = 80
+) {
 
   try {
 
@@ -241,45 +259,38 @@ function beep(frequency, duration) {
       window.AudioContext ||
       window.webkitAudioContext;
 
-    if (!AudioContext) {
-      return;
-    }
-
     if (!window.audioContext) {
-
       window.audioContext =
         new AudioContext();
-
     }
 
-    const ctx =
+    const audio =
       window.audioContext;
 
-    if (ctx.state === "suspended") {
-      ctx.resume();
+    if (audio.state === "suspended") {
+      audio.resume();
     }
 
     const oscillator =
-      ctx.createOscillator();
+      audio.createOscillator();
 
     const gain =
-      ctx.createGain();
-
-    oscillator.type = "sine";
+      audio.createGain();
 
     oscillator.frequency.value =
       frequency;
 
+    oscillator.type = "sine";
+
     gain.gain.value = 0.15;
 
     oscillator.connect(gain);
-
-    gain.connect(ctx.destination);
+    gain.connect(audio.destination);
 
     oscillator.start();
 
     oscillator.stop(
-      ctx.currentTime +
+      audio.currentTime +
       duration / 1000
     );
 
@@ -292,9 +303,9 @@ function beep(frequency, duration) {
 }
 
 
-/* =====================================================
-   UPDATE SCREEN
-===================================================== */
+/* ============================================
+   DISPLAY
+============================================ */
 
 function updateColumn() {
 
@@ -314,56 +325,7 @@ function updateColumn() {
     element.textContent =
       "COLUMN: NOT SET";
 
-    element.className = "";
-
   }
-
-}
-
-
-function showColumn(value) {
-
-  const last =
-    document.getElementById("lastScan");
-
-  const type =
-    document.getElementById("lastType");
-
-  last.textContent =
-    "COLUMN " + currentColumn;
-
-  last.className =
-    "columnColor";
-
-  type.textContent =
-    "COLUMN CHANGED";
-
-  type.className =
-    "columnColor";
-
-}
-
-
-function showItem(value) {
-
-  const last =
-    document.getElementById("lastScan");
-
-  const type =
-    document.getElementById("lastType");
-
-  last.textContent =
-    value;
-
-  last.className =
-    "itemColor";
-
-  type.textContent =
-    "ITEM → COLUMN " +
-    currentColumn;
-
-  type.className =
-    "itemColor";
 
 }
 
@@ -372,14 +334,14 @@ function updateCount() {
 
   document.getElementById("count")
     .textContent =
-    "Scans: " + scanCount;
+      "Scans: " + scanCount;
 
 }
 
 
-/* =====================================================
-   SAVE SCAN TO GOOGLE SHEET
-===================================================== */
+/* ============================================
+   SEND TO GOOGLE SHEET
+============================================ */
 
 function saveScan(
   value,
@@ -422,17 +384,6 @@ function saveScan(
   );
 
 
-  /*
-   * IMPORTANT:
-   *
-   * We use no-cors here because the
-   * Apps Script endpoint may redirect.
-   *
-   * We don't need to read the response.
-   * We only need the scan written
-   * into Google Sheets.
-   */
-
   fetch(
     APPS_SCRIPT_URL +
     "?" +
@@ -443,18 +394,10 @@ function saveScan(
       cache: "no-store"
     }
   )
-  .then(function() {
-
-    console.log(
-      "Scan sent:",
-      value
-    );
-
-  })
   .catch(function(error) {
 
     console.error(
-      "Save error:",
+      "Sheet error:",
       error
     );
 
@@ -463,26 +406,21 @@ function saveScan(
 }
 
 
-/* =====================================================
+/* ============================================
    PROCESS QR
-===================================================== */
+============================================ */
 
-function processQR(decodedText) {
+function processQR(value) {
 
-  const value =
-    String(decodedText || "")
-      .trim();
-
+  value =
+    String(value || "").trim();
 
   if (!value) {
     return;
   }
 
 
-  /*
-   * DUPLICATE PROTECTION
-   */
-
+  /* Prevent repeated reading */
   const now =
     Date.now();
 
@@ -503,18 +441,15 @@ function processQR(decodedText) {
     now;
 
 
-  /* ===================================================
+  /* ==========================================
      COLUMN QR
-     
-     REQUIRED FORMAT:
+
+     Example:
 
      COLUMN:1
      COLUMN:2
-     COLUMN:3
      COLUMN:007
-     
-     We convert 007 to 7.
-  =================================================== */
+  ========================================== */
 
   const columnMatch =
     value.match(
@@ -531,7 +466,6 @@ function processQR(decodedText) {
         )
       );
 
-
     scanCount++;
 
     beep(
@@ -541,12 +475,27 @@ function processQR(decodedText) {
 
     updateColumn();
 
-    showColumn(
-      value
-    );
+    document.getElementById(
+      "lastScan"
+    ).textContent =
+      "COLUMN " + currentColumn;
+
+    document.getElementById(
+      "lastScan"
+    ).className =
+      "columnColor";
+
+    document.getElementById(
+      "lastType"
+    ).textContent =
+      "COLUMN CHANGED";
+
+    document.getElementById(
+      "lastType"
+    ).className =
+      "columnColor";
 
     updateCount();
-
 
     saveScan(
       value,
@@ -555,21 +504,13 @@ function processQR(decodedText) {
       ""
     );
 
-
     return;
-
   }
 
 
-  /* ===================================================
-     ITEM QR
-  =================================================== */
-
-
-  /*
-   * Don't accept an item until
-   * the worker has scanned a column.
-   */
+  /* ==========================================
+     ITEM
+  ========================================== */
 
   if (!currentColumn) {
 
@@ -593,19 +534,9 @@ function processQR(decodedText) {
     ).textContent =
       "No active column";
 
-    document.getElementById(
-      "lastType"
-    ).className =
-      "errorColor";
-
     return;
-
   }
 
-
-  /*
-   * ITEM ACCEPTED
-   */
 
   scanCount++;
 
@@ -614,9 +545,26 @@ function processQR(decodedText) {
     80
   );
 
-  showItem(
-    value
-  );
+  document.getElementById(
+    "lastScan"
+  ).textContent =
+    value;
+
+  document.getElementById(
+    "lastScan"
+  ).className =
+    "itemColor";
+
+  document.getElementById(
+    "lastType"
+  ).textContent =
+    "ITEM → COLUMN " +
+    currentColumn;
+
+  document.getElementById(
+    "lastType"
+  ).className =
+    "itemColor";
 
   updateCount();
 
@@ -631,17 +579,117 @@ function processQR(decodedText) {
 }
 
 
-/* =====================================================
-   CAMERA START
-===================================================== */
+/* ============================================
+   QR SCAN LOOP
+============================================ */
 
-async function startScanner() {
+function scanFrame() {
 
+  if (
+    !stream ||
+    video.readyState !==
+      video.HAVE_ENOUGH_DATA
+  ) {
+
+    requestAnimationFrame(
+      scanFrame
+    );
+
+    return;
+  }
+
+
+  /*
+   * Use a smaller image for faster
+   * processing on Android.
+   */
+
+  const width =
+    video.videoWidth;
+
+  const height =
+    video.videoHeight;
+
+
+  if (!width || !height) {
+
+    requestAnimationFrame(
+      scanFrame
+    );
+
+    return;
+  }
+
+
+  canvas.width =
+    width;
+
+  canvas.height =
+    height;
+
+
+  ctx.drawImage(
+    video,
+    0,
+    0,
+    width,
+    height
+  );
+
+
+  const imageData =
+    ctx.getImageData(
+      0,
+      0,
+      width,
+      height
+    );
+
+
+  const code =
+    jsQR(
+      imageData.data,
+      width,
+      height,
+      {
+        inversionAttempts:
+          "attemptBoth"
+      }
+    );
+
+
+  if (code) {
+
+    processQR(
+      code.data
+    );
+
+  }
+
+
+  requestAnimationFrame(
+    scanFrame
+  );
+
+}
+
+
+/* ============================================
+   START CAMERA
+============================================ */
+
+async function startCamera() {
 
   const button =
     document.getElementById(
       "startButton"
     );
+
+  const message =
+    document.getElementById(
+      "message"
+    );
+
 
   button.disabled =
     true;
@@ -650,107 +698,48 @@ async function startScanner() {
     "STARTING...";
 
 
-  /*
-   * Unlock audio after user tap.
-   */
-
   try {
 
-    const AudioContext =
-      window.AudioContext ||
-      window.webkitAudioContext;
+    /*
+     * THIS IS THE SAME NATIVE CAMERA
+     * METHOD THAT WORKED IN OUR TEST.
+     */
 
-    if (AudioContext) {
+    stream =
+      await navigator.mediaDevices
+        .getUserMedia({
 
-      window.audioContext =
-        new AudioContext();
+          video: {
 
-      await window.audioContext.resume();
+            facingMode: {
+              ideal: "environment"
+            },
 
-    }
+            width: {
+              ideal: 1280
+            },
 
-  } catch (e) {
+            height: {
+              ideal: 720
+            }
 
-    console.log(
-      "Audio unavailable"
-    );
+          },
 
-  }
+          audio: false
 
-
-  try {
-
-
-    scanner =
-      new Html5Qrcode(
-        "reader"
-      );
-
-
-    const config = {
-
-      fps: 12,
-
-      qrbox:
-        function(width, height) {
-
-          const size =
-            Math.floor(
-              Math.min(
-                width,
-                height
-              ) * 0.70
-            );
-
-          return {
-            width: size,
-            height: size
-          };
-
-        },
-
-      formatsToSupport: [
-
-        Html5QrcodeSupportedFormats
-          .QR_CODE
-
-      ]
-
-    };
+        });
 
 
-    await scanner.start(
+    video.srcObject =
+      stream;
 
-      {
-        facingMode: {
-          ideal: "environment"
-        }
-      },
 
-      config,
+    await video.play();
 
-      function(decodedText) {
 
-        processQR(
-          decodedText
-        );
-
-      },
-
-      function(errorMessage) {
-
-        /*
-         * Normal scanning frames
-         * generate errors when no QR
-         * is visible.
-         *
-         * Ignore them.
-         */
-
-      }
-
-    );
-
+    /*
+     * Camera successfully started.
+     */
 
     document.getElementById(
       "startScreen"
@@ -770,10 +759,19 @@ async function startScanner() {
       "SCAN COLUMN QR";
 
 
+    /*
+     * Start continuous QR scanning.
+     */
+
+    requestAnimationFrame(
+      scanFrame
+    );
+
+
   } catch (error) {
 
-
     console.error(
+      "CAMERA ERROR:",
       error
     );
 
@@ -785,16 +783,20 @@ async function startScanner() {
       "TRY AGAIN";
 
 
-    document.getElementById(
-      "message"
-    ).innerHTML =
+    message.innerHTML =
 
       '<span class="errorColor">' +
 
-      "CAMERA ERROR<br><br>" +
+      "<b>CAMERA ERROR</b>" +
 
+      "<br><br>" +
+
+      "Name: " +
       error.name +
+
       "<br>" +
+
+      "Message: " +
       error.message +
 
       "</span>";
@@ -804,9 +806,9 @@ async function startScanner() {
 }
 
 
-/* =====================================================
-   BUTTON
-===================================================== */
+/* ============================================
+   START BUTTON
+============================================ */
 
 document
   .getElementById(
@@ -814,12 +816,10 @@ document
   )
   .addEventListener(
     "click",
-    startScanner
+    startCamera
   );
-
 
 </script>
 
 </body>
-
 </html>

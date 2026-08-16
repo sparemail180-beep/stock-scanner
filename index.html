@@ -2,214 +2,326 @@
 <html>
 <head>
 
-  <meta name="viewport"
-        content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="viewport"
+      content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 
-  <title>Stock Scanner V2.1</title>
+<title>Stock Scanner V2.2</title>
 
-  <!-- QR decoder -->
-  <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
+<!-- ZXing browser: multi-format 1D + 2D barcode reader -->
+<script src="https://unpkg.com/@zxing/browser@latest"></script>
 
-  <style>
+<style>
 
-    * {
-      box-sizing: border-box;
-    }
+* {
+  box-sizing: border-box;
+}
 
-    html,
-    body {
-      margin: 0;
-      padding: 0;
-      width: 100%;
-      height: 100%;
-      background: #000;
-      color: #fff;
-      font-family: Arial, sans-serif;
-      overflow: hidden;
-    }
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  background: #000;
+  color: #fff;
+  font-family: Arial, sans-serif;
+  overflow: hidden;
+}
 
-    #app {
-      width: 100%;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-    }
+#app {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
 
-    /* =========================
-       VERSION BADGE
-    ========================= */
+/* ================================
+   VERSION
+================================ */
 
-    #version {
-      position: fixed;
-      top: 0;
-      right: 0;
-      z-index: 9999;
+#version {
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: 9999;
 
-      background: red;
-      color: white;
+  background: red;
+  color: white;
 
-      padding: 6px 10px;
+  padding: 7px 10px;
 
-      font-size: 14px;
-      font-weight: bold;
+  font-size: 14px;
+  font-weight: bold;
 
-      border-radius: 0 0 0 8px;
-    }
+  border-radius: 0 0 0 8px;
+}
 
-    /* =========================
-       TOP
-    ========================= */
+/* ================================
+   TOP
+================================ */
 
-    #top {
-      background: #111;
-      text-align: center;
-      padding: 10px;
-    }
+#top {
+  background: #111;
+  text-align: center;
+  padding: 10px;
+}
 
-    #title {
-      font-size: 20px;
-      font-weight: bold;
-    }
+#title {
+  font-size: 20px;
+  font-weight: bold;
+}
 
-    #column {
-      margin-top: 5px;
-      font-size: 26px;
-      font-weight: bold;
-    }
+#column {
+  margin-top: 5px;
+  font-size: 27px;
+  font-weight: bold;
+}
 
-    /* =========================
-       CAMERA
-    ========================= */
+/* ================================
+   CAMERA
+================================ */
 
-    #cameraArea {
-      position: relative;
+#cameraArea {
+  position: relative;
 
-      flex: 1;
-      min-height: 0;
+  flex: 1;
+  min-height: 0;
 
-      background: #000;
+  background: #000;
 
-      display: flex;
-      align-items: center;
-      justify-content: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
-      overflow: hidden;
-    }
+  overflow: hidden;
+}
 
-    #video {
-      width: 100%;
-      height: 100%;
+#video {
+  width: 100%;
+  height: 100%;
 
-      object-fit: cover;
+  object-fit: cover;
 
-      background: #000;
-    }
+  background: #000;
+}
 
-    #scanBox {
-      position: absolute;
+#scanBox {
+  position: absolute;
 
-      width: 65vw;
-      height: 65vw;
+  width: 72vw;
+  height: 35vw;
 
-      max-width: 330px;
-      max-height: 330px;
+  max-width: 380px;
+  max-height: 220px;
 
-      border: 3px solid white;
-      border-radius: 12px;
+  border: 3px solid white;
+  border-radius: 12px;
 
-      pointer-events: none;
-    }
+  pointer-events: none;
+}
 
-    /* =========================
-       BOTTOM
-    ========================= */
+/* ================================
+   BOTTOM
+================================ */
 
-    #bottom {
-      background: #111;
+#bottom {
+  background: #111;
 
-      text-align: center;
+  text-align: center;
 
-      padding: 10px;
-    }
+  padding: 9px;
+}
 
-    #lastScan {
-      font-size: 22px;
-      font-weight: bold;
-    }
+#lastScan {
+  font-size: 22px;
+  font-weight: bold;
+}
 
-    #lastType {
-      margin-top: 4px;
-      font-size: 15px;
-    }
+#lastType {
+  margin-top: 4px;
+  font-size: 15px;
+}
 
-    #count {
-      margin-top: 4px;
-      font-size: 13px;
-      color: #aaa;
-    }
+#count {
+  margin-top: 4px;
+  font-size: 13px;
+  color: #aaa;
+}
 
-    /* =========================
-       START SCREEN
-    ========================= */
+/* ================================
+   START SCREEN
+================================ */
 
-    #startScreen {
-      position: fixed;
+#startScreen {
+  position: fixed;
+  inset: 0;
 
-      inset: 0;
+  z-index: 1000;
 
-      z-index: 1000;
+  background: #111;
 
-      background: #111;
+  display: flex;
 
-      display: flex;
+  flex-direction: column;
 
-      flex-direction: column;
+  align-items: center;
 
-      align-items: center;
+  justify-content: center;
 
-      justify-content: center;
+  text-align: center;
 
-      text-align: center;
+  padding: 25px;
+}
 
-      padding: 25px;
-    }
+#startButton {
+  font-size: 22px;
+  font-weight: bold;
 
-    #startButton {
-      font-size: 22px;
-      font-weight: bold;
+  padding: 18px 35px;
 
-      padding: 18px 35px;
+  border: none;
 
-      border: none;
+  border-radius: 12px;
 
-      border-radius: 12px;
+  background: white;
 
-      background: white;
+  color: black;
+}
 
-      color: black;
-    }
+#message {
+  margin-top: 20px;
 
-    #message {
-      margin-top: 20px;
+  color: #bbb;
 
-      color: #bbb;
+  line-height: 1.5;
+}
 
-      line-height: 1.5;
-    }
+/* ================================
+   COLORS
+================================ */
 
-    .columnColor {
-      color: #ffd43b;
-    }
+.columnColor {
+  color: #ffd43b;
+}
 
-    .itemColor {
-      color: #55ff77;
-    }
+.itemColor {
+  color: #55ff77;
+}
 
-    .errorColor {
-      color: #ff5555;
-    }
+.errorColor {
+  color: #ff5555;
+}
 
-  </style>
+
+/* ================================
+   DUPLICATE OVERLAY
+================================ */
+
+#duplicateOverlay {
+
+  position: fixed;
+
+  inset: 0;
+
+  z-index: 5000;
+
+  background: rgba(0,0,0,0.88);
+
+  display: none;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  justify-content: center;
+
+  text-align: center;
+
+  padding: 20px;
+}
+
+
+#duplicateTitle {
+
+  font-size: 38px;
+
+  font-weight: bold;
+
+  color: #ff5555;
+
+  margin-bottom: 15px;
+
+}
+
+
+#duplicateCode {
+
+  font-size: 28px;
+
+  font-weight: bold;
+
+  word-break: break-all;
+
+  margin-bottom: 30px;
+
+}
+
+
+#duplicateButtons {
+
+  display: flex;
+
+  gap: 30px;
+
+}
+
+
+.duplicateButton {
+
+  width: 130px;
+
+  height: 100px;
+
+  border: none;
+
+  border-radius: 18px;
+
+  font-size: 55px;
+
+  font-weight: bold;
+
+}
+
+
+#rejectButton {
+
+  background: #d62828;
+
+  color: white;
+
+}
+
+
+#acceptButton {
+
+  background: #198754;
+
+  color: white;
+
+}
+
+
+#duplicateHint {
+
+  margin-top: 20px;
+
+  color: #ccc;
+
+  font-size: 15px;
+
+}
+
+</style>
 
 </head>
 
@@ -217,21 +329,17 @@
 <body>
 
 
-<!-- =========================
-     VERSION
-========================= -->
+<!-- VERSION -->
 
 <div id="version">
-  V2.1
+  V2.2
 </div>
 
 
 <div id="app">
 
 
-  <!-- =========================
-       TOP
-  ========================= -->
+  <!-- TOP -->
 
   <div id="top">
 
@@ -246,9 +354,7 @@
   </div>
 
 
-  <!-- =========================
-       CAMERA
-  ========================= -->
+  <!-- CAMERA -->
 
   <div id="cameraArea">
 
@@ -261,17 +367,10 @@
 
     <div id="scanBox"></div>
 
-    <canvas
-      id="canvas"
-      style="display:none;">
-    </canvas>
-
   </div>
 
 
-  <!-- =========================
-       BOTTOM
-  ========================= -->
+  <!-- BOTTOM -->
 
   <div id="bottom">
 
@@ -280,7 +379,7 @@
     </div>
 
     <div id="lastType">
-      Scan Column QR
+      SCAN COLUMN QR
     </div>
 
     <div id="count">
@@ -293,9 +392,7 @@
 </div>
 
 
-<!-- =========================
-     START SCREEN
-========================= -->
+<!-- START -->
 
 <div id="startScreen">
 
@@ -305,15 +402,60 @@
 
   <div id="message">
 
-    <b>STOCK SCANNER V2.1</b>
+    <b>STOCK SCANNER V2.2</b>
 
     <br><br>
 
-    Tap once to start the camera.
+    QR = COLUMN
+
+    <br>
+
+    CODE 128 = ITEM
 
     <br><br>
 
-    After that, scanning is automatic.
+    Tap once to start.
+
+  </div>
+
+</div>
+
+
+<!-- DUPLICATE -->
+
+<div id="duplicateOverlay">
+
+  <div id="duplicateTitle">
+    DUPLICATE
+  </div>
+
+  <div id="duplicateCode">
+    -
+  </div>
+
+  <div id="duplicateButtons">
+
+    <button
+      id="rejectButton"
+      class="duplicateButton">
+      ✕
+    </button>
+
+    <button
+      id="acceptButton"
+      class="duplicateButton">
+      ✓
+    </button>
+
+  </div>
+
+  <div id="duplicateHint">
+
+    ✕ Ignore this scan
+
+    <br>
+
+    ✓ Accept as another physical box
 
   </div>
 
@@ -323,72 +465,103 @@
 <script>
 
 
-/* =====================================================
+/* =================================================
    VERSION
-===================================================== */
+================================================= */
 
-const VERSION = "V2.1";
+const VERSION = "V2.2";
 
 
-/* =====================================================
-   GOOGLE APPS SCRIPT BACKEND
-===================================================== */
+/* =================================================
+   GOOGLE APPS SCRIPT
+================================================= */
 
 const APPS_SCRIPT_URL =
 "https://script.google.com/macros/s/AKfycbwSd26j_QkkD0WiEPgDXAFsLuJx6cAWePwZnT_WV9h8525cjibUVHksF5YbP64Dmzd-eA/exec";
 
 
-/* =====================================================
-   CAMERA ELEMENTS
-===================================================== */
+/* =================================================
+   ELEMENTS
+================================================= */
 
 const video =
   document.getElementById("video");
 
-const canvas =
-  document.getElementById("canvas");
 
-const ctx =
-  canvas.getContext(
-    "2d",
-    {
-      willReadFrequently: true
-    }
+const lastScan =
+  document.getElementById("lastScan");
+
+
+const lastType =
+  document.getElementById("lastType");
+
+
+const count =
+  document.getElementById("count");
+
+
+const columnDisplay =
+  document.getElementById("column");
+
+
+const duplicateOverlay =
+  document.getElementById(
+    "duplicateOverlay"
   );
 
 
-/* =====================================================
-   VARIABLES
-===================================================== */
+const duplicateCode =
+  document.getElementById(
+    "duplicateCode"
+  );
 
-let stream = null;
+
+/* =================================================
+   STATE
+================================================= */
 
 let currentColumn = "";
 
 let scanCount = 0;
 
-let lastValue = "";
 
-let lastScanTime = 0;
+/*
+ * Codes already accepted during
+ * this scanner session.
+ */
+
+const scannedItems =
+  new Set();
 
 
 /*
- * Prevent the same QR from being
- * scanned repeatedly while it remains
- * in front of the camera.
+ * Current duplicate waiting
+ * for worker decision.
  */
 
-const DUPLICATE_DELAY = 1200;
+let pendingDuplicate = null;
 
 
-/* =====================================================
-   BEEP
-===================================================== */
+/*
+ * Prevent ZXing from firing the
+ * same result continuously.
+ */
 
-function beep(
-  frequency = 900,
-  duration = 80
-) {
+let lastDetectedValue = "";
+
+let lastDetectedTime = 0;
+
+const DETECTION_COOLDOWN = 1000;
+
+
+/* =================================================
+   AUDIO
+================================================= */
+
+let audioContext = null;
+
+
+function initializeAudio() {
 
   try {
 
@@ -396,64 +569,30 @@ function beep(
       window.AudioContext ||
       window.webkitAudioContext;
 
-    if (!window.audioContext) {
+    if (!AudioContext) {
+      return;
+    }
 
-      window.audioContext =
+    if (!audioContext) {
+
+      audioContext =
         new AudioContext();
 
     }
 
-    const audio =
-      window.audioContext;
-
-
     if (
-      audio.state ===
+      audioContext.state ===
       "suspended"
     ) {
 
-      audio.resume();
+      audioContext.resume();
 
     }
-
-
-    const oscillator =
-      audio.createOscillator();
-
-    const gain =
-      audio.createGain();
-
-
-    oscillator.type =
-      "sine";
-
-    oscillator.frequency.value =
-      frequency;
-
-    gain.gain.value =
-      0.15;
-
-
-    oscillator.connect(gain);
-
-    gain.connect(
-      audio.destination
-    );
-
-
-    oscillator.start();
-
-
-    oscillator.stop(
-      audio.currentTime +
-      duration / 1000
-    );
-
 
   } catch (error) {
 
     console.log(
-      "Beep error:",
+      "Audio initialization error",
       error
     );
 
@@ -462,57 +601,250 @@ function beep(
 }
 
 
-/* =====================================================
-   UPDATE COLUMN DISPLAY
-===================================================== */
+/* =================================================
+   NORMAL BEEP
+================================================= */
 
-function updateColumn() {
+function normalBeep() {
 
-  const element =
-    document.getElementById(
-      "column"
+  try {
+
+    initializeAudio();
+
+    const oscillator =
+      audioContext.createOscillator();
+
+    const gain =
+      audioContext.createGain();
+
+    oscillator.type =
+      "sine";
+
+    oscillator.frequency.value =
+      1000;
+
+    gain.gain.value =
+      0.15;
+
+    oscillator.connect(gain);
+
+    gain.connect(
+      audioContext.destination
     );
 
+    oscillator.start();
 
-  if (currentColumn) {
+    oscillator.stop(
+      audioContext.currentTime +
+      0.08
+    );
 
-    element.textContent =
-      "COLUMN: " +
-      currentColumn;
+  } catch (error) {
 
-    element.className =
-      "columnColor";
-
-  } else {
-
-    element.textContent =
-      "COLUMN: NOT SET";
-
-    element.className = "";
+    console.log(error);
 
   }
 
 }
 
 
-/* =====================================================
+/* =================================================
+   COLUMN BEEP
+================================================= */
+
+function columnBeep() {
+
+  try {
+
+    initializeAudio();
+
+    const oscillator =
+      audioContext.createOscillator();
+
+    const gain =
+      audioContext.createGain();
+
+    oscillator.type =
+      "sine";
+
+    oscillator.frequency.value =
+      650;
+
+    gain.gain.value =
+      0.15;
+
+    oscillator.connect(gain);
+
+    gain.connect(
+      audioContext.destination
+    );
+
+    oscillator.start();
+
+    oscillator.stop(
+      audioContext.currentTime +
+      0.14
+    );
+
+  } catch (error) {
+
+    console.log(error);
+
+  }
+
+}
+
+
+/* =================================================
+   DUPLICATE SOUND
+================================================= */
+
+function duplicateAlert() {
+
+  try {
+
+    initializeAudio();
+
+
+    /*
+     * Two descending tones.
+     */
+
+    const oscillator =
+      audioContext.createOscillator();
+
+    const gain =
+      audioContext.createGain();
+
+
+    oscillator.type =
+      "square";
+
+    oscillator.frequency.setValueAtTime(
+      420,
+      audioContext.currentTime
+    );
+
+    oscillator.frequency.setValueAtTime(
+      240,
+      audioContext.currentTime +
+      0.18
+    );
+
+
+    gain.gain.value =
+      0.18;
+
+
+    oscillator.connect(gain);
+
+    gain.connect(
+      audioContext.destination
+    );
+
+
+    oscillator.start();
+
+
+    oscillator.stop(
+      audioContext.currentTime +
+      0.32
+    );
+
+
+  } catch (error) {
+
+    console.log(error);
+
+  }
+
+
+  /*
+   * Voice announcement.
+   */
+
+  try {
+
+    if (
+      "speechSynthesis"
+      in window
+    ) {
+
+      window.speechSynthesis.cancel();
+
+      const speech =
+        new SpeechSynthesisUtterance(
+          "Duplicate"
+        );
+
+      speech.rate =
+        1.1;
+
+      speech.pitch =
+        0.8;
+
+      speech.volume =
+        1;
+
+      window.speechSynthesis
+        .speak(
+          speech
+        );
+
+    }
+
+  } catch (error) {
+
+    console.log(error);
+
+  }
+
+}
+
+
+/* =================================================
+   UPDATE COLUMN
+================================================= */
+
+function updateColumnDisplay() {
+
+  if (currentColumn) {
+
+    columnDisplay.textContent =
+      "COLUMN: " +
+      currentColumn;
+
+    columnDisplay.className =
+      "columnColor";
+
+  } else {
+
+    columnDisplay.textContent =
+      "COLUMN: NOT SET";
+
+    columnDisplay.className = "";
+
+  }
+
+}
+
+
+/* =================================================
    UPDATE COUNT
-===================================================== */
+================================================= */
 
 function updateCount() {
 
-  document.getElementById(
-    "count"
-  ).textContent =
+  count.textContent =
     "Scans: " +
     scanCount;
 
 }
 
 
-/* =====================================================
-   SEND SCAN TO GOOGLE SHEETS
-===================================================== */
+/* =================================================
+   SEND TO GOOGLE SHEETS
+================================================= */
 
 function saveScan(
   value,
@@ -562,42 +894,21 @@ function saveScan(
   );
 
 
-  const url =
+  fetch(
     APPS_SCRIPT_URL +
     "?" +
-    params.toString();
-
-
-  /*
-   * Send to Apps Script.
-   *
-   * We don't need to read the response.
-   */
-
-  fetch(
-    url,
+    params.toString(),
     {
       method: "GET",
       mode: "no-cors",
       cache: "no-store"
     }
   )
-  .then(
-    function() {
-
-      console.log(
-        VERSION +
-        " scan sent:",
-        value
-      );
-
-    }
-  )
   .catch(
     function(error) {
 
       console.error(
-        "Google Sheet error:",
+        "Sheet save error:",
         error
       );
 
@@ -607,219 +918,163 @@ function saveScan(
 }
 
 
-/* =====================================================
-   PROCESS QR CODE
-===================================================== */
+/* =================================================
+   DETECT COLUMN
+================================================= */
 
-function processQR(
-  decodedValue
+function isColumnText(
+  text
 ) {
 
+  /*
+   * Accept:
 
-  const value =
-    String(
-      decodedValue || ""
-    ).trim();
+   COLUMN:1
+   COLUMN 1
+   COLUMN-1
+   COLUMN_1
+   COLUMN    :    1
+  */
 
-
-  if (!value) {
-
-    return;
-
-  }
-
-
-  /* ================================================
-     DUPLICATE PROTECTION
-  ================================================= */
-
-  const now =
-    Date.now();
-
-
-  if (
-    value === lastValue &&
-    now - lastScanTime <
-      DUPLICATE_DELAY
-  ) {
-
-    return;
-
-  }
-
-
-  lastValue =
-    value;
-
-  lastScanTime =
-    now;
-
-
-  /* ================================================
-     COLUMN QR
-     
-     Example:
-     
-     COLUMN:1
-     COLUMN:2
-     COLUMN:007
-     
-     All become:
-     
-     1
-     2
-     7
-  ================================================= */
-
-  const columnMatch =
-    value.match(
-      /^COLUMN\s*:\s*(\d+)$/i
+  return /^COLUMN\s*[:\-_]?\s*\d+/i
+    .test(
+      String(text || "").trim()
     );
 
+}
 
-  if (columnMatch) {
 
+/* =================================================
+   GET COLUMN NUMBER
+================================================= */
 
-    currentColumn =
-      String(
-        Number(
-          columnMatch[1]
-        )
+function getColumnNumber(
+  text
+) {
+
+  const match =
+    String(text || "")
+      .trim()
+      .match(
+        /^COLUMN\s*[:\-_]?\s*(\d+)/i
       );
 
 
-    scanCount++;
+  if (!match) {
+
+    return "";
+
+  }
 
 
-    beep(
-      650,
-      130
+  return String(
+    Number(
+      match[1]
+    )
+  );
+
+}
+
+
+/* =================================================
+   SHOW COLUMN
+================================================= */
+
+function processColumn(
+  text
+) {
+
+
+  const number =
+    getColumnNumber(
+      text
     );
 
 
-    updateColumn();
-
-
-    document.getElementById(
-      "lastScan"
-    ).textContent =
-      "COLUMN " +
-      currentColumn;
-
-
-    document.getElementById(
-      "lastScan"
-    ).className =
-      "columnColor";
-
-
-    document.getElementById(
-      "lastType"
-    ).textContent =
-      "COLUMN CHANGED";
-
-
-    document.getElementById(
-      "lastType"
-    ).className =
-      "columnColor";
-
-
-    updateCount();
-
-
-    saveScan(
-      value,
-      "COLUMN",
-      currentColumn,
-      ""
-    );
-
+  if (!number) {
 
     return;
 
   }
 
 
-  /* ================================================
-     ITEM QR
-  ================================================= */
-
-
-  if (!currentColumn) {
-
-
-    beep(
-      300,
-      250
-    );
-
-
-    document.getElementById(
-      "lastScan"
-    ).textContent =
-      "SCAN COLUMN FIRST";
-
-
-    document.getElementById(
-      "lastScan"
-    ).className =
-      "errorColor";
-
-
-    document.getElementById(
-      "lastType"
-    ).textContent =
-      "No active column";
-
-
-    document.getElementById(
-      "lastType"
-    ).className =
-      "errorColor";
-
-
-    return;
-
-  }
-
-
-  /* ================================================
-     ITEM ACCEPTED
-  ================================================= */
+  currentColumn =
+    number;
 
 
   scanCount++;
 
 
-  beep(
-    1000,
-    80
-  );
+  columnBeep();
 
 
-  document.getElementById(
-    "lastScan"
-  ).textContent =
-    value;
+  updateColumnDisplay();
 
 
-  document.getElementById(
-    "lastScan"
-  ).className =
-    "itemColor";
-
-
-  document.getElementById(
-    "lastType"
-  ).textContent =
-    "ITEM → COLUMN " +
+  lastScan.textContent =
+    "COLUMN " +
     currentColumn;
 
 
-  document.getElementById(
-    "lastType"
-  ).className =
+  lastScan.className =
+    "columnColor";
+
+
+  lastType.textContent =
+    "COLUMN CHANGED";
+
+
+  lastType.className =
+    "columnColor";
+
+
+  updateCount();
+
+
+  saveScan(
+    text,
+    "COLUMN",
+    currentColumn,
+    ""
+  );
+
+}
+
+
+/* =================================================
+   SHOW ITEM
+================================================= */
+
+function processNewItem(
+  value
+) {
+
+
+  scannedItems.add(
+    value
+  );
+
+
+  scanCount++;
+
+
+  normalBeep();
+
+
+  lastScan.textContent =
+    value;
+
+
+  lastScan.className =
+    "itemColor";
+
+
+  lastType.textContent =
+    "CODE 128 → COLUMN " +
+    currentColumn;
+
+
+  lastType.className =
     "itemColor";
 
 
@@ -836,128 +1091,310 @@ function processQR(
 }
 
 
-/* =====================================================
-   CONTINUOUS QR SCANNING
-===================================================== */
+/* =================================================
+   DUPLICATE
+================================================= */
 
-function scanFrame() {
-
-
-  /*
-   * Camera isn't ready yet.
-   */
-
-  if (
-    !stream ||
-    video.readyState !==
-      video.HAVE_ENOUGH_DATA
-  ) {
-
-    requestAnimationFrame(
-      scanFrame
-    );
-
-    return;
-
-  }
+function showDuplicate(
+  value
+) {
 
 
-  const width =
-    video.videoWidth;
-
-  const height =
-    video.videoHeight;
+  pendingDuplicate =
+    value;
 
 
-  if (
-    !width ||
-    !height
-  ) {
-
-    requestAnimationFrame(
-      scanFrame
-    );
-
-    return;
-
-  }
+  duplicateCode.textContent =
+    value;
 
 
-  /*
-   * Draw camera image
-   * onto invisible canvas.
-   */
-
-  canvas.width =
-    width;
-
-  canvas.height =
-    height;
+  duplicateOverlay.style.display =
+    "flex";
 
 
-  ctx.drawImage(
-    video,
-    0,
-    0,
-    width,
-    height
-  );
+  duplicateAlert();
+
+}
 
 
-  /*
-   * Get pixels.
-   */
+/* =================================================
+   REJECT DUPLICATE
+================================================= */
 
-  const imageData =
-    ctx.getImageData(
-      0,
-      0,
-      width,
-      height
-    );
+function rejectDuplicate() {
 
 
-  /*
-   * Decode QR.
-   */
-
-  const qr =
-    jsQR(
-      imageData.data,
-      width,
-      height,
-      {
-        inversionAttempts:
-          "attemptBoth"
-      }
-    );
+  const value =
+    pendingDuplicate;
 
 
-  if (qr) {
+  pendingDuplicate =
+    null;
 
-    processQR(
-      qr.data
-    );
 
-  }
+  duplicateOverlay.style.display =
+    "none";
+
+
+  lastScan.textContent =
+    "IGNORED";
+
+
+  lastScan.className =
+    "errorColor";
+
+
+  lastType.textContent =
+    value +
+    " NOT RECORDED";
+
+
+  lastType.className =
+    "errorColor";
+
+
+}
+
+
+/* =================================================
+   ACCEPT DUPLICATE
+================================================= */
+
+function acceptDuplicate() {
+
+
+  const value =
+    pendingDuplicate;
+
+
+  pendingDuplicate =
+    null;
+
+
+  duplicateOverlay.style.display =
+    "none";
 
 
   /*
-   * Continue forever.
+   * This is another physical box
+   * of the same item.
+   *
+   * We intentionally allow it.
    */
 
-  requestAnimationFrame(
-    scanFrame
+  scanCount++;
+
+
+  normalBeep();
+
+
+  lastScan.textContent =
+    value;
+
+
+  lastScan.className =
+    "itemColor";
+
+
+  lastType.textContent =
+    "DUPLICATE ACCEPTED → COLUMN " +
+    currentColumn;
+
+
+  lastType.className =
+    "itemColor";
+
+
+  updateCount();
+
+
+  saveScan(
+    value,
+    "ITEM",
+    currentColumn,
+    value
   );
 
 }
 
 
-/* =====================================================
-   START CAMERA
-===================================================== */
+/* =================================================
+   HANDLE BARCODE RESULT
+================================================= */
 
-async function startCamera() {
+function handleResult(
+  result
+) {
+
+
+  if (!result) {
+
+    return;
+
+  }
+
+
+  const value =
+    String(
+      result.getText()
+    ).trim();
+
+
+  if (!value) {
+
+    return;
+
+  }
+
+
+  const format =
+    result
+      .getBarcodeFormat();
+
+
+  /*
+   * Prevent rapid repeated
+   * callbacks for the same barcode.
+   */
+
+  const now =
+    Date.now();
+
+
+  if (
+    value ===
+      lastDetectedValue &&
+    now -
+      lastDetectedTime <
+      DETECTION_COOLDOWN
+  ) {
+
+    return;
+
+  }
+
+
+  lastDetectedValue =
+    value;
+
+  lastDetectedTime =
+    now;
+
+
+  /*
+   * ==============================
+   * QR CODE
+   * ==============================
+   */
+
+  if (
+    format ===
+    ZXing.BarcodeFormat.QR_CODE
+  ) {
+
+
+    /*
+     * Only QR codes beginning
+     * with COLUMN are meaningful.
+     */
+
+    if (
+      isColumnText(
+        value
+      )
+    ) {
+
+      processColumn(
+        value
+      );
+
+    }
+
+
+    /*
+     * All other QR codes
+     * are deliberately ignored.
+     */
+
+    return;
+
+  }
+
+
+  /*
+   * ==============================
+   * CODE 128
+   * ==============================
+   */
+
+  if (
+    format ===
+    ZXing.BarcodeFormat.CODE_128
+  ) {
+
+
+    /*
+     * A Code 128 item requires
+     * an active column.
+     */
+
+    if (!currentColumn) {
+
+      lastScan.textContent =
+        "SCAN COLUMN FIRST";
+
+      lastScan.className =
+        "errorColor";
+
+      lastType.textContent =
+        "CODE 128 ITEM";
+
+      lastType.className =
+        "errorColor";
+
+
+      return;
+
+    }
+
+
+    /*
+     * DUPLICATE?
+     */
+
+    if (
+      scannedItems.has(
+        value
+      )
+    ) {
+
+      showDuplicate(
+        value
+      );
+
+      return;
+
+    }
+
+
+    /*
+     * NEW ITEM
+     */
+
+    processNewItem(
+      value
+    );
+
+  }
+
+}
+
+
+/* =================================================
+   START ZXING SCANNER
+================================================= */
+
+async function startScanner() {
 
 
   const button =
@@ -977,54 +1414,24 @@ async function startCamera() {
 
 
   button.textContent =
-    "STARTING V2.1...";
+    "STARTING V2.2...";
 
 
-  /*
-   * Initialize audio after
-   * the user interaction.
-   */
-
-  try {
-
-    const AudioContext =
-      window.AudioContext ||
-      window.webkitAudioContext;
-
-
-    if (AudioContext) {
-
-      window.audioContext =
-        new AudioContext();
-
-
-      await window.audioContext
-        .resume();
-
-    }
-
-  } catch (error) {
-
-    console.log(
-      "Audio unavailable:",
-      error
-    );
-
-  }
+  initializeAudio();
 
 
   try {
 
 
     /*
-     * Native browser camera API.
-     *
-     * This is deliberately NOT
-     * html5-qrcode.
+     * Ask browser for camera
+     * so we can explicitly choose
+     * the rear camera.
      */
 
-    stream =
-      await navigator.mediaDevices
+    const stream =
+      await navigator
+        .mediaDevices
         .getUserMedia({
 
           video: {
@@ -1049,7 +1456,7 @@ async function startCamera() {
 
 
     /*
-     * Attach camera.
+     * Put stream into video.
      */
 
     video.srcObject =
@@ -1060,7 +1467,66 @@ async function startCamera() {
 
 
     /*
-     * CAMERA SUCCESS
+     * Create multi-format reader.
+     */
+
+    const hints =
+      new Map();
+
+
+    /*
+     * Only scan the two formats
+     * we actually use.
+     *
+     * This keeps scanning faster.
+     */
+
+    hints.set(
+      ZXing.DecodeHintType.POSSIBLE_FORMATS,
+      [
+        ZXing.BarcodeFormat.QR_CODE,
+        ZXing.BarcodeFormat.CODE_128
+      ]
+    );
+
+
+    hints.set(
+      ZXing.DecodeHintType.TRY_HARDER,
+      true
+    );
+
+
+    const reader =
+      new ZXing.BrowserMultiFormatReader(
+        hints
+      );
+
+
+    /*
+     * Start continuous scanning.
+     */
+
+    reader.decodeFromVideoElement(
+      video,
+      function(
+        result,
+        error
+      ) {
+
+        if (result) {
+
+          handleResult(
+            result
+          );
+
+        }
+
+      }
+    );
+
+
+    /*
+     * Hide start screen.
      */
 
     document.getElementById(
@@ -1069,32 +1535,19 @@ async function startCamera() {
       "none";
 
 
-    document.getElementById(
-      "lastScan"
-    ).textContent =
+    lastScan.textContent =
       "CAMERA READY";
 
 
-    document.getElementById(
-      "lastType"
-    ).textContent =
+    lastType.textContent =
       "SCAN COLUMN QR";
-
-
-    /*
-     * Begin continuous QR scanning.
-     */
-
-    requestAnimationFrame(
-      scanFrame
-    );
 
 
   } catch (error) {
 
 
     console.error(
-      "CAMERA ERROR:",
+      "V2.2 CAMERA ERROR",
       error
     );
 
@@ -1111,17 +1564,17 @@ async function startCamera() {
 
       '<span class="errorColor">' +
 
-      "<b>CAMERA ERROR — V2.1</b>" +
+      "<b>V2.2 CAMERA ERROR</b>" +
 
       "<br><br>" +
 
-      "Error name:<br>" +
+      "Name: " +
 
       error.name +
 
       "<br><br>" +
 
-      "Error message:<br>" +
+      "Message: " +
 
       error.message +
 
@@ -1132,9 +1585,9 @@ async function startCamera() {
 }
 
 
-/* =====================================================
-   START BUTTON
-===================================================== */
+/* =================================================
+   BUTTONS
+================================================= */
 
 document
   .getElementById(
@@ -1142,13 +1595,33 @@ document
   )
   .addEventListener(
     "click",
-    startCamera
+    startScanner
   );
 
 
-/* =====================================================
-   PAGE LOADED
-===================================================== */
+document
+  .getElementById(
+    "rejectButton"
+  )
+  .addEventListener(
+    "click",
+    rejectDuplicate
+  );
+
+
+document
+  .getElementById(
+    "acceptButton"
+  )
+  .addEventListener(
+    "click",
+    acceptDuplicate
+  );
+
+
+/* =================================================
+   READY
+================================================= */
 
 console.log(
   "Stock Scanner " +

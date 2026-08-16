@@ -3,11 +3,10 @@
 <head>
 
 <meta name="viewport"
-      content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 
-<title>Stock Scanner V2.2</title>
+<title>Stock Scanner V2.2.1</title>
 
-<!-- ZXing browser: multi-format 1D + 2D barcode reader -->
 <script src="https://unpkg.com/@zxing/browser@latest"></script>
 
 <style>
@@ -35,9 +34,7 @@ body {
   flex-direction: column;
 }
 
-/* ================================
-   VERSION
-================================ */
+/* VERSION */
 
 #version {
   position: fixed;
@@ -50,15 +47,13 @@ body {
 
   padding: 7px 10px;
 
-  font-size: 14px;
+  font-size: 15px;
   font-weight: bold;
 
   border-radius: 0 0 0 8px;
 }
 
-/* ================================
-   TOP
-================================ */
+/* TOP */
 
 #top {
   background: #111;
@@ -77,9 +72,7 @@ body {
   font-weight: bold;
 }
 
-/* ================================
-   CAMERA
-================================ */
+/* CAMERA */
 
 #cameraArea {
   position: relative;
@@ -99,19 +92,17 @@ body {
 #video {
   width: 100%;
   height: 100%;
-
   object-fit: cover;
-
   background: #000;
 }
 
 #scanBox {
   position: absolute;
 
-  width: 72vw;
+  width: 80vw;
   height: 35vw;
 
-  max-width: 380px;
+  max-width: 420px;
   max-height: 220px;
 
   border: 3px solid white;
@@ -120,15 +111,11 @@ body {
   pointer-events: none;
 }
 
-/* ================================
-   BOTTOM
-================================ */
+/* BOTTOM */
 
 #bottom {
   background: #111;
-
   text-align: center;
-
   padding: 9px;
 }
 
@@ -148,9 +135,7 @@ body {
   color: #aaa;
 }
 
-/* ================================
-   START SCREEN
-================================ */
+/* START */
 
 #startScreen {
   position: fixed;
@@ -161,15 +146,11 @@ body {
   background: #111;
 
   display: flex;
-
   flex-direction: column;
-
   align-items: center;
-
   justify-content: center;
 
   text-align: center;
-
   padding: 25px;
 }
 
@@ -180,25 +161,19 @@ body {
   padding: 18px 35px;
 
   border: none;
-
   border-radius: 12px;
 
   background: white;
-
   color: black;
 }
 
 #message {
   margin-top: 20px;
-
   color: #bbb;
-
   line-height: 1.5;
 }
 
-/* ================================
-   COLORS
-================================ */
+/* COLORS */
 
 .columnColor {
   color: #ffd43b;
@@ -212,27 +187,21 @@ body {
   color: #ff5555;
 }
 
-
-/* ================================
-   DUPLICATE OVERLAY
-================================ */
+/* DUPLICATE */
 
 #duplicateOverlay {
 
   position: fixed;
-
   inset: 0;
 
   z-index: 5000;
 
-  background: rgba(0,0,0,0.88);
+  background: rgba(0,0,0,0.90);
 
   display: none;
 
   flex-direction: column;
-
   align-items: center;
-
   justify-content: center;
 
   text-align: center;
@@ -240,76 +209,53 @@ body {
   padding: 20px;
 }
 
-
 #duplicateTitle {
 
   font-size: 38px;
-
   font-weight: bold;
 
   color: #ff5555;
 
   margin-bottom: 15px;
-
 }
-
 
 #duplicateCode {
 
   font-size: 28px;
-
   font-weight: bold;
 
   word-break: break-all;
 
   margin-bottom: 30px;
-
 }
-
 
 #duplicateButtons {
 
   display: flex;
-
   gap: 30px;
-
 }
-
 
 .duplicateButton {
 
   width: 130px;
-
   height: 100px;
 
   border: none;
-
   border-radius: 18px;
 
   font-size: 55px;
-
   font-weight: bold;
-
 }
-
 
 #rejectButton {
-
   background: #d62828;
-
   color: white;
-
 }
-
 
 #acceptButton {
-
   background: #198754;
-
   color: white;
-
 }
-
 
 #duplicateHint {
 
@@ -318,7 +264,6 @@ body {
   color: #ccc;
 
   font-size: 15px;
-
 }
 
 </style>
@@ -332,61 +277,61 @@ body {
 <!-- VERSION -->
 
 <div id="version">
-  V2.2
+V2.2.1
 </div>
 
 
 <div id="app">
 
 
-  <!-- TOP -->
+<!-- TOP -->
 
-  <div id="top">
+<div id="top">
 
-    <div id="title">
-      STOCK SCANNER
-    </div>
-
-    <div id="column">
-      COLUMN: NOT SET
-    </div>
-
+  <div id="title">
+    STOCK SCANNER
   </div>
 
-
-  <!-- CAMERA -->
-
-  <div id="cameraArea">
-
-    <video
-      id="video"
-      autoplay
-      playsinline
-      muted>
-    </video>
-
-    <div id="scanBox"></div>
-
+  <div id="column">
+    COLUMN: NOT SET
   </div>
 
+</div>
 
-  <!-- BOTTOM -->
 
-  <div id="bottom">
+<!-- CAMERA -->
 
-    <div id="lastScan">
-      READY
-    </div>
+<div id="cameraArea">
 
-    <div id="lastType">
-      SCAN COLUMN QR
-    </div>
+  <video
+    id="video"
+    autoplay
+    playsinline
+    muted>
+  </video>
 
-    <div id="count">
-      Scans: 0
-    </div>
+  <div id="scanBox"></div>
 
+</div>
+
+
+<!-- BOTTOM -->
+
+<div id="bottom">
+
+  <div id="lastScan">
+    READY
   </div>
+
+  <div id="lastType">
+    SCAN COLUMN QR
+  </div>
+
+  <div id="count">
+    Scans: 0
+  </div>
+
+</div>
 
 
 </div>
@@ -402,7 +347,7 @@ body {
 
   <div id="message">
 
-    <b>STOCK SCANNER V2.2</b>
+    <b>STOCK SCANNER V2.2.1</b>
 
     <br><br>
 
@@ -414,7 +359,7 @@ body {
 
     <br><br>
 
-    Tap once to start.
+    Continuous scanning
 
   </div>
 
@@ -451,7 +396,7 @@ body {
 
   <div id="duplicateHint">
 
-    ✕ Ignore this scan
+    ✕ Ignore
 
     <br>
 
@@ -464,99 +409,71 @@ body {
 
 <script>
 
-
-/* =================================================
+/* ==================================================
    VERSION
-================================================= */
+================================================== */
 
-const VERSION = "V2.2";
+const VERSION = "V2.2.1";
 
 
-/* =================================================
+/* ==================================================
    GOOGLE APPS SCRIPT
-================================================= */
+================================================== */
 
 const APPS_SCRIPT_URL =
 "https://script.google.com/macros/s/AKfycbwSd26j_QkkD0WiEPgDXAFsLuJx6cAWePwZnT_WV9h8525cjibUVHksF5YbP64Dmzd-eA/exec";
 
 
-/* =================================================
+/* ==================================================
    ELEMENTS
-================================================= */
+================================================== */
 
 const video =
-  document.getElementById("video");
-
+document.getElementById("video");
 
 const lastScan =
-  document.getElementById("lastScan");
-
+document.getElementById("lastScan");
 
 const lastType =
-  document.getElementById("lastType");
-
+document.getElementById("lastType");
 
 const count =
-  document.getElementById("count");
-
+document.getElementById("count");
 
 const columnDisplay =
-  document.getElementById("column");
-
+document.getElementById("column");
 
 const duplicateOverlay =
-  document.getElementById(
-    "duplicateOverlay"
-  );
-
+document.getElementById("duplicateOverlay");
 
 const duplicateCode =
-  document.getElementById(
-    "duplicateCode"
-  );
+document.getElementById("duplicateCode");
 
 
-/* =================================================
+/* ==================================================
    STATE
-================================================= */
+================================================== */
 
 let currentColumn = "";
 
 let scanCount = 0;
 
-
-/*
- * Codes already accepted during
- * this scanner session.
- */
-
-const scannedItems =
-  new Set();
-
-
-/*
- * Current duplicate waiting
- * for worker decision.
- */
+let scannedItems = new Set();
 
 let pendingDuplicate = null;
 
-
-/*
- * Prevent ZXing from firing the
- * same result continuously.
- */
-
 let lastDetectedValue = "";
+
+let lastDetectedFormat = "";
 
 let lastDetectedTime = 0;
 
-const DETECTION_COOLDOWN = 1000;
+const DETECTION_COOLDOWN = 1200;
 
 
-/* =================================================
+/* ==================================================
    AUDIO
-================================================= */
+================================================== */
 
 let audioContext = null;
 
@@ -569,9 +486,7 @@ function initializeAudio() {
       window.AudioContext ||
       window.webkitAudioContext;
 
-    if (!AudioContext) {
-      return;
-    }
+    if (!AudioContext) return;
 
     if (!audioContext) {
 
@@ -589,27 +504,29 @@ function initializeAudio() {
 
     }
 
-  } catch (error) {
+  } catch (e) {
 
-    console.log(
-      "Audio initialization error",
-      error
-    );
+    console.log(e);
 
   }
 
 }
 
 
-/* =================================================
-   NORMAL BEEP
-================================================= */
+/* ==================================================
+   BEEP
+================================================== */
 
-function normalBeep() {
+function makeBeep(
+frequency,
+duration
+) {
 
   try {
 
     initializeAudio();
+
+    if (!audioContext) return;
 
     const oscillator =
       audioContext.createOscillator();
@@ -617,11 +534,10 @@ function normalBeep() {
     const gain =
       audioContext.createGain();
 
-    oscillator.type =
-      "sine";
+    oscillator.type = "sine";
 
     oscillator.frequency.value =
-      1000;
+      frequency;
 
     gain.gain.value =
       0.15;
@@ -636,68 +552,49 @@ function normalBeep() {
 
     oscillator.stop(
       audioContext.currentTime +
-      0.08
+      duration / 1000
     );
 
-  } catch (error) {
+  } catch (e) {
 
-    console.log(error);
+    console.log(e);
 
   }
 
 }
 
 
-/* =================================================
-   COLUMN BEEP
-================================================= */
+/* ==================================================
+   NORMAL ITEM SOUND
+================================================== */
+
+function itemBeep() {
+
+  makeBeep(
+    1000,
+    80
+  );
+
+}
+
+
+/* ==================================================
+   COLUMN SOUND
+================================================== */
 
 function columnBeep() {
 
-  try {
-
-    initializeAudio();
-
-    const oscillator =
-      audioContext.createOscillator();
-
-    const gain =
-      audioContext.createGain();
-
-    oscillator.type =
-      "sine";
-
-    oscillator.frequency.value =
-      650;
-
-    gain.gain.value =
-      0.15;
-
-    oscillator.connect(gain);
-
-    gain.connect(
-      audioContext.destination
-    );
-
-    oscillator.start();
-
-    oscillator.stop(
-      audioContext.currentTime +
-      0.14
-    );
-
-  } catch (error) {
-
-    console.log(error);
-
-  }
+  makeBeep(
+    650,
+    140
+  );
 
 }
 
 
-/* =================================================
-   DUPLICATE SOUND
-================================================= */
+/* ==================================================
+   DUPLICATE SOUND + VOICE
+================================================== */
 
 function duplicateAlert() {
 
@@ -705,63 +602,51 @@ function duplicateAlert() {
 
     initializeAudio();
 
+    if (audioContext) {
 
-    /*
-     * Two descending tones.
-     */
+      const oscillator =
+        audioContext.createOscillator();
 
-    const oscillator =
-      audioContext.createOscillator();
+      const gain =
+        audioContext.createGain();
 
-    const gain =
-      audioContext.createGain();
+      oscillator.type =
+        "square";
 
+      oscillator.frequency.setValueAtTime(
+        500,
+        audioContext.currentTime
+      );
 
-    oscillator.type =
-      "square";
+      oscillator.frequency.setValueAtTime(
+        250,
+        audioContext.currentTime + 0.18
+      );
 
-    oscillator.frequency.setValueAtTime(
-      420,
-      audioContext.currentTime
-    );
+      gain.gain.value =
+        0.18;
 
-    oscillator.frequency.setValueAtTime(
-      240,
-      audioContext.currentTime +
-      0.18
-    );
+      oscillator.connect(gain);
 
+      gain.connect(
+        audioContext.destination
+      );
 
-    gain.gain.value =
-      0.18;
+      oscillator.start();
 
+      oscillator.stop(
+        audioContext.currentTime +
+        0.35
+      );
 
-    oscillator.connect(gain);
+    }
 
-    gain.connect(
-      audioContext.destination
-    );
+  } catch (e) {
 
-
-    oscillator.start();
-
-
-    oscillator.stop(
-      audioContext.currentTime +
-      0.32
-    );
-
-
-  } catch (error) {
-
-    console.log(error);
+    console.log(e);
 
   }
 
-
-  /*
-   * Voice announcement.
-   */
 
   try {
 
@@ -770,43 +655,52 @@ function duplicateAlert() {
       in window
     ) {
 
-      window.speechSynthesis.cancel();
+      speechSynthesis.cancel();
 
       const speech =
         new SpeechSynthesisUtterance(
           "Duplicate"
         );
 
-      speech.rate =
-        1.1;
+      speech.rate = 1.1;
 
-      speech.pitch =
-        0.8;
+      speech.pitch = 0.8;
 
-      speech.volume =
-        1;
+      speech.volume = 1;
 
-      window.speechSynthesis
-        .speak(
-          speech
-        );
+      speechSynthesis.speak(
+        speech
+      );
 
     }
 
-  } catch (error) {
+  } catch (e) {
 
-    console.log(error);
+    console.log(e);
 
   }
 
 }
 
 
-/* =================================================
-   UPDATE COLUMN
-================================================= */
+/* ==================================================
+   COUNT
+================================================== */
 
-function updateColumnDisplay() {
+function updateCount() {
+
+  count.textContent =
+    "Scans: " +
+    scanCount;
+
+}
+
+
+/* ==================================================
+   COLUMN DISPLAY
+================================================== */
+
+function updateColumn() {
 
   if (currentColumn) {
 
@@ -822,71 +716,52 @@ function updateColumnDisplay() {
     columnDisplay.textContent =
       "COLUMN: NOT SET";
 
-    columnDisplay.className = "";
+    columnDisplay.className =
+      "";
 
   }
 
 }
 
 
-/* =================================================
-   UPDATE COUNT
-================================================= */
-
-function updateCount() {
-
-  count.textContent =
-    "Scans: " +
-    scanCount;
-
-}
-
-
-/* =================================================
-   SEND TO GOOGLE SHEETS
-================================================= */
+/* ==================================================
+   SAVE TO GOOGLE SHEETS
+================================================== */
 
 function saveScan(
-  value,
-  type,
-  column,
-  itemCode
+value,
+type,
+column,
+itemCode
 ) {
-
 
   const params =
     new URLSearchParams();
-
 
   params.append(
     "action",
     "scan"
   );
 
-
   params.append(
     "value",
     value
   );
-
 
   params.append(
     "type",
     type
   );
 
-
   params.append(
     "column",
     column || ""
   );
 
-
   params.append(
     "itemCode",
     itemCode || ""
   );
-
 
   params.append(
     "device",
@@ -908,7 +783,7 @@ function saveScan(
     function(error) {
 
       console.error(
-        "Sheet save error:",
+        "Sheet error:",
         error
       );
 
@@ -918,51 +793,38 @@ function saveScan(
 }
 
 
-/* =================================================
-   DETECT COLUMN
-================================================= */
-
-function isColumnText(
-  text
-) {
-
-  /*
-   * Accept:
-
-   COLUMN:1
-   COLUMN 1
-   COLUMN-1
-   COLUMN_1
-   COLUMN    :    1
-  */
-
-  return /^COLUMN\s*[:\-_]?\s*\d+/i
-    .test(
-      String(text || "").trim()
-    );
-
-}
-
-
-/* =================================================
-   GET COLUMN NUMBER
-================================================= */
+/* ==================================================
+   COLUMN DETECTION
+================================================== */
 
 function getColumnNumber(
-  text
+text
 ) {
 
-  const match =
+  const value =
     String(text || "")
-      .trim()
-      .match(
-        /^COLUMN\s*[:\-_]?\s*(\d+)/i
-      );
+      .trim();
+
+
+  /*
+   * Accepted examples:
+   *
+   * COLUMN:3
+   * COLUMN 3
+   * COLUMN-3
+   * COLUMN_3
+   * COLUMN : 3
+   */
+
+  const match =
+    value.match(
+      /^COLUMN\s*[:\-_]?\s*(\d+)/i
+    );
 
 
   if (!match) {
 
-    return "";
+    return null;
 
   }
 
@@ -976,22 +838,21 @@ function getColumnNumber(
 }
 
 
-/* =================================================
-   SHOW COLUMN
-================================================= */
+/* ==================================================
+   PROCESS COLUMN
+================================================== */
 
 function processColumn(
-  text
+text
 ) {
 
-
-  const number =
+  const column =
     getColumnNumber(
       text
     );
 
 
-  if (!number) {
+  if (!column) {
 
     return;
 
@@ -999,7 +860,7 @@ function processColumn(
 
 
   currentColumn =
-    number;
+    column;
 
 
   scanCount++;
@@ -1008,13 +869,12 @@ function processColumn(
   columnBeep();
 
 
-  updateColumnDisplay();
+  updateColumn();
 
 
   lastScan.textContent =
     "COLUMN " +
     currentColumn;
-
 
   lastScan.className =
     "columnColor";
@@ -1022,7 +882,6 @@ function processColumn(
 
   lastType.textContent =
     "COLUMN CHANGED";
-
 
   lastType.className =
     "columnColor";
@@ -1041,14 +900,13 @@ function processColumn(
 }
 
 
-/* =================================================
-   SHOW ITEM
-================================================= */
+/* ==================================================
+   PROCESS NEW ITEM
+================================================== */
 
 function processNewItem(
-  value
+value
 ) {
-
 
   scannedItems.add(
     value
@@ -1058,12 +916,11 @@ function processNewItem(
   scanCount++;
 
 
-  normalBeep();
+  itemBeep();
 
 
   lastScan.textContent =
     value;
-
 
   lastScan.className =
     "itemColor";
@@ -1072,7 +929,6 @@ function processNewItem(
   lastType.textContent =
     "CODE 128 → COLUMN " +
     currentColumn;
-
 
   lastType.className =
     "itemColor";
@@ -1091,14 +947,13 @@ function processNewItem(
 }
 
 
-/* =================================================
-   DUPLICATE
-================================================= */
+/* ==================================================
+   DUPLICATE SCREEN
+================================================== */
 
 function showDuplicate(
-  value
+value
 ) {
-
 
   pendingDuplicate =
     value;
@@ -1117,12 +972,11 @@ function showDuplicate(
 }
 
 
-/* =================================================
-   REJECT DUPLICATE
-================================================= */
+/* ==================================================
+   REJECT
+================================================== */
 
 function rejectDuplicate() {
-
 
   const value =
     pendingDuplicate;
@@ -1152,16 +1006,14 @@ function rejectDuplicate() {
   lastType.className =
     "errorColor";
 
-
 }
 
 
-/* =================================================
-   ACCEPT DUPLICATE
-================================================= */
+/* ==================================================
+   ACCEPT
+================================================== */
 
 function acceptDuplicate() {
-
 
   const value =
     pendingDuplicate;
@@ -1175,17 +1027,10 @@ function acceptDuplicate() {
     "none";
 
 
-  /*
-   * This is another physical box
-   * of the same item.
-   *
-   * We intentionally allow it.
-   */
-
   scanCount++;
 
 
-  normalBeep();
+  itemBeep();
 
 
   lastScan.textContent =
@@ -1218,14 +1063,36 @@ function acceptDuplicate() {
 }
 
 
-/* =================================================
-   HANDLE BARCODE RESULT
-================================================= */
+/* ==================================================
+   FORMAT NAME
+================================================== */
 
-function handleResult(
-  result
+function getFormatName(
+format
 ) {
 
+  try {
+
+    return String(
+      format
+    );
+
+  } catch (e) {
+
+    return "";
+
+  }
+
+}
+
+
+/* ==================================================
+   HANDLE ZXING RESULT
+================================================== */
+
+function handleResult(
+result
+) {
 
   if (!result) {
 
@@ -1236,7 +1103,7 @@ function handleResult(
 
   const value =
     String(
-      result.getText()
+      result.getText() || ""
     ).trim();
 
 
@@ -1247,23 +1114,28 @@ function handleResult(
   }
 
 
-  const format =
-    result
-      .getBarcodeFormat();
-
-
   /*
-   * Prevent rapid repeated
-   * callbacks for the same barcode.
+   * Current ZXing result format.
    */
+
+  const format =
+    result.getBarcodeFormat();
+
 
   const now =
     Date.now();
 
 
+  /*
+   * Stop the same code from
+   * firing continuously.
+   */
+
   if (
     value ===
       lastDetectedValue &&
+    format ===
+      lastDetectedFormat &&
     now -
       lastDetectedTime <
       DETECTION_COOLDOWN
@@ -1277,29 +1149,31 @@ function handleResult(
   lastDetectedValue =
     value;
 
+  lastDetectedFormat =
+    format;
+
   lastDetectedTime =
     now;
 
 
   /*
-   * ==============================
-   * QR CODE
-   * ==============================
+   * ============================
+   * QR
+   * ============================
    */
 
   if (
     format ===
-    ZXing.BarcodeFormat.QR_CODE
+    ZXingBrowser.BarcodeFormat.QR_CODE
   ) {
 
-
     /*
-     * Only QR codes beginning
-     * with COLUMN are meaningful.
+     * Only QR beginning with
+     * COLUMN is used.
      */
 
     if (
-      isColumnText(
+      /^COLUMN/i.test(
         value
       )
     ) {
@@ -1312,8 +1186,7 @@ function handleResult(
 
 
     /*
-     * All other QR codes
-     * are deliberately ignored.
+     * Any other QR is ignored.
      */
 
     return;
@@ -1322,32 +1195,40 @@ function handleResult(
 
 
   /*
-   * ==============================
+   * ============================
    * CODE 128
-   * ==============================
+   * ============================
    */
 
   if (
     format ===
-    ZXing.BarcodeFormat.CODE_128
+    ZXingBrowser.BarcodeFormat.CODE_128
   ) {
 
 
     /*
-     * A Code 128 item requires
-     * an active column.
+     * Must have a column first.
      */
 
     if (!currentColumn) {
 
+      makeBeep(
+        300,
+        250
+      );
+
+
       lastScan.textContent =
         "SCAN COLUMN FIRST";
+
 
       lastScan.className =
         "errorColor";
 
+
       lastType.textContent =
         "CODE 128 ITEM";
+
 
       lastType.className =
         "errorColor";
@@ -1359,7 +1240,7 @@ function handleResult(
 
 
     /*
-     * DUPLICATE?
+     * DUPLICATE
      */
 
     if (
@@ -1390,18 +1271,16 @@ function handleResult(
 }
 
 
-/* =================================================
-   START ZXING SCANNER
-================================================= */
+/* ==================================================
+   START SCANNER
+================================================== */
 
 async function startScanner() {
-
 
   const button =
     document.getElementById(
       "startButton"
     );
-
 
   const message =
     document.getElementById(
@@ -1412,9 +1291,8 @@ async function startScanner() {
   button.disabled =
     true;
 
-
   button.textContent =
-    "STARTING V2.2...";
+    "STARTING V2.2.1...";
 
 
   initializeAudio();
@@ -1424,89 +1302,63 @@ async function startScanner() {
 
 
     /*
-     * Ask browser for camera
-     * so we can explicitly choose
-     * the rear camera.
+     * Check library first.
      */
 
-    const stream =
-      await navigator
-        .mediaDevices
-        .getUserMedia({
+    if (
+      typeof ZXingBrowser ===
+      "undefined"
+    ) {
 
-          video: {
+      throw new Error(
+        "ZXingBrowser library did not load."
+      );
 
-            facingMode: {
-              ideal: "environment"
-            },
-
-            width: {
-              ideal: 1280
-            },
-
-            height: {
-              ideal: 720
-            }
-
-          },
-
-          audio: false
-
-        });
+    }
 
 
     /*
-     * Put stream into video.
-     */
-
-    video.srcObject =
-      stream;
-
-
-    await video.play();
-
-
-    /*
-     * Create multi-format reader.
+     * Create hints.
+     *
+     * Only QR and Code 128.
      */
 
     const hints =
       new Map();
 
 
-    /*
-     * Only scan the two formats
-     * we actually use.
-     *
-     * This keeps scanning faster.
-     */
-
     hints.set(
-      ZXing.DecodeHintType.POSSIBLE_FORMATS,
+      ZXingBrowser.DecodeHintType
+        ? ZXingBrowser.DecodeHintType.POSSIBLE_FORMATS
+        : "POSSIBLE_FORMATS",
       [
-        ZXing.BarcodeFormat.QR_CODE,
-        ZXing.BarcodeFormat.CODE_128
+        ZXingBrowser.BarcodeFormat.QR_CODE,
+        ZXingBrowser.BarcodeFormat.CODE_128
       ]
     );
 
 
-    hints.set(
-      ZXing.DecodeHintType.TRY_HARDER,
-      true
-    );
-
+    /*
+     * Multi-format reader.
+     */
 
     const reader =
-      new ZXing.BrowserMultiFormatReader(
-        hints
-      );
+      new ZXingBrowser
+        .BrowserMultiFormatReader(
+          hints
+        );
 
 
     /*
-     * Start continuous scanning.
+     * Start camera directly through
+     * ZXing's browser API.
+     *
+     * It handles the camera stream
+     * and continuous decoding.
      */
 
-    reader.decodeFromVideoElement(
+    await reader.decodeFromVideoDevice(
+      undefined,
       video,
       function(
         result,
@@ -1547,7 +1399,7 @@ async function startScanner() {
 
 
     console.error(
-      "V2.2 CAMERA ERROR",
+      "V2.2.1 ERROR:",
       error
     );
 
@@ -1564,19 +1416,19 @@ async function startScanner() {
 
       '<span class="errorColor">' +
 
-      "<b>V2.2 CAMERA ERROR</b>" +
+      "<b>V2.2.1 ERROR</b>" +
 
       "<br><br>" +
 
       "Name: " +
 
-      error.name +
+      (error.name || "Unknown") +
 
       "<br><br>" +
 
       "Message: " +
 
-      error.message +
+      (error.message || error) +
 
       "</span>";
 
@@ -1585,9 +1437,9 @@ async function startScanner() {
 }
 
 
-/* =================================================
+/* ==================================================
    BUTTONS
-================================================= */
+================================================== */
 
 document
   .getElementById(
@@ -1618,10 +1470,6 @@ document
     acceptDuplicate
   );
 
-
-/* =================================================
-   READY
-================================================= */
 
 console.log(
   "Stock Scanner " +

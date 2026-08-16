@@ -1,245 +1,367 @@
 <!DOCTYPE html>
 <html>
 <head>
-
-<meta name="viewport"
-content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-
-<title>Stock Scanner V2.2.2</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Stock Scanner V2.3</title>
 
 <script src="https://unpkg.com/@zxing/browser@0.1.5"></script>
 
 <style>
+*{box-sizing:border-box}
 
-* {
-  box-sizing: border-box;
+html,body{
+  margin:0;
+  padding:0;
+  width:100%;
+  height:100%;
+  background:#000;
+  color:#fff;
+  font-family:Arial,sans-serif;
+  overflow:hidden;
 }
 
-html, body {
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  height: 100%;
-  background: #000;
-  color: #fff;
-  font-family: Arial, sans-serif;
-  overflow: hidden;
+button{
+  cursor:pointer;
+  -webkit-tap-highlight-color:transparent;
 }
 
-#app {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
+#version{
+  position:fixed;
+  top:0;
+  right:0;
+  z-index:9999;
+  background:red;
+  color:#fff;
+  padding:7px 10px;
+  font-size:14px;
+  font-weight:bold;
+  border-radius:0 0 0 8px;
 }
 
-/* VERSION */
+/* ================= LOGIN ================= */
 
-#version {
-  position: fixed;
-  top: 0;
-  right: 0;
-  z-index: 9999;
-  background: red;
-  color: white;
-  padding: 7px 10px;
-  font-size: 15px;
-  font-weight: bold;
-  border-radius: 0 0 0 8px;
+#loginScreen{
+  position:fixed;
+  inset:0;
+  z-index:10000;
+  background:#111;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
 }
 
-/* TOP */
-
-#top {
-  background: #111;
-  text-align: center;
-  padding: 10px;
+#loginBox{
+  width:100%;
+  max-width:380px;
+  background:#202020;
+  padding:28px 22px;
+  border-radius:18px;
+  text-align:center;
 }
 
-#title {
-  font-size: 20px;
-  font-weight: bold;
+#loginTitle{
+  font-size:28px;
+  font-weight:bold;
+  margin-bottom:8px;
 }
 
-#column {
-  margin-top: 5px;
-  font-size: 27px;
-  font-weight: bold;
+#loginVersion{
+  color:#aaa;
+  margin-bottom:25px;
 }
 
-/* CAMERA */
-
-#cameraArea {
-  position: relative;
-  flex: 1;
-  min-height: 0;
-  background: #000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
+.loginInput{
+  width:100%;
+  height:52px;
+  margin-bottom:12px;
+  border:none;
+  border-radius:10px;
+  padding:0 15px;
+  font-size:18px;
+  outline:none;
 }
 
-#video {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  background: #000;
+#loginButton{
+  width:100%;
+  height:54px;
+  border:none;
+  border-radius:10px;
+  background:#fff;
+  color:#000;
+  font-size:18px;
+  font-weight:bold;
 }
 
-#scanBox {
-  position: absolute;
-  width: 82vw;
-  height: 35vw;
-  max-width: 430px;
-  max-height: 220px;
-  border: 3px solid white;
-  border-radius: 12px;
-  pointer-events: none;
+#loginError{
+  min-height:24px;
+  margin-top:15px;
+  color:#ff5555;
+  font-weight:bold;
 }
 
-/* BOTTOM */
+/* ================= APP ================= */
 
-#bottom {
-  background: #111;
-  text-align: center;
-  padding: 9px;
+#app{
+  width:100%;
+  height:100%;
+  display:flex;
+  flex-direction:column;
 }
 
-#lastScan {
-  font-size: 22px;
-  font-weight: bold;
+#top{
+  background:#111;
+  text-align:center;
+  padding:9px;
+  position:relative;
 }
 
-#lastType {
-  margin-top: 4px;
-  font-size: 15px;
+#title{
+  font-size:19px;
+  font-weight:bold;
 }
 
-#count {
-  margin-top: 4px;
-  font-size: 13px;
-  color: #aaa;
+#worker{
+  margin-top:3px;
+  font-size:13px;
+  color:#aaa;
 }
 
-.columnColor {
-  color: #ffd43b;
+#column{
+  margin-top:4px;
+  font-size:26px;
+  font-weight:bold;
 }
 
-.itemColor {
-  color: #55ff77;
+#controls{
+  position:absolute;
+  left:8px;
+  top:8px;
+  display:flex;
+  gap:6px;
 }
 
-.errorColor {
-  color: #ff5555;
+.controlButton{
+  border:0;
+  border-radius:8px;
+  padding:7px 9px;
+  background:#333;
+  color:#fff;
+  font-size:13px;
+  font-weight:bold;
 }
 
-/* START SCREEN */
-
-#startScreen {
-  position: fixed;
-  inset: 0;
-  z-index: 1000;
-  background: #111;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: 25px;
+#cameraArea{
+  position:relative;
+  flex:1;
+  min-height:0;
+  background:#000;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
 }
 
-#startButton {
-  font-size: 22px;
-  font-weight: bold;
-  padding: 18px 35px;
-  border: none;
-  border-radius: 12px;
-  background: white;
-  color: black;
+#video{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  background:#000;
 }
 
-#message {
-  margin-top: 20px;
-  color: #bbb;
-  line-height: 1.5;
+#scanBox{
+  position:absolute;
+  width:82vw;
+  height:35vw;
+  max-width:430px;
+  max-height:220px;
+  border:3px solid #fff;
+  border-radius:12px;
+  pointer-events:none;
 }
 
-/* DUPLICATE */
-
-#duplicateOverlay {
-  position: fixed;
-  inset: 0;
-  z-index: 5000;
-  background: rgba(0,0,0,0.92);
-  display: none;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: 20px;
+#bottom{
+  background:#111;
+  text-align:center;
+  padding:8px;
 }
 
-#duplicateTitle {
-  font-size: 40px;
-  font-weight: bold;
-  color: #ff4444;
-  margin-bottom: 15px;
+#lastScan{
+  font-size:21px;
+  font-weight:bold;
+  word-break:break-all;
 }
 
-#duplicateCode {
-  font-size: 30px;
-  font-weight: bold;
-  word-break: break-all;
-  margin-bottom: 30px;
+#lastType{
+  margin-top:3px;
+  font-size:14px;
 }
 
-#duplicateButtons {
-  display: flex;
-  gap: 30px;
+#count{
+  margin-top:3px;
+  font-size:12px;
+  color:#aaa;
 }
 
-.duplicateButton {
-  width: 130px;
-  height: 100px;
-  border: none;
-  border-radius: 18px;
-  font-size: 55px;
-  font-weight: bold;
+.columnColor{color:#ffd43b}
+.itemColor{color:#55ff77}
+.errorColor{color:#ff5555}
+
+/* ================= START ================= */
+
+#startScreen{
+  position:fixed;
+  inset:0;
+  z-index:2000;
+  background:rgba(0,0,0,.93);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
 }
 
-#rejectButton {
-  background: #d62828;
-  color: white;
+#startButton{
+  border:0;
+  border-radius:12px;
+  padding:18px 35px;
+  font-size:21px;
+  font-weight:bold;
 }
 
-#acceptButton {
-  background: #198754;
-  color: white;
+/* ================= DUPLICATE ================= */
+
+#duplicateOverlay{
+  position:fixed;
+  inset:0;
+  z-index:5000;
+  background:rgba(0,0,0,.94);
+  display:none;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding:20px;
 }
 
-#duplicateHint {
-  margin-top: 20px;
-  color: #ccc;
-  font-size: 15px;
+#duplicateTitle{
+  color:#ff4444;
+  font-size:40px;
+  font-weight:bold;
+  margin-bottom:15px;
+}
+
+#duplicateCode{
+  font-size:28px;
+  font-weight:bold;
+  word-break:break-all;
+  margin-bottom:30px;
+}
+
+#duplicateButtons{
+  display:flex;
+  gap:28px;
+}
+
+.duplicateButton{
+  width:130px;
+  height:100px;
+  border:0;
+  border-radius:18px;
+  font-size:55px;
+  font-weight:bold;
+}
+
+#rejectButton{
+  background:#d62828;
+  color:#fff;
+}
+
+#acceptButton{
+  background:#198754;
+  color:#fff;
+}
+
+#duplicateHint{
+  margin-top:18px;
+  color:#ccc;
+  font-size:14px;
 }
 
 </style>
-
 </head>
 
 <body>
 
-<div id="version">
-  V2.2.2
+<div id="version">V2.3</div>
+
+<!-- ================= LOGIN ================= -->
+
+<div id="loginScreen">
+
+  <div id="loginBox">
+
+    <div id="loginTitle">
+      STOCK SCANNER
+    </div>
+
+    <div id="loginVersion">
+      V2.3
+    </div>
+
+    <input
+      id="loginId"
+      class="loginInput"
+      type="text"
+      placeholder="Worker ID"
+      autocomplete="username"
+      autocapitalize="characters">
+
+    <input
+      id="password"
+      class="loginInput"
+      type="password"
+      placeholder="Password"
+      autocomplete="current-password">
+
+    <button id="loginButton">
+      LOGIN
+    </button>
+
+    <div id="loginError"></div>
+
+  </div>
+
 </div>
+
+
+<!-- ================= APP ================= -->
 
 <div id="app">
 
   <div id="top">
 
+    <div id="controls">
+
+      <button
+        id="flashButton"
+        class="controlButton">
+        🔦 FLASH
+      </button>
+
+      <button
+        id="logoutButton"
+        class="controlButton">
+        LOGOUT
+      </button>
+
+    </div>
+
     <div id="title">
       STOCK SCANNER
+    </div>
+
+    <div id="worker">
+      Worker: <span id="workerName">-</span>
     </div>
 
     <div id="column">
@@ -247,6 +369,7 @@ html, body {
     </div>
 
   </div>
+
 
   <div id="cameraArea">
 
@@ -260,6 +383,7 @@ html, body {
     <div id="scanBox"></div>
 
   </div>
+
 
   <div id="bottom">
 
@@ -280,36 +404,27 @@ html, body {
 </div>
 
 
-<!-- START -->
+<!-- ================= START CAMERA ================= -->
 
 <div id="startScreen">
 
-  <button id="startButton">
-    START SCANNER
-  </button>
+  <div>
 
-  <div id="message">
+    <button id="startButton">
+      START CAMERA
+    </button>
 
-    <b>STOCK SCANNER V2.2.2</b>
-
-    <br><br>
-
-    QR = COLUMN
-
-    <br>
-
-    CODE 128 = ITEM
-
-    <br><br>
-
-    Continuous scanning
+    <div
+      id="cameraMessage"
+      style="margin-top:18px;color:#aaa;">
+    </div>
 
   </div>
 
 </div>
 
 
-<!-- DUPLICATE -->
+<!-- ================= DUPLICATE ================= -->
 
 <div id="duplicateOverlay">
 
@@ -339,11 +454,11 @@ html, body {
 
   <div id="duplicateHint">
 
-    ✕ Ignore this scan
+    ✕ Ignore
 
-    <br>
+    <br><br>
 
-    ✓ Accept as another physical box
+    ✓ Record as another physical box
 
   </div>
 
@@ -353,15 +468,10 @@ html, body {
 <script>
 
 /* ==================================================
-   VERSION
+   SETTINGS
 ================================================== */
 
-const VERSION = "V2.2.2";
-
-
-/* ==================================================
-   GOOGLE APPS SCRIPT
-================================================== */
+const VERSION = "V2.3";
 
 const APPS_SCRIPT_URL =
 "https://script.google.com/macros/s/AKfycbwSd26j_QkkD0WiEPgDXAFsLuJx6cAWePwZnT_WV9h8525cjibUVHksF5YbP64Dmzd-eA/exec";
@@ -371,8 +481,29 @@ const APPS_SCRIPT_URL =
    ELEMENTS
 ================================================== */
 
+const loginScreen =
+document.getElementById("loginScreen");
+
+const loginIdInput =
+document.getElementById("loginId");
+
+const passwordInput =
+document.getElementById("password");
+
+const loginButton =
+document.getElementById("loginButton");
+
+const loginError =
+document.getElementById("loginError");
+
+const workerName =
+document.getElementById("workerName");
+
 const video =
 document.getElementById("video");
+
+const columnDisplay =
+document.getElementById("column");
 
 const lastScan =
 document.getElementById("lastScan");
@@ -383,8 +514,20 @@ document.getElementById("lastType");
 const count =
 document.getElementById("count");
 
-const columnDisplay =
-document.getElementById("column");
+const flashButton =
+document.getElementById("flashButton");
+
+const logoutButton =
+document.getElementById("logoutButton");
+
+const startScreen =
+document.getElementById("startScreen");
+
+const startButton =
+document.getElementById("startButton");
+
+const cameraMessage =
+document.getElementById("cameraMessage");
 
 const duplicateOverlay =
 document.getElementById("duplicateOverlay");
@@ -397,29 +540,21 @@ document.getElementById("duplicateCode");
    STATE
 ================================================== */
 
+let currentWorker = "";
+
 let currentColumn = "";
 
 let scanCount = 0;
 
-
-/*
- * IMPORTANT:
- *
- * We only remember the immediately
- * previous item.
- *
- * We DO NOT keep a list of all
- * scanned items.
- */
-
 let previousItemCode = "";
 
+let scanner = null;
 
-/*
- * Prevent ZXing from firing the
- * same barcode dozens of times
- * while it remains in view.
- */
+let videoTrack = null;
+
+let flashOn = false;
+
+let pendingDuplicate = null;
 
 let lastDetectedValue = "";
 
@@ -430,13 +565,6 @@ let lastDetectedTime = 0;
 const DETECTION_COOLDOWN = 1200;
 
 
-/*
- * Duplicate waiting for decision.
- */
-
-let pendingDuplicate = null;
-
-
 /* ==================================================
    AUDIO
 ================================================== */
@@ -444,60 +572,53 @@ let pendingDuplicate = null;
 let audioContext = null;
 
 
-function initializeAudio() {
+function initializeAudio(){
 
-  try {
+  try{
 
     const AudioContext =
       window.AudioContext ||
       window.webkitAudioContext;
 
-    if (!AudioContext) {
+    if(!AudioContext){
       return;
     }
 
-    if (!audioContext) {
+    if(!audioContext){
 
       audioContext =
         new AudioContext();
 
     }
 
-    if (
+    if(
       audioContext.state ===
       "suspended"
-    ) {
+    ){
 
       audioContext.resume();
 
     }
 
-  } catch (error) {
+  }catch(e){
 
-    console.log(
-      "Audio error:",
-      error
-    );
+    console.log(e);
 
   }
 
 }
 
 
-/* ==================================================
-   BEEP
-================================================== */
-
 function beep(
   frequency,
   duration
-) {
+){
 
-  try {
+  try{
 
     initializeAudio();
 
-    if (!audioContext) {
+    if(!audioContext){
       return;
     }
 
@@ -514,7 +635,7 @@ function beep(
       frequency;
 
     gain.gain.value =
-      0.15;
+      .15;
 
     oscillator.connect(gain);
 
@@ -529,111 +650,49 @@ function beep(
       duration / 1000
     );
 
-  } catch (error) {
+  }catch(e){
 
-    console.log(error);
+    console.log(e);
 
   }
 
 }
 
 
-/* ==================================================
-   ITEM BEEP
-================================================== */
+function itemBeep(){
 
-function itemBeep() {
-
-  beep(
-    1000,
-    80
-  );
+  beep(1000,80);
 
 }
 
 
-/* ==================================================
-   COLUMN BEEP
-================================================== */
+function columnBeep(){
 
-function columnBeep() {
+  beep(650,140);
 
-  beep(
-    650,
+}
+
+
+function duplicateAlert(){
+
+  beep(450,120);
+
+  setTimeout(
+    function(){
+      beep(250,220);
+    },
     140
   );
 
-}
 
+  try{
 
-/* ==================================================
-   DUPLICATE ALERT
-================================================== */
-
-function duplicateAlert() {
-
-  try {
-
-    initializeAudio();
-
-    if (audioContext) {
-
-      const oscillator =
-        audioContext.createOscillator();
-
-      const gain =
-        audioContext.createGain();
-
-      oscillator.type =
-        "square";
-
-      oscillator.frequency.setValueAtTime(
-        500,
-        audioContext.currentTime
-      );
-
-      oscillator.frequency.setValueAtTime(
-        250,
-        audioContext.currentTime + 0.18
-      );
-
-      gain.gain.value =
-        0.18;
-
-      oscillator.connect(gain);
-
-      gain.connect(
-        audioContext.destination
-      );
-
-      oscillator.start();
-
-      oscillator.stop(
-        audioContext.currentTime +
-        0.35
-      );
-
-    }
-
-  } catch (error) {
-
-    console.log(error);
-
-  }
-
-
-  /*
-   * Say DUPLICATE.
-   */
-
-  try {
-
-    if (
+    if(
       "speechSynthesis"
       in window
-    ) {
+    ){
 
-      window.speechSynthesis.cancel();
+      speechSynthesis.cancel();
 
       const speech =
         new SpeechSynthesisUtterance(
@@ -644,19 +703,17 @@ function duplicateAlert() {
         1.1;
 
       speech.pitch =
-        0.8;
+        .8;
 
-      speech.volume =
-        1;
-
-      window.speechSynthesis
-        .speak(speech);
+      speechSynthesis.speak(
+        speech
+      );
 
     }
 
-  } catch (error) {
+  }catch(e){
 
-    console.log(error);
+    console.log(e);
 
   }
 
@@ -664,10 +721,384 @@ function duplicateAlert() {
 
 
 /* ==================================================
-   UPDATE COUNT
+   LOGIN
 ================================================== */
 
-function updateCount() {
+function login(){
+
+  const id =
+    loginIdInput.value.trim();
+
+  const password =
+    passwordInput.value;
+
+
+  loginError.textContent = "";
+
+
+  if(!id || !password){
+
+    loginError.textContent =
+      "Enter Worker ID and Password";
+
+    return;
+
+  }
+
+
+  loginButton.disabled =
+    true;
+
+  loginButton.textContent =
+    "LOGGING IN...";
+
+
+  const params =
+    new URLSearchParams();
+
+  params.append(
+    "action",
+    "login"
+  );
+
+  params.append(
+    "loginId",
+    id
+  );
+
+  params.append(
+    "password",
+    password
+  );
+
+
+  fetch(
+    APPS_SCRIPT_URL +
+    "?" +
+    params.toString() +
+    "&t=" +
+    Date.now()
+  )
+
+  .then(
+    response =>
+      response.json()
+  )
+
+  .then(
+    data => {
+
+      if(!data.success){
+
+        throw new Error(
+          data.error ||
+          "Login failed"
+        );
+
+      }
+
+
+      currentWorker =
+        data.worker;
+
+
+      /*
+       * Remember worker on this phone.
+       * Password is NOT stored.
+       */
+
+      localStorage.setItem(
+        "stockScannerWorker",
+        currentWorker
+      );
+
+
+      workerName.textContent =
+        currentWorker;
+
+
+      loginScreen.style.display =
+        "none";
+
+
+      loginIdInput.value =
+        "";
+
+      passwordInput.value =
+        "";
+
+
+      startScreen.style.display =
+        "flex";
+
+
+      startButton.focus();
+
+    }
+  )
+
+  .catch(
+    error => {
+
+      console.error(
+        "Login error:",
+        error
+      );
+
+
+      loginError.textContent =
+        error.message ||
+        "Login failed";
+
+
+    }
+  )
+
+  .finally(
+    function(){
+
+      loginButton.disabled =
+        false;
+
+      loginButton.textContent =
+        "LOGIN";
+
+    }
+  );
+
+}
+
+
+/* ==================================================
+   CHECK SAVED WORKER
+================================================== */
+
+function checkSavedWorker(){
+
+  const saved =
+    localStorage.getItem(
+      "stockScannerWorker"
+    );
+
+
+  if(saved){
+
+    currentWorker =
+      saved;
+
+    workerName.textContent =
+      currentWorker;
+
+    loginScreen.style.display =
+      "none";
+
+    startScreen.style.display =
+      "flex";
+
+  }else{
+
+    loginScreen.style.display =
+      "flex";
+
+    startScreen.style.display =
+      "none";
+
+  }
+
+}
+
+
+/* ==================================================
+   LOGOUT
+================================================== */
+
+function logout(){
+
+  if(
+    scanner &&
+    typeof scanner.reset ===
+    "function"
+  ){
+
+    try{
+      scanner.reset();
+    }catch(e){}
+  }
+
+
+  if(video.srcObject){
+
+    video.srcObject
+      .getTracks()
+      .forEach(
+        track =>
+          track.stop()
+      );
+
+    video.srcObject =
+      null;
+
+  }
+
+
+  scanner =
+    null;
+
+  videoTrack =
+    null;
+
+  currentWorker =
+    "";
+
+  currentColumn =
+    "";
+
+  previousItemCode =
+    "";
+
+  flashOn =
+    false;
+
+
+  localStorage.removeItem(
+    "stockScannerWorker"
+  );
+
+
+  workerName.textContent =
+    "-";
+
+
+  columnDisplay.textContent =
+    "COLUMN: NOT SET";
+
+
+  loginScreen.style.display =
+    "flex";
+
+  startScreen.style.display =
+    "none";
+
+}
+
+
+/* ==================================================
+   FLASHLIGHT
+================================================== */
+
+async function toggleFlash(){
+
+  if(!videoTrack){
+
+    return;
+
+  }
+
+
+  const capabilities =
+    videoTrack.getCapabilities
+      ? videoTrack.getCapabilities()
+      : {};
+
+
+  if(
+    !capabilities.torch
+  ){
+
+    alert(
+      "Flashlight is not supported by this camera/browser."
+    );
+
+    return;
+
+  }
+
+
+  try{
+
+    flashOn =
+      !flashOn;
+
+
+    await videoTrack.applyConstraints({
+
+      advanced:[
+        {
+          torch:
+            flashOn
+        }
+      ]
+
+    });
+
+
+    flashButton.textContent =
+      flashOn
+      ? "🔦 FLASH ON"
+      : "🔦 FLASH";
+
+
+  }catch(error){
+
+    console.error(
+      "Flash error:",
+      error
+    );
+
+    flashOn =
+      false;
+
+    flashButton.textContent =
+      "🔦 FLASH";
+
+  }
+
+}
+
+
+/* ==================================================
+   CAMERA TRACK
+================================================== */
+
+function findVideoTrack(){
+
+  try{
+
+    if(
+      video.srcObject
+    ){
+
+      const tracks =
+        video.srcObject
+          .getVideoTracks();
+
+      if(
+        tracks.length
+      ){
+
+        videoTrack =
+          tracks[0];
+
+        return;
+
+      }
+
+    }
+
+  }catch(e){
+
+    console.log(e);
+
+  }
+
+}
+
+
+/* ==================================================
+   COUNT
+================================================== */
+
+function updateCount(){
 
   count.textContent =
     "Scans: " +
@@ -677,138 +1108,12 @@ function updateCount() {
 
 
 /* ==================================================
-   UPDATE COLUMN
-================================================== */
-
-function updateColumn() {
-
-  if (currentColumn) {
-
-    columnDisplay.textContent =
-      "COLUMN: " +
-      currentColumn;
-
-    columnDisplay.className =
-      "columnColor";
-
-  } else {
-
-    columnDisplay.textContent =
-      "COLUMN: NOT SET";
-
-    columnDisplay.className =
-      "";
-
-  }
-
-}
-
-
-/* ==================================================
-   SAVE TO GOOGLE SHEETS
-================================================== */
-
-function saveScan(
-  value,
-  type,
-  column,
-  itemCode
-) {
-
-  /*
-   * Build request.
-   */
-
-  const params =
-    new URLSearchParams();
-
-  params.append(
-    "action",
-    "scan"
-  );
-
-  params.append(
-    "value",
-    value
-  );
-
-  params.append(
-    "type",
-    type
-  );
-
-  params.append(
-    "column",
-    column || ""
-  );
-
-  params.append(
-    "itemCode",
-    itemCode || ""
-  );
-
-  params.append(
-    "device",
-    "StockScanner-V2.2.2"
-  );
-
-  /*
-   * Add unique timestamp.
-   */
-
-  params.append(
-    "t",
-    Date.now()
-  );
-
-
-  /*
-   * Use a normal GET request.
-   *
-   * no-cors is necessary for the
-   * browser to allow the request to
-   * the Apps Script endpoint.
-   */
-
-  fetch(
-    APPS_SCRIPT_URL +
-    "?" +
-    params.toString(),
-    {
-      method: "GET",
-      mode: "no-cors",
-      cache: "no-store"
-    }
-  )
-  .then(function() {
-
-    console.log(
-      "Scan sent:",
-      value,
-      type,
-      column
-    );
-
-  })
-  .catch(function(error) {
-
-    console.error(
-      "Google Sheets error:",
-      error
-    );
-
-  });
-
-}
-
-
-/* ==================================================
-   COLUMN PARSER
+   COLUMN
 ================================================== */
 
 function getColumnNumber(
   text
-) {
+){
 
   const value =
     String(
@@ -816,26 +1121,14 @@ function getColumnNumber(
     ).trim();
 
 
-  /*
-   * Examples:
-   *
-   * COLUMN:3
-   * COLUMN 3
-   * COLUMN-3
-   * COLUMN_3
-   * COLUMN : 3
-   */
-
   const match =
     value.match(
       /^COLUMN\s*[:\-_]?\s*(\d+)/i
     );
 
 
-  if (!match) {
-
+  if(!match){
     return null;
-
   }
 
 
@@ -848,13 +1141,9 @@ function getColumnNumber(
 }
 
 
-/* ==================================================
-   PROCESS COLUMN
-================================================== */
-
 function processColumn(
   text
-) {
+){
 
   const column =
     getColumnNumber(
@@ -862,7 +1151,7 @@ function processColumn(
     );
 
 
-  if (!column) {
+  if(!column){
     return;
   }
 
@@ -872,8 +1161,8 @@ function processColumn(
 
 
   /*
-   * NEW COLUMN = RESET
-   * CONSECUTIVE DUPLICATE
+   * New column resets
+   * consecutive duplicate.
    */
 
   previousItemCode =
@@ -882,11 +1171,14 @@ function processColumn(
 
   scanCount++;
 
-
   columnBeep();
 
+  columnDisplay.textContent =
+    "COLUMN: " +
+    currentColumn;
 
-  updateColumn();
+  columnDisplay.className =
+    "columnColor";
 
 
   lastScan.textContent =
@@ -918,23 +1210,94 @@ function processColumn(
 
 
 /* ==================================================
-   PROCESS NEW ITEM
+   SAVE SCAN
+================================================== */
+
+function saveScan(
+  value,
+  type,
+  column,
+  itemCode
+){
+
+  const params =
+    new URLSearchParams();
+
+  params.append(
+    "action",
+    "scan"
+  );
+
+  params.append(
+    "value",
+    value
+  );
+
+  params.append(
+    "type",
+    type
+  );
+
+  params.append(
+    "column",
+    column || ""
+  );
+
+  params.append(
+    "itemCode",
+    itemCode || ""
+  );
+
+  params.append(
+    "worker",
+    currentWorker
+  );
+
+  params.append(
+    "device",
+    navigator.userAgent
+  );
+
+  params.append(
+    "t",
+    Date.now()
+  );
+
+
+  fetch(
+    APPS_SCRIPT_URL +
+    "?" +
+    params.toString(),
+    {
+      method:"GET",
+      mode:"no-cors",
+      cache:"no-store"
+    }
+  )
+  .catch(
+    error =>
+      console.error(
+        "Sheet error:",
+        error
+      )
+  );
+
+}
+
+
+/* ==================================================
+   NEW ITEM
 ================================================== */
 
 function processNewItem(
   value
-) {
-
-  /*
-   * Remember ONLY the last item.
-   */
+){
 
   previousItemCode =
     value;
 
 
   scanCount++;
-
 
   itemBeep();
 
@@ -968,12 +1331,12 @@ function processNewItem(
 
 
 /* ==================================================
-   SHOW DUPLICATE
+   DUPLICATE
 ================================================== */
 
 function showDuplicate(
   value
-) {
+){
 
   pendingDuplicate =
     value;
@@ -992,15 +1355,7 @@ function showDuplicate(
 }
 
 
-/* ==================================================
-   REJECT DUPLICATE
-================================================== */
-
-function rejectDuplicate() {
-
-  const value =
-    pendingDuplicate;
-
+function rejectDuplicate(){
 
   pendingDuplicate =
     null;
@@ -1011,14 +1366,10 @@ function rejectDuplicate() {
 
 
   /*
-   * Clear previous item.
-   *
-   * This is important:
-   *
-   * If worker rejects the duplicate,
-   * scanning the same code again
-   * should NOT immediately create
-   * another duplicate warning.
+   * Clear previous code.
+   * Therefore another scan of the
+   * same code won't immediately
+   * produce another warning.
    */
 
   previousItemCode =
@@ -1033,8 +1384,7 @@ function rejectDuplicate() {
 
 
   lastType.textContent =
-    value +
-    " NOT RECORDED";
+    "DUPLICATE NOT RECORDED";
 
   lastType.className =
     "errorColor";
@@ -1042,11 +1392,7 @@ function rejectDuplicate() {
 }
 
 
-/* ==================================================
-   ACCEPT DUPLICATE
-================================================== */
-
-function acceptDuplicate() {
+function acceptDuplicate(){
 
   const value =
     pendingDuplicate;
@@ -1060,13 +1406,7 @@ function acceptDuplicate() {
     "none";
 
 
-  /*
-   * Accept this as another physical
-   * box of the same item.
-   */
-
   scanCount++;
-
 
   itemBeep();
 
@@ -1097,15 +1437,6 @@ function acceptDuplicate() {
   );
 
 
-  /*
-   * Clear duplicate state.
-   *
-   * This means the worker can
-   * intentionally scan the same
-   * physical item again later
-   * without getting trapped.
-   */
-
   previousItemCode =
     "";
 
@@ -1113,14 +1444,14 @@ function acceptDuplicate() {
 
 
 /* ==================================================
-   HANDLE RESULT
+   RESULT
 ================================================== */
 
 function handleResult(
   result
-) {
+){
 
-  if (!result) {
+  if(!result){
     return;
   }
 
@@ -1131,7 +1462,7 @@ function handleResult(
     ).trim();
 
 
-  if (!value) {
+  if(!value){
     return;
   }
 
@@ -1145,11 +1476,12 @@ function handleResult(
 
 
   /*
-   * Ignore repeated camera frames
-   * of the same barcode.
+   * Same barcode sitting in front
+   * of camera should not fire
+   * hundreds of times.
    */
 
-  if (
+  if(
     value ===
       lastDetectedValue &&
     format ===
@@ -1157,7 +1489,7 @@ function handleResult(
     now -
       lastDetectedTime <
       DETECTION_COOLDOWN
-  ) {
+  ){
 
     return;
 
@@ -1174,25 +1506,22 @@ function handleResult(
     now;
 
 
-  /* ============================================
-     QR CODE
-  ============================================ */
+  /* ================= QR ================= */
 
-  if (
+  if(
     format ===
     ZXingBrowser.BarcodeFormat.QR_CODE
-  ) {
+  ){
 
     /*
-     * Only QR beginning with
-     * COLUMN is meaningful.
+     * Only COLUMN QR is used.
      */
 
-    if (
+    if(
       /^COLUMN/i.test(
         value
       )
-    ) {
+    ){
 
       processColumn(
         value
@@ -1200,31 +1529,20 @@ function handleResult(
 
     }
 
-    /*
-     * All other QR codes ignored.
-     */
 
     return;
 
   }
 
 
-  /* ============================================
-     CODE 128
-  ============================================ */
+  /* ================= CODE 128 ================= */
 
-  if (
+  if(
     format ===
     ZXingBrowser.BarcodeFormat.CODE_128
-  ) {
+  ){
 
-
-    /*
-     * Worker must scan a column
-     * before scanning items.
-     */
-
-    if (!currentColumn) {
+    if(!currentColumn){
 
       beep(
         300,
@@ -1255,10 +1573,10 @@ function handleResult(
      * ONLY CONSECUTIVE DUPLICATE.
      */
 
-    if (
+    if(
       value ===
       previousItemCode
-    ) {
+    ){
 
       showDuplicate(
         value
@@ -1268,10 +1586,6 @@ function handleResult(
 
     }
 
-
-    /*
-     * New/different item.
-     */
 
     processNewItem(
       value
@@ -1283,94 +1597,100 @@ function handleResult(
 
 
 /* ==================================================
-   START SCANNER
+   START CAMERA
 ================================================== */
 
-async function startScanner() {
+async function startCamera(){
 
-  const button =
-    document.getElementById(
-      "startButton"
-    );
-
-  const message =
-    document.getElementById(
-      "message"
-    );
-
-
-  button.disabled =
+  startButton.disabled =
     true;
 
-  button.textContent =
-    "STARTING V2.2.2...";
+  startButton.textContent =
+    "STARTING...";
+
+  cameraMessage.textContent =
+    "";
 
 
   initializeAudio();
 
 
-  try {
+  try{
 
-    /*
-     * Check ZXing library.
-     */
-
-    if (
+    if(
       typeof ZXingBrowser ===
       "undefined"
-    ) {
+    ){
 
       throw new Error(
-        "ZXingBrowser library did not load."
+        "ZXingBrowser did not load."
       );
 
     }
 
 
     /*
-     * Start multi-format scanner.
+     * Ask for camera explicitly.
      */
 
-    const reader =
+    const stream =
+      await navigator.mediaDevices
+        .getUserMedia({
+
+          video:{
+            facingMode:{
+              ideal:"environment"
+            },
+
+            width:{
+              ideal:1280
+            },
+
+            height:{
+              ideal:720
+            }
+          },
+
+          audio:false
+
+        });
+
+
+    /*
+     * Attach stream.
+     */
+
+    video.srcObject =
+      stream;
+
+
+    await video.play();
+
+
+    findVideoTrack();
+
+
+    /*
+     * Start ZXing.
+     */
+
+    scanner =
       new ZXingBrowser
         .BrowserMultiFormatReader();
 
 
     /*
-     * Prefer rear camera.
+     * Use the existing video stream.
      */
 
-    await reader.decodeFromConstraints(
-
-      {
-        video: {
-
-          facingMode: {
-            ideal: "environment"
-          },
-
-          width: {
-            ideal: 1280
-          },
-
-          height: {
-            ideal: 720
-          }
-
-        },
-
-        audio: false
-
-      },
-
+    scanner.decodeFromVideoElement(
       video,
-
       function(
         result,
         error
-      ) {
+      ){
 
-        if (result) {
+        if(result){
 
           handleResult(
             result
@@ -1379,62 +1699,77 @@ async function startScanner() {
         }
 
       }
-
     );
 
 
-    /*
-     * Hide start screen.
-     */
-
-    document.getElementById(
-      "startScreen"
-    ).style.display =
+    startScreen.style.display =
       "none";
 
 
     lastScan.textContent =
       "CAMERA READY";
 
+    lastScan.className =
+      "";
 
     lastType.textContent =
       "SCAN COLUMN QR";
 
+    lastType.className =
+      "";
 
-  } catch (error) {
+
+    /*
+     * Check torch support.
+     */
+
+    if(
+      videoTrack &&
+      videoTrack.getCapabilities
+    ){
+
+      const capabilities =
+        videoTrack.getCapabilities();
+
+
+      if(
+        !capabilities.torch
+      ){
+
+        flashButton.style.display =
+          "none";
+
+      }else{
+
+        flashButton.style.display =
+          "block";
+
+      }
+
+    }
+
+
+  }catch(error){
 
     console.error(
-      "V2.2.2 ERROR:",
+      "V2.3 CAMERA ERROR:",
       error
     );
 
 
-    button.disabled =
+    startButton.disabled =
       false;
 
+    startButton.textContent =
+      "START CAMERA";
 
-    button.textContent =
-      "TRY AGAIN";
 
-
-    message.innerHTML =
-
+    cameraMessage.innerHTML =
       '<span class="errorColor">' +
-
-      "<b>V2.2.2 CAMERA ERROR</b>" +
-
-      "<br><br>" +
-
-      "Name: " +
-
+      "<b>CAMERA ERROR</b><br><br>" +
       (error.name || "Unknown") +
-
-      "<br><br>" +
-
-      "Message: " +
-
-      (error.message || error) +
-
+      "<br>" +
+      (error.message || "") +
       "</span>";
 
   }
@@ -1443,23 +1778,69 @@ async function startScanner() {
 
 
 /* ==================================================
-   BUTTONS
+   EVENTS
 ================================================== */
 
-document
-.getElementById(
-  "startButton"
-)
-.addEventListener(
+loginButton.addEventListener(
   "click",
-  startScanner
+  login
+);
+
+
+passwordInput.addEventListener(
+  "keydown",
+  function(e){
+
+    if(
+      e.key ===
+      "Enter"
+    ){
+
+      login();
+
+    }
+
+  }
+);
+
+
+loginIdInput.addEventListener(
+  "keydown",
+  function(e){
+
+    if(
+      e.key ===
+      "Enter"
+    ){
+
+      passwordInput.focus();
+
+    }
+
+  }
+);
+
+
+startButton.addEventListener(
+  "click",
+  startCamera
+);
+
+
+flashButton.addEventListener(
+  "click",
+  toggleFlash
+);
+
+
+logoutButton.addEventListener(
+  "click",
+  logout
 );
 
 
 document
-.getElementById(
-  "rejectButton"
-)
+.getElementById("rejectButton")
 .addEventListener(
   "click",
   rejectDuplicate
@@ -1467,14 +1848,18 @@ document
 
 
 document
-.getElementById(
-  "acceptButton"
-)
+.getElementById("acceptButton")
 .addEventListener(
   "click",
   acceptDuplicate
 );
 
+
+/* ==================================================
+   START
+================================================== */
+
+checkSavedWorker();
 
 console.log(
   "Stock Scanner " +

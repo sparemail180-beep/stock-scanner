@@ -1,24 +1,44 @@
-
+```html
 <!DOCTYPE html>
 <html>
+
 <head>
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+
+<meta name="viewport"
+content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+
 <title>Stock Scanner V2.3</title>
 
 <script src="https://unpkg.com/@zxing/browser@0.1.5"></script>
 
 <style>
-*{box-sizing:border-box}
 
-html,body{
+/* ==================================================
+   BASE
+================================================== */
+
+*{
+  box-sizing:border-box;
+}
+
+html,
+body{
   margin:0;
   padding:0;
   width:100%;
   height:100%;
-  background:#000;
-  color:#fff;
-  font-family:Arial,sans-serif;
+  background:#f4f6f8;
+  color:#18212b;
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
   overflow:hidden;
+}
+
+button,
+input{
+  font-family:inherit;
 }
 
 button{
@@ -26,276 +46,573 @@ button{
   -webkit-tap-highlight-color:transparent;
 }
 
+
+/* ==================================================
+   VERSION
+================================================== */
+
 #version{
   position:fixed;
   top:0;
   right:0;
   z-index:9999;
-  background:red;
+
+  background:#111827;
   color:#fff;
-  padding:7px 10px;
-  font-size:14px;
+
+  padding:5px 9px;
+
+  font-size:11px;
   font-weight:bold;
-  border-radius:0 0 0 8px;
+
+  border-radius:
+    0 0 0 8px;
 }
 
-/* LOGIN */
+
+/* ==================================================
+   LOGIN
+================================================== */
 
 #loginScreen{
   position:fixed;
   inset:0;
   z-index:10000;
-  background:#111;
+
   display:flex;
   align-items:center;
   justify-content:center;
+
   padding:20px;
+
+  background:
+    linear-gradient(
+      145deg,
+      #111827,
+      #263241
+    );
 }
 
 #loginBox{
   width:100%;
   max-width:380px;
-  background:#202020;
-  padding:28px 22px;
-  border-radius:18px;
+
+  background:#fff;
+
+  padding:30px 24px;
+
+  border-radius:20px;
+
+  box-shadow:
+    0 20px 50px
+    rgba(0,0,0,.25);
+
   text-align:center;
 }
 
 #loginTitle{
-  font-size:28px;
-  font-weight:bold;
-  margin-bottom:8px;
+  font-size:27px;
+  font-weight:800;
+  letter-spacing:-.5px;
 }
 
 #loginVersion{
-  color:#aaa;
+  margin-top:5px;
   margin-bottom:25px;
+
+  color:#8a94a3;
+  font-size:13px;
 }
 
 .loginInput{
   width:100%;
   height:52px;
+
   margin-bottom:12px;
-  border:none;
-  border-radius:10px;
-  padding:0 15px;
-  font-size:18px;
+
+  border:1px solid #d8dee6;
+  border-radius:11px;
+
+  padding:
+    0 15px;
+
+  font-size:17px;
+
   outline:none;
+
+  background:#f8fafc;
+}
+
+.loginInput:focus{
+  border-color:#111827;
+  background:#fff;
 }
 
 #loginButton{
   width:100%;
-  height:54px;
-  border:none;
-  border-radius:10px;
-  background:#fff;
-  color:#000;
-  font-size:18px;
-  font-weight:bold;
+  height:52px;
+
+  border:0;
+  border-radius:11px;
+
+  background:#111827;
+  color:#fff;
+
+  font-size:17px;
+  font-weight:700;
+}
+
+#loginButton:disabled{
+  opacity:.6;
 }
 
 #loginError{
-  min-height:24px;
-  margin-top:15px;
-  color:#ff5555;
+  min-height:22px;
+
+  margin-top:14px;
+
+  color:#dc2626;
+
+  font-size:14px;
   font-weight:bold;
 }
 
-/* APP */
+
+/* ==================================================
+   APP
+================================================== */
 
 #app{
   width:100%;
   height:100%;
+
   display:flex;
   flex-direction:column;
 }
 
-#top{
-  background:#111;
-  text-align:center;
-  padding:9px;
+
+/* ==================================================
+   HEADER
+================================================== */
+
+#header{
+  flex-shrink:0;
+
+  background:#111827;
+  color:#fff;
+
+  padding:
+    14px 14px 12px;
+
   position:relative;
+}
+
+#headerTop{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+
+  padding-right:0;
 }
 
 #title{
   font-size:19px;
-  font-weight:bold;
+  font-weight:800;
 }
 
 #worker{
-  margin-top:3px;
-  font-size:13px;
-  color:#aaa;
+  margin-top:4px;
+
+  color:#aeb8c5;
+
+  font-size:12px;
 }
 
-#column{
-  margin-top:4px;
-  font-size:26px;
+#workerName{
+  color:#fff;
   font-weight:bold;
 }
 
+
+/* ==================================================
+   CONTROLS
+================================================== */
+
 #controls{
-  position:absolute;
-  left:8px;
-  top:8px;
   display:flex;
-  gap:6px;
+  gap:7px;
 }
 
 .controlButton{
   border:0;
+
   border-radius:8px;
-  padding:7px 9px;
-  background:#333;
+
+  padding:
+    7px 9px;
+
+  background:#283548;
   color:#fff;
-  font-size:13px;
-  font-weight:bold;
+
+  font-size:12px;
+  font-weight:700;
 }
+
+.controlButton:active{
+  transform:scale(.97);
+}
+
+
+/* ==================================================
+   CURRENT COLUMN
+================================================== */
+
+#columnCard{
+  margin-top:12px;
+
+  background:#fff;
+
+  color:#111827;
+
+  border-radius:13px;
+
+  padding:
+    10px 13px;
+
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+
+#columnLabel{
+  font-size:11px;
+
+  color:#6b7280;
+
+  font-weight:bold;
+
+  text-transform:uppercase;
+}
+
+#column{
+  margin-top:2px;
+
+  font-size:25px;
+  font-weight:800;
+
+  color:#111827;
+}
+
+
+/* ==================================================
+   COUNTERS
+================================================== */
+
+#stats{
+  display:grid;
+
+  grid-template-columns:
+    1fr 1fr;
+
+  gap:8px;
+
+  margin-top:10px;
+}
+
+.statCard{
+  background:#fff;
+
+  border-radius:11px;
+
+  padding:
+    9px 12px;
+
+  text-align:left;
+}
+
+.statLabel{
+  font-size:10px;
+
+  color:#7a8492;
+
+  font-weight:bold;
+
+  text-transform:uppercase;
+}
+
+.statNumber{
+  margin-top:2px;
+
+  font-size:22px;
+
+  font-weight:800;
+
+  color:#111827;
+}
+
+
+/* ==================================================
+   CAMERA
+================================================== */
 
 #cameraArea{
   position:relative;
+
   flex:1;
   min-height:0;
+
   background:#000;
+
   display:flex;
   align-items:center;
   justify-content:center;
+
   overflow:hidden;
 }
 
 #video{
   width:100%;
   height:100%;
+
   object-fit:cover;
+
   background:#000;
 }
 
 #scanBox{
   position:absolute;
-  width:82vw;
-  height:35vw;
-  max-width:430px;
-  max-height:220px;
-  border:3px solid #fff;
+
+  width:84vw;
+  height:34vw;
+
+  max-width:450px;
+  max-height:210px;
+
+  border:
+    2px solid rgba(255,255,255,.9);
+
   border-radius:12px;
+
   pointer-events:none;
+
+  box-shadow:
+    0 0 0 9999px
+    rgba(0,0,0,.12);
 }
 
+
+/* ==================================================
+   BOTTOM STATUS
+================================================== */
+
 #bottom{
-  background:#111;
+  flex-shrink:0;
+
+  background:#fff;
+
+  border-top:
+    1px solid #e1e6eb;
+
+  padding:
+    8px 12px;
+
   text-align:center;
-  padding:8px;
 }
 
 #lastScan{
-  font-size:21px;
-  font-weight:bold;
+  font-size:18px;
+
+  font-weight:800;
+
   word-break:break-all;
 }
 
 #lastType{
-  margin-top:3px;
-  font-size:14px;
-}
+  margin-top:2px;
 
-#count{
-  margin-top:3px;
+  color:#7a8492;
+
   font-size:12px;
-  color:#aaa;
 }
 
-.columnColor{color:#ffd43b}
-.itemColor{color:#55ff77}
-.errorColor{color:#ff5555}
+.columnColor{
+  color:#b77900 !important;
+}
 
-/* START CAMERA */
+.itemColor{
+  color:#15803d !important;
+}
+
+.errorColor{
+  color:#dc2626 !important;
+}
+
+
+/* ==================================================
+   START CAMERA
+================================================== */
 
 #startScreen{
   position:fixed;
   inset:0;
+
   z-index:2000;
-  background:rgba(0,0,0,.93);
+
+  background:
+    rgba(17,24,39,.96);
+
   display:none;
+
   align-items:center;
   justify-content:center;
+
   text-align:center;
+}
+
+#startBox{
+  padding:25px;
+}
+
+#startTitle{
+  color:#fff;
+
+  font-size:25px;
+  font-weight:800;
+
+  margin-bottom:7px;
+}
+
+#startSubtitle{
+  color:#aeb8c5;
+
+  font-size:14px;
+
+  margin-bottom:22px;
 }
 
 #startButton{
   border:0;
+
   border-radius:12px;
-  padding:18px 35px;
-  font-size:21px;
-  font-weight:bold;
+
+  padding:
+    16px 34px;
+
+  font-size:19px;
+
+  font-weight:800;
 }
 
-/* DUPLICATE */
+#cameraMessage{
+  margin-top:15px;
+
+  color:#aaa;
+
+  font-size:13px;
+}
+
+
+/* ==================================================
+   DUPLICATE
+================================================== */
 
 #duplicateOverlay{
   position:fixed;
   inset:0;
+
   z-index:5000;
-  background:rgba(0,0,0,.94);
+
+  background:
+    rgba(17,24,39,.97);
+
   display:none;
+
   flex-direction:column;
+
   align-items:center;
   justify-content:center;
+
   text-align:center;
+
   padding:20px;
 }
 
 #duplicateTitle{
-  color:#ff4444;
-  font-size:40px;
-  font-weight:bold;
-  margin-bottom:15px;
+  color:#ef4444;
+
+  font-size:38px;
+
+  font-weight:900;
+
+  margin-bottom:12px;
 }
 
 #duplicateCode{
-  font-size:28px;
-  font-weight:bold;
+  color:#fff;
+
+  font-size:25px;
+
+  font-weight:800;
+
   word-break:break-all;
-  margin-bottom:30px;
+
+  margin-bottom:28px;
 }
 
 #duplicateButtons{
   display:flex;
-  gap:28px;
+
+  gap:22px;
 }
 
 .duplicateButton{
-  width:130px;
-  height:100px;
+  width:125px;
+  height:92px;
+
   border:0;
-  border-radius:18px;
-  font-size:55px;
+
+  border-radius:16px;
+
+  font-size:50px;
+
   font-weight:bold;
 }
 
 #rejectButton{
-  background:#d62828;
+  background:#dc2626;
   color:#fff;
 }
 
 #acceptButton{
-  background:#198754;
+  background:#16a34a;
   color:#fff;
 }
 
 #duplicateHint{
   margin-top:18px;
-  color:#ccc;
-  font-size:14px;
+
+  color:#aeb8c5;
+
+  font-size:13px;
+  line-height:1.5;
 }
 
 </style>
+
 </head>
+
 
 <body>
 
-<div id="version">V2.3</div>
 
-<!-- LOGIN -->
+<div id="version">
+  V2.3
+</div>
+
+
+<!-- ==================================================
+     LOGIN
+================================================== -->
 
 <div id="loginScreen">
 
@@ -306,7 +623,7 @@ button{
     </div>
 
     <div id="loginVersion">
-      V2.3
+      Warehouse Inventory • V2.3
     </div>
 
     <input
@@ -335,42 +652,104 @@ button{
 </div>
 
 
-<!-- APP -->
+<!-- ==================================================
+     APP
+================================================== -->
 
 <div id="app">
 
-  <div id="top">
 
-    <div id="controls">
+  <div id="header">
 
-      <button
-        id="flashButton"
-        class="controlButton">
-        🔦 FLASH
-      </button>
+    <div id="headerTop">
 
-      <button
-        id="logoutButton"
-        class="controlButton">
-        LOGOUT
-      </button>
+      <div>
+
+        <div id="title">
+          STOCK SCANNER
+        </div>
+
+        <div id="worker">
+          Worker:
+          <span id="workerName">-</span>
+        </div>
+
+      </div>
+
+
+      <div id="controls">
+
+        <button
+          id="flashButton"
+          class="controlButton">
+          🔦 FLASH
+        </button>
+
+        <button
+          id="logoutButton"
+          class="controlButton">
+          LOGOUT
+        </button>
+
+      </div>
 
     </div>
 
-    <div id="title">
-      STOCK SCANNER
+
+    <div id="columnCard">
+
+      <div>
+
+        <div id="columnLabel">
+          Current Column
+        </div>
+
+        <div id="column">
+          NOT SET
+        </div>
+
+      </div>
+
     </div>
 
-    <div id="worker">
-      Worker: <span id="workerName">-</span>
-    </div>
 
-    <div id="column">
-      COLUMN: NOT SET
+    <div id="stats">
+
+      <div class="statCard">
+
+        <div class="statLabel">
+          Columns
+        </div>
+
+        <div
+          id="columnCount"
+          class="statNumber">
+          0
+        </div>
+
+      </div>
+
+
+      <div class="statCard">
+
+        <div class="statLabel">
+          Total Boxes
+        </div>
+
+        <div
+          id="boxCount"
+          class="statNumber">
+          0
+        </div>
+
+      </div>
+
     </div>
 
   </div>
 
+
+  <!-- CAMERA -->
 
   <div id="cameraArea">
 
@@ -386,6 +765,8 @@ button{
   </div>
 
 
+  <!-- STATUS -->
+
   <div id="bottom">
 
     <div id="lastScan">
@@ -396,36 +777,41 @@ button{
       SCAN COLUMN QR
     </div>
 
-    <div id="count">
-      Scans: 0
-    </div>
-
   </div>
 
 </div>
 
 
-<!-- START CAMERA -->
+<!-- ==================================================
+     START CAMERA
+================================================== -->
 
 <div id="startScreen">
 
-  <div>
+  <div id="startBox">
+
+    <div id="startTitle">
+      CAMERA READY
+    </div>
+
+    <div id="startSubtitle">
+      Tap once to start continuous scanning
+    </div>
 
     <button id="startButton">
       START CAMERA
     </button>
 
-    <div
-      id="cameraMessage"
-      style="margin-top:18px;color:#aaa;">
-    </div>
+    <div id="cameraMessage"></div>
 
   </div>
 
 </div>
 
 
-<!-- DUPLICATE -->
+<!-- ==================================================
+     DUPLICATE
+================================================== -->
 
 <div id="duplicateOverlay">
 
@@ -455,11 +841,11 @@ button{
 
   <div id="duplicateHint">
 
-    ✕ Ignore
+    ✕ Ignore this duplicate
 
-    <br><br>
+    <br>
 
-    ✓ Record as another physical box
+    ✓ Record it as another physical box
 
   </div>
 
@@ -476,6 +862,16 @@ const VERSION = "V2.3";
 
 const APPS_SCRIPT_URL =
 "https://script.google.com/macros/s/AKfycbwSd26j_QkkD0WiEPgDXAFsLuJx6cAWePwZnT_WV9h8525cjibUVHksF5YbP64Dmzd-eA/exec";
+
+
+/*
+ * Barcode detection cooldown.
+ *
+ * Changed from 1200 ms
+ * to 800 ms.
+ */
+
+const DETECTION_COOLDOWN = 800;
 
 
 /* ==================================================
@@ -506,14 +902,17 @@ document.getElementById("video");
 const columnDisplay =
 document.getElementById("column");
 
+const columnCountDisplay =
+document.getElementById("columnCount");
+
+const boxCountDisplay =
+document.getElementById("boxCount");
+
 const lastScan =
 document.getElementById("lastScan");
 
 const lastType =
 document.getElementById("lastType");
-
-const count =
-document.getElementById("count");
 
 const flashButton =
 document.getElementById("flashButton");
@@ -545,7 +944,9 @@ let currentWorker = "";
 
 let currentColumn = "";
 
-let scanCount = 0;
+let columnCount = 0;
+
+let boxCount = 0;
 
 let previousItemCode = "";
 
@@ -563,7 +964,20 @@ let lastDetectedFormat = "";
 
 let lastDetectedTime = 0;
 
-const DETECTION_COOLDOWN = 1200;
+
+/* ==================================================
+   COUNTERS
+================================================== */
+
+function updateCounters(){
+
+  columnCountDisplay.textContent =
+    columnCount;
+
+  boxCountDisplay.textContent =
+    boxCount;
+
+}
 
 
 /* ==================================================
@@ -734,7 +1148,8 @@ function login(){
     passwordInput.value;
 
 
-  loginError.textContent = "";
+  loginError.textContent =
+    "";
 
 
   if(!id || !password){
@@ -757,15 +1172,18 @@ function login(){
   const params =
     new URLSearchParams();
 
+
   params.append(
     "action",
     "login"
   );
 
+
   params.append(
     "loginId",
     id
   );
+
 
   params.append(
     "password",
@@ -865,7 +1283,7 @@ function login(){
 
 
 /* ==================================================
-   CHECK SAVED WORKER
+   SAVED WORKER
 ================================================== */
 
 function checkSavedWorker(){
@@ -881,11 +1299,14 @@ function checkSavedWorker(){
     currentWorker =
       saved;
 
+
     workerName.textContent =
       currentWorker;
 
+
     loginScreen.style.display =
       "none";
+
 
     startScreen.style.display =
       "flex";
@@ -894,6 +1315,7 @@ function checkSavedWorker(){
 
     loginScreen.style.display =
       "flex";
+
 
     startScreen.style.display =
       "none";
@@ -918,6 +1340,7 @@ function logout(){
     try{
       scanner.reset();
     }catch(e){}
+
   }
 
 
@@ -929,6 +1352,7 @@ function logout(){
         track =>
           track.stop()
       );
+
 
     video.srcObject =
       null;
@@ -942,14 +1366,22 @@ function logout(){
   videoTrack =
     null;
 
+
   currentWorker =
     "";
 
   currentColumn =
     "";
 
+  columnCount =
+    0;
+
+  boxCount =
+    0;
+
   previousItemCode =
     "";
+
 
   flashOn =
     false;
@@ -965,11 +1397,15 @@ function logout(){
 
 
   columnDisplay.textContent =
-    "COLUMN: NOT SET";
+    "NOT SET";
+
+
+  updateCounters();
 
 
   loginScreen.style.display =
     "flex";
+
 
   startScreen.style.display =
     "none";
@@ -996,17 +1432,6 @@ async function toggleFlash(){
 
   try{
 
-    const capabilities =
-      videoTrack.getCapabilities
-        ? videoTrack.getCapabilities()
-        : {};
-
-
-    /*
-     * Try torch even if the browser
-     * did not advertise torch support.
-     */
-
     flashOn =
       !flashOn;
 
@@ -1025,7 +1450,7 @@ async function toggleFlash(){
 
     flashButton.textContent =
       flashOn
-      ? "🔦 FLASH ON"
+      ? "🔦 ON"
       : "🔦 FLASH";
 
 
@@ -1039,6 +1464,7 @@ async function toggleFlash(){
 
     flashOn =
       false;
+
 
     flashButton.textContent =
       "🔦 FLASH";
@@ -1054,7 +1480,7 @@ async function toggleFlash(){
 
 
 /* ==================================================
-   CAMERA TRACK
+   VIDEO TRACK
 ================================================== */
 
 function findVideoTrack(){
@@ -1069,14 +1495,13 @@ function findVideoTrack(){
         video.srcObject
           .getVideoTracks();
 
+
       if(
         tracks.length
       ){
 
         videoTrack =
           tracks[0];
-
-        return;
 
       }
 
@@ -1087,19 +1512,6 @@ function findVideoTrack(){
     console.log(e);
 
   }
-
-}
-
-
-/* ==================================================
-   COUNT
-================================================== */
-
-function updateCount(){
-
-  count.textContent =
-    "Scans: " +
-    scanCount;
 
 }
 
@@ -1150,8 +1562,17 @@ function processColumn(
 
   if(!column){
     return;
+
   }
 
+
+  /*
+   * Same column QR can stay
+   * in front of camera.
+   *
+   * Detection cooldown prevents
+   * repeated processing.
+   */
 
   currentColumn =
     column;
@@ -1161,14 +1582,15 @@ function processColumn(
     "";
 
 
-  scanCount++;
+  columnCount++;
+
 
   columnBeep();
 
 
   columnDisplay.textContent =
-    "COLUMN: " +
     currentColumn;
+
 
   columnDisplay.className =
     "columnColor";
@@ -1178,18 +1600,19 @@ function processColumn(
     "COLUMN " +
     currentColumn;
 
+
   lastScan.className =
     "columnColor";
 
 
   lastType.textContent =
-    "COLUMN CHANGED";
+    "COLUMN";
 
   lastType.className =
     "columnColor";
 
 
-  updateCount();
+  updateCounters();
 
 
   saveScan(
@@ -1203,7 +1626,7 @@ function processColumn(
 
 
 /* ==================================================
-   SAVE SCAN
+   SAVE TO SHEET
 ================================================== */
 
 function saveScan(
@@ -1216,40 +1639,48 @@ function saveScan(
   const params =
     new URLSearchParams();
 
+
   params.append(
     "action",
     "scan"
   );
+
 
   params.append(
     "value",
     value
   );
 
+
   params.append(
     "type",
     type
   );
+
 
   params.append(
     "column",
     column || ""
   );
 
+
   params.append(
     "itemCode",
     itemCode || ""
   );
+
 
   params.append(
     "worker",
     currentWorker
   );
 
+
   params.append(
     "device",
     navigator.userAgent
   );
+
 
   params.append(
     "t",
@@ -1267,6 +1698,7 @@ function saveScan(
       cache:"no-store"
     }
   )
+
   .catch(
     error =>
       console.error(
@@ -1279,7 +1711,7 @@ function saveScan(
 
 
 /* ==================================================
-   NEW ITEM
+   NEW ITEM / BOX
 ================================================== */
 
 function processNewItem(
@@ -1290,7 +1722,12 @@ function processNewItem(
     value;
 
 
-  scanCount++;
+  /*
+   * This is a real recorded box.
+   */
+
+  boxCount++;
+
 
   itemBeep();
 
@@ -1298,19 +1735,21 @@ function processNewItem(
   lastScan.textContent =
     value;
 
+
   lastScan.className =
     "itemColor";
 
 
   lastType.textContent =
-    "CODE 128 → COLUMN " +
+    "BOX • COLUMN " +
     currentColumn;
+
 
   lastType.className =
     "itemColor";
 
 
-  updateCount();
+  updateCounters();
 
 
   saveScan(
@@ -1358,6 +1797,11 @@ function rejectDuplicate(){
     "none";
 
 
+  /*
+   * Clear consecutive duplicate
+   * state so worker can continue.
+   */
+
   previousItemCode =
     "";
 
@@ -1365,12 +1809,14 @@ function rejectDuplicate(){
   lastScan.textContent =
     "IGNORED";
 
+
   lastScan.className =
     "errorColor";
 
 
   lastType.textContent =
     "DUPLICATE NOT RECORDED";
+
 
   lastType.className =
     "errorColor";
@@ -1392,7 +1838,13 @@ function acceptDuplicate(){
     "none";
 
 
-  scanCount++;
+  /*
+   * Accepted duplicate is another
+   * physical box, so count it.
+   */
+
+  boxCount++;
+
 
   itemBeep();
 
@@ -1400,19 +1852,21 @@ function acceptDuplicate(){
   lastScan.textContent =
     value;
 
+
   lastScan.className =
     "itemColor";
 
 
   lastType.textContent =
-    "DUPLICATE ACCEPTED → COLUMN " +
+    "BOX ACCEPTED • COLUMN " +
     currentColumn;
+
 
   lastType.className =
     "itemColor";
 
 
-  updateCount();
+  updateCounters();
 
 
   saveScan(
@@ -1430,7 +1884,7 @@ function acceptDuplicate(){
 
 
 /* ==================================================
-   RESULT
+   BARCODE RESULT
 ================================================== */
 
 function handleResult(
@@ -1461,11 +1915,17 @@ function handleResult(
     Date.now();
 
 
+  /*
+   * 800 ms cooldown.
+   */
+
   if(
     value ===
       lastDetectedValue &&
+
     format ===
       lastDetectedFormat &&
+
     now -
       lastDetectedTime <
       DETECTION_COOLDOWN
@@ -1479,19 +1939,28 @@ function handleResult(
   lastDetectedValue =
     value;
 
+
   lastDetectedFormat =
     format;
+
 
   lastDetectedTime =
     now;
 
 
-  /* QR COLUMN */
+  /* ==========================
+     QR
+  ========================== */
 
   if(
     format ===
     ZXingBrowser.BarcodeFormat.QR_CODE
   ){
+
+    /*
+     * Only QR beginning with
+     * COLUMN is useful to us.
+     */
 
     if(
       /^COLUMN/i.test(
@@ -1511,7 +1980,9 @@ function handleResult(
   }
 
 
-  /* CODE 128 ITEM */
+  /* ==========================
+     CODE 128
+  ========================== */
 
   if(
     format ===
@@ -1529,12 +2000,14 @@ function handleResult(
       lastScan.textContent =
         "SCAN COLUMN FIRST";
 
+
       lastScan.className =
         "errorColor";
 
 
       lastType.textContent =
-        "CODE 128 ITEM";
+        "CODE 128";
+
 
       lastType.className =
         "errorColor";
@@ -1544,6 +2017,10 @@ function handleResult(
 
     }
 
+
+    /*
+     * Only consecutive duplicate.
+     */
 
     if(
       value ===
@@ -1569,7 +2046,7 @@ function handleResult(
 
 
 /* ==================================================
-   START CAMERA
+   CAMERA
 ================================================== */
 
 async function startCamera(){
@@ -1577,8 +2054,10 @@ async function startCamera(){
   startButton.disabled =
     true;
 
+
   startButton.textContent =
     "STARTING...";
+
 
   cameraMessage.textContent =
     "";
@@ -1663,28 +2142,32 @@ async function startCamera(){
 
 
     lastScan.textContent =
-      "CAMERA READY";
+      "READY";
+
 
     lastScan.className =
       "";
 
+
     lastType.textContent =
       "SCAN COLUMN QR";
+
 
     lastType.className =
       "";
 
 
     /*
-     * IMPORTANT:
-     * Flash button is ALWAYS visible.
+     * Always show flash.
      */
 
     flashButton.style.display =
       "block";
 
+
     flashButton.textContent =
       "🔦 FLASH";
+
 
     flashOn =
       false;
@@ -1700,6 +2183,7 @@ async function startCamera(){
 
     startButton.disabled =
       false;
+
 
     startButton.textContent =
       "START CAMERA";
@@ -1733,8 +2217,7 @@ passwordInput.addEventListener(
   function(e){
 
     if(
-      e.key ===
-      "Enter"
+      e.key === "Enter"
     ){
 
       login();
@@ -1750,8 +2233,7 @@ loginIdInput.addEventListener(
   function(e){
 
     if(
-      e.key ===
-      "Enter"
+      e.key === "Enter"
     ){
 
       passwordInput.focus();
@@ -1799,6 +2281,8 @@ document
 /* ==================================================
    START
 ================================================== */
+
+updateCounters();
 
 checkSavedWorker();
 

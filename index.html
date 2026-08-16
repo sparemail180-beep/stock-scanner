@@ -5,9 +5,9 @@
 <meta name="viewport"
 content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 
-<title>Stock Scanner V2.2.1</title>
+<title>Stock Scanner V2.2.2</title>
 
-<script src="https://unpkg.com/@zxing/browser@latest"></script>
+<script src="https://unpkg.com/@zxing/browser@0.1.5"></script>
 
 <style>
 
@@ -15,8 +15,7 @@ content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
   box-sizing: border-box;
 }
 
-html,
-body {
+html, body {
   margin: 0;
   padding: 0;
   width: 100%;
@@ -41,15 +40,11 @@ body {
   top: 0;
   right: 0;
   z-index: 9999;
-
   background: red;
   color: white;
-
   padding: 7px 10px;
-
   font-size: 15px;
   font-weight: bold;
-
   border-radius: 0 0 0 8px;
 }
 
@@ -76,16 +71,12 @@ body {
 
 #cameraArea {
   position: relative;
-
   flex: 1;
   min-height: 0;
-
   background: #000;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   overflow: hidden;
 }
 
@@ -98,16 +89,12 @@ body {
 
 #scanBox {
   position: absolute;
-
-  width: 80vw;
+  width: 82vw;
   height: 35vw;
-
-  max-width: 420px;
+  max-width: 430px;
   max-height: 220px;
-
   border: 3px solid white;
   border-radius: 12px;
-
   pointer-events: none;
 }
 
@@ -135,46 +122,6 @@ body {
   color: #aaa;
 }
 
-/* START */
-
-#startScreen {
-  position: fixed;
-  inset: 0;
-
-  z-index: 1000;
-
-  background: #111;
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-
-  text-align: center;
-  padding: 25px;
-}
-
-#startButton {
-  font-size: 22px;
-  font-weight: bold;
-
-  padding: 18px 35px;
-
-  border: none;
-  border-radius: 12px;
-
-  background: white;
-  color: black;
-}
-
-#message {
-  margin-top: 20px;
-  color: #bbb;
-  line-height: 1.5;
-}
-
-/* COLORS */
-
 .columnColor {
   color: #ffd43b;
 }
@@ -187,62 +134,76 @@ body {
   color: #ff5555;
 }
 
-/* DUPLICATE */
+/* START SCREEN */
 
-#duplicateOverlay {
-
+#startScreen {
   position: fixed;
   inset: 0;
-
-  z-index: 5000;
-
-  background: rgba(0,0,0,0.90);
-
-  display: none;
-
+  z-index: 1000;
+  background: #111;
+  display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-
   text-align: center;
+  padding: 25px;
+}
 
+#startButton {
+  font-size: 22px;
+  font-weight: bold;
+  padding: 18px 35px;
+  border: none;
+  border-radius: 12px;
+  background: white;
+  color: black;
+}
+
+#message {
+  margin-top: 20px;
+  color: #bbb;
+  line-height: 1.5;
+}
+
+/* DUPLICATE */
+
+#duplicateOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 5000;
+  background: rgba(0,0,0,0.92);
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
   padding: 20px;
 }
 
 #duplicateTitle {
-
-  font-size: 38px;
+  font-size: 40px;
   font-weight: bold;
-
-  color: #ff5555;
-
+  color: #ff4444;
   margin-bottom: 15px;
 }
 
 #duplicateCode {
-
-  font-size: 28px;
+  font-size: 30px;
   font-weight: bold;
-
   word-break: break-all;
-
   margin-bottom: 30px;
 }
 
 #duplicateButtons {
-
   display: flex;
   gap: 30px;
 }
 
 .duplicateButton {
-
   width: 130px;
   height: 100px;
-
   border: none;
   border-radius: 18px;
-
   font-size: 55px;
   font-weight: bold;
 }
@@ -258,11 +219,8 @@ body {
 }
 
 #duplicateHint {
-
   margin-top: 20px;
-
   color: #ccc;
-
   font-size: 15px;
 }
 
@@ -270,69 +228,54 @@ body {
 
 </head>
 
-
 <body>
 
-
-<!-- VERSION -->
-
 <div id="version">
-V2.2.1
+  V2.2.2
 </div>
-
 
 <div id="app">
 
+  <div id="top">
 
-<!-- TOP -->
+    <div id="title">
+      STOCK SCANNER
+    </div>
 
-<div id="top">
+    <div id="column">
+      COLUMN: NOT SET
+    </div>
 
-  <div id="title">
-    STOCK SCANNER
   </div>
 
-  <div id="column">
-    COLUMN: NOT SET
+  <div id="cameraArea">
+
+    <video
+      id="video"
+      autoplay
+      playsinline
+      muted>
+    </video>
+
+    <div id="scanBox"></div>
+
   </div>
 
-</div>
+  <div id="bottom">
 
+    <div id="lastScan">
+      READY
+    </div>
 
-<!-- CAMERA -->
+    <div id="lastType">
+      SCAN COLUMN QR
+    </div>
 
-<div id="cameraArea">
+    <div id="count">
+      Scans: 0
+    </div>
 
-  <video
-    id="video"
-    autoplay
-    playsinline
-    muted>
-  </video>
-
-  <div id="scanBox"></div>
-
-</div>
-
-
-<!-- BOTTOM -->
-
-<div id="bottom">
-
-  <div id="lastScan">
-    READY
   </div>
-
-  <div id="lastType">
-    SCAN COLUMN QR
-  </div>
-
-  <div id="count">
-    Scans: 0
-  </div>
-
-</div>
-
 
 </div>
 
@@ -347,7 +290,7 @@ V2.2.1
 
   <div id="message">
 
-    <b>STOCK SCANNER V2.2.1</b>
+    <b>STOCK SCANNER V2.2.2</b>
 
     <br><br>
 
@@ -396,7 +339,7 @@ V2.2.1
 
   <div id="duplicateHint">
 
-    ✕ Ignore
+    ✕ Ignore this scan
 
     <br>
 
@@ -413,7 +356,7 @@ V2.2.1
    VERSION
 ================================================== */
 
-const VERSION = "V2.2.1";
+const VERSION = "V2.2.2";
 
 
 /* ==================================================
@@ -458,9 +401,25 @@ let currentColumn = "";
 
 let scanCount = 0;
 
-let scannedItems = new Set();
 
-let pendingDuplicate = null;
+/*
+ * IMPORTANT:
+ *
+ * We only remember the immediately
+ * previous item.
+ *
+ * We DO NOT keep a list of all
+ * scanned items.
+ */
+
+let previousItemCode = "";
+
+
+/*
+ * Prevent ZXing from firing the
+ * same barcode dozens of times
+ * while it remains in view.
+ */
 
 let lastDetectedValue = "";
 
@@ -469,6 +428,13 @@ let lastDetectedFormat = "";
 let lastDetectedTime = 0;
 
 const DETECTION_COOLDOWN = 1200;
+
+
+/*
+ * Duplicate waiting for decision.
+ */
+
+let pendingDuplicate = null;
 
 
 /* ==================================================
@@ -486,7 +452,9 @@ function initializeAudio() {
       window.AudioContext ||
       window.webkitAudioContext;
 
-    if (!AudioContext) return;
+    if (!AudioContext) {
+      return;
+    }
 
     if (!audioContext) {
 
@@ -504,9 +472,12 @@ function initializeAudio() {
 
     }
 
-  } catch (e) {
+  } catch (error) {
 
-    console.log(e);
+    console.log(
+      "Audio error:",
+      error
+    );
 
   }
 
@@ -517,16 +488,18 @@ function initializeAudio() {
    BEEP
 ================================================== */
 
-function makeBeep(
-frequency,
-duration
+function beep(
+  frequency,
+  duration
 ) {
 
   try {
 
     initializeAudio();
 
-    if (!audioContext) return;
+    if (!audioContext) {
+      return;
+    }
 
     const oscillator =
       audioContext.createOscillator();
@@ -534,7 +507,8 @@ duration
     const gain =
       audioContext.createGain();
 
-    oscillator.type = "sine";
+    oscillator.type =
+      "sine";
 
     oscillator.frequency.value =
       frequency;
@@ -555,9 +529,9 @@ duration
       duration / 1000
     );
 
-  } catch (e) {
+  } catch (error) {
 
-    console.log(e);
+    console.log(error);
 
   }
 
@@ -565,12 +539,12 @@ duration
 
 
 /* ==================================================
-   NORMAL ITEM SOUND
+   ITEM BEEP
 ================================================== */
 
 function itemBeep() {
 
-  makeBeep(
+  beep(
     1000,
     80
   );
@@ -579,12 +553,12 @@ function itemBeep() {
 
 
 /* ==================================================
-   COLUMN SOUND
+   COLUMN BEEP
 ================================================== */
 
 function columnBeep() {
 
-  makeBeep(
+  beep(
     650,
     140
   );
@@ -593,7 +567,7 @@ function columnBeep() {
 
 
 /* ==================================================
-   DUPLICATE SOUND + VOICE
+   DUPLICATE ALERT
 ================================================== */
 
 function duplicateAlert() {
@@ -641,12 +615,16 @@ function duplicateAlert() {
 
     }
 
-  } catch (e) {
+  } catch (error) {
 
-    console.log(e);
+    console.log(error);
 
   }
 
+
+  /*
+   * Say DUPLICATE.
+   */
 
   try {
 
@@ -655,28 +633,30 @@ function duplicateAlert() {
       in window
     ) {
 
-      speechSynthesis.cancel();
+      window.speechSynthesis.cancel();
 
       const speech =
         new SpeechSynthesisUtterance(
           "Duplicate"
         );
 
-      speech.rate = 1.1;
+      speech.rate =
+        1.1;
 
-      speech.pitch = 0.8;
+      speech.pitch =
+        0.8;
 
-      speech.volume = 1;
+      speech.volume =
+        1;
 
-      speechSynthesis.speak(
-        speech
-      );
+      window.speechSynthesis
+        .speak(speech);
 
     }
 
-  } catch (e) {
+  } catch (error) {
 
-    console.log(e);
+    console.log(error);
 
   }
 
@@ -684,7 +664,7 @@ function duplicateAlert() {
 
 
 /* ==================================================
-   COUNT
+   UPDATE COUNT
 ================================================== */
 
 function updateCount() {
@@ -697,7 +677,7 @@ function updateCount() {
 
 
 /* ==================================================
-   COLUMN DISPLAY
+   UPDATE COLUMN
 ================================================== */
 
 function updateColumn() {
@@ -729,11 +709,15 @@ function updateColumn() {
 ================================================== */
 
 function saveScan(
-value,
-type,
-column,
-itemCode
+  value,
+  type,
+  column,
+  itemCode
 ) {
+
+  /*
+   * Build request.
+   */
 
   const params =
     new URLSearchParams();
@@ -765,9 +749,26 @@ itemCode
 
   params.append(
     "device",
-    navigator.userAgent
+    "StockScanner-V2.2.2"
   );
 
+  /*
+   * Add unique timestamp.
+   */
+
+  params.append(
+    "t",
+    Date.now()
+  );
+
+
+  /*
+   * Use a normal GET request.
+   *
+   * no-cors is necessary for the
+   * browser to allow the request to
+   * the Apps Script endpoint.
+   */
 
   fetch(
     APPS_SCRIPT_URL +
@@ -779,35 +780,44 @@ itemCode
       cache: "no-store"
     }
   )
-  .catch(
-    function(error) {
+  .then(function() {
 
-      console.error(
-        "Sheet error:",
-        error
-      );
+    console.log(
+      "Scan sent:",
+      value,
+      type,
+      column
+    );
 
-    }
-  );
+  })
+  .catch(function(error) {
+
+    console.error(
+      "Google Sheets error:",
+      error
+    );
+
+  });
 
 }
 
 
 /* ==================================================
-   COLUMN DETECTION
+   COLUMN PARSER
 ================================================== */
 
 function getColumnNumber(
-text
+  text
 ) {
 
   const value =
-    String(text || "")
-      .trim();
+    String(
+      text || ""
+    ).trim();
 
 
   /*
-   * Accepted examples:
+   * Examples:
    *
    * COLUMN:3
    * COLUMN 3
@@ -843,7 +853,7 @@ text
 ================================================== */
 
 function processColumn(
-text
+  text
 ) {
 
   const column =
@@ -853,14 +863,21 @@ text
 
 
   if (!column) {
-
     return;
-
   }
 
 
   currentColumn =
     column;
+
+
+  /*
+   * NEW COLUMN = RESET
+   * CONSECUTIVE DUPLICATE
+   */
+
+  previousItemCode =
+    "";
 
 
   scanCount++;
@@ -905,12 +922,15 @@ text
 ================================================== */
 
 function processNewItem(
-value
+  value
 ) {
 
-  scannedItems.add(
-    value
-  );
+  /*
+   * Remember ONLY the last item.
+   */
+
+  previousItemCode =
+    value;
 
 
   scanCount++;
@@ -948,11 +968,11 @@ value
 
 
 /* ==================================================
-   DUPLICATE SCREEN
+   SHOW DUPLICATE
 ================================================== */
 
 function showDuplicate(
-value
+  value
 ) {
 
   pendingDuplicate =
@@ -973,7 +993,7 @@ value
 
 
 /* ==================================================
-   REJECT
+   REJECT DUPLICATE
 ================================================== */
 
 function rejectDuplicate() {
@@ -990,9 +1010,23 @@ function rejectDuplicate() {
     "none";
 
 
+  /*
+   * Clear previous item.
+   *
+   * This is important:
+   *
+   * If worker rejects the duplicate,
+   * scanning the same code again
+   * should NOT immediately create
+   * another duplicate warning.
+   */
+
+  previousItemCode =
+    "";
+
+
   lastScan.textContent =
     "IGNORED";
-
 
   lastScan.className =
     "errorColor";
@@ -1002,7 +1036,6 @@ function rejectDuplicate() {
     value +
     " NOT RECORDED";
 
-
   lastType.className =
     "errorColor";
 
@@ -1010,7 +1043,7 @@ function rejectDuplicate() {
 
 
 /* ==================================================
-   ACCEPT
+   ACCEPT DUPLICATE
 ================================================== */
 
 function acceptDuplicate() {
@@ -1027,6 +1060,11 @@ function acceptDuplicate() {
     "none";
 
 
+  /*
+   * Accept this as another physical
+   * box of the same item.
+   */
+
   scanCount++;
 
 
@@ -1036,7 +1074,6 @@ function acceptDuplicate() {
   lastScan.textContent =
     value;
 
-
   lastScan.className =
     "itemColor";
 
@@ -1044,7 +1081,6 @@ function acceptDuplicate() {
   lastType.textContent =
     "DUPLICATE ACCEPTED → COLUMN " +
     currentColumn;
-
 
   lastType.className =
     "itemColor";
@@ -1060,44 +1096,32 @@ function acceptDuplicate() {
     value
   );
 
-}
 
+  /*
+   * Clear duplicate state.
+   *
+   * This means the worker can
+   * intentionally scan the same
+   * physical item again later
+   * without getting trapped.
+   */
 
-/* ==================================================
-   FORMAT NAME
-================================================== */
-
-function getFormatName(
-format
-) {
-
-  try {
-
-    return String(
-      format
-    );
-
-  } catch (e) {
-
-    return "";
-
-  }
+  previousItemCode =
+    "";
 
 }
 
 
 /* ==================================================
-   HANDLE ZXING RESULT
+   HANDLE RESULT
 ================================================== */
 
 function handleResult(
-result
+  result
 ) {
 
   if (!result) {
-
     return;
-
   }
 
 
@@ -1108,15 +1132,9 @@ result
 
 
   if (!value) {
-
     return;
-
   }
 
-
-  /*
-   * Current ZXing result format.
-   */
 
   const format =
     result.getBarcodeFormat();
@@ -1127,8 +1145,8 @@ result
 
 
   /*
-   * Stop the same code from
-   * firing continuously.
+   * Ignore repeated camera frames
+   * of the same barcode.
    */
 
   if (
@@ -1156,11 +1174,9 @@ result
     now;
 
 
-  /*
-   * ============================
-   * QR
-   * ============================
-   */
+  /* ============================================
+     QR CODE
+  ============================================ */
 
   if (
     format ===
@@ -1169,7 +1185,7 @@ result
 
     /*
      * Only QR beginning with
-     * COLUMN is used.
+     * COLUMN is meaningful.
      */
 
     if (
@@ -1184,9 +1200,8 @@ result
 
     }
 
-
     /*
-     * Any other QR is ignored.
+     * All other QR codes ignored.
      */
 
     return;
@@ -1194,11 +1209,9 @@ result
   }
 
 
-  /*
-   * ============================
-   * CODE 128
-   * ============================
-   */
+  /* ============================================
+     CODE 128
+  ============================================ */
 
   if (
     format ===
@@ -1207,12 +1220,13 @@ result
 
 
     /*
-     * Must have a column first.
+     * Worker must scan a column
+     * before scanning items.
      */
 
     if (!currentColumn) {
 
-      makeBeep(
+      beep(
         300,
         250
       );
@@ -1221,14 +1235,12 @@ result
       lastScan.textContent =
         "SCAN COLUMN FIRST";
 
-
       lastScan.className =
         "errorColor";
 
 
       lastType.textContent =
         "CODE 128 ITEM";
-
 
       lastType.className =
         "errorColor";
@@ -1240,13 +1252,12 @@ result
 
 
     /*
-     * DUPLICATE
+     * ONLY CONSECUTIVE DUPLICATE.
      */
 
     if (
-      scannedItems.has(
-        value
-      )
+      value ===
+      previousItemCode
     ) {
 
       showDuplicate(
@@ -1259,7 +1270,7 @@ result
 
 
     /*
-     * NEW ITEM
+     * New/different item.
      */
 
     processNewItem(
@@ -1292,7 +1303,7 @@ async function startScanner() {
     true;
 
   button.textContent =
-    "STARTING V2.2.1...";
+    "STARTING V2.2.2...";
 
 
   initializeAudio();
@@ -1300,9 +1311,8 @@ async function startScanner() {
 
   try {
 
-
     /*
-     * Check library first.
+     * Check ZXing library.
      */
 
     if (
@@ -1318,48 +1328,43 @@ async function startScanner() {
 
 
     /*
-     * Create hints.
-     *
-     * Only QR and Code 128.
-     */
-
-    const hints =
-      new Map();
-
-
-    hints.set(
-      ZXingBrowser.DecodeHintType
-        ? ZXingBrowser.DecodeHintType.POSSIBLE_FORMATS
-        : "POSSIBLE_FORMATS",
-      [
-        ZXingBrowser.BarcodeFormat.QR_CODE,
-        ZXingBrowser.BarcodeFormat.CODE_128
-      ]
-    );
-
-
-    /*
-     * Multi-format reader.
+     * Start multi-format scanner.
      */
 
     const reader =
       new ZXingBrowser
-        .BrowserMultiFormatReader(
-          hints
-        );
+        .BrowserMultiFormatReader();
 
 
     /*
-     * Start camera directly through
-     * ZXing's browser API.
-     *
-     * It handles the camera stream
-     * and continuous decoding.
+     * Prefer rear camera.
      */
 
-    await reader.decodeFromVideoDevice(
-      undefined,
+    await reader.decodeFromConstraints(
+
+      {
+        video: {
+
+          facingMode: {
+            ideal: "environment"
+          },
+
+          width: {
+            ideal: 1280
+          },
+
+          height: {
+            ideal: 720
+          }
+
+        },
+
+        audio: false
+
+      },
+
       video,
+
       function(
         result,
         error
@@ -1374,6 +1379,7 @@ async function startScanner() {
         }
 
       }
+
     );
 
 
@@ -1397,9 +1403,8 @@ async function startScanner() {
 
   } catch (error) {
 
-
     console.error(
-      "V2.2.1 ERROR:",
+      "V2.2.2 ERROR:",
       error
     );
 
@@ -1416,7 +1421,7 @@ async function startScanner() {
 
       '<span class="errorColor">' +
 
-      "<b>V2.2.1 ERROR</b>" +
+      "<b>V2.2.2 CAMERA ERROR</b>" +
 
       "<br><br>" +
 
@@ -1442,33 +1447,33 @@ async function startScanner() {
 ================================================== */
 
 document
-  .getElementById(
-    "startButton"
-  )
-  .addEventListener(
-    "click",
-    startScanner
-  );
+.getElementById(
+  "startButton"
+)
+.addEventListener(
+  "click",
+  startScanner
+);
 
 
 document
-  .getElementById(
-    "rejectButton"
-  )
-  .addEventListener(
-    "click",
-    rejectDuplicate
-  );
+.getElementById(
+  "rejectButton"
+)
+.addEventListener(
+  "click",
+  rejectDuplicate
+);
 
 
 document
-  .getElementById(
-    "acceptButton"
-  )
-  .addEventListener(
-    "click",
-    acceptDuplicate
-  );
+.getElementById(
+  "acceptButton"
+)
+.addEventListener(
+  "click",
+  acceptDuplicate
+);
 
 
 console.log(

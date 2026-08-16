@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html>
 <head>
@@ -38,7 +39,7 @@ button{
   border-radius:0 0 0 8px;
 }
 
-/* ================= LOGIN ================= */
+/* LOGIN */
 
 #loginScreen{
   position:fixed;
@@ -100,7 +101,7 @@ button{
   font-weight:bold;
 }
 
-/* ================= APP ================= */
+/* APP */
 
 #app{
   width:100%;
@@ -207,7 +208,7 @@ button{
 .itemColor{color:#55ff77}
 .errorColor{color:#ff5555}
 
-/* ================= START ================= */
+/* START CAMERA */
 
 #startScreen{
   position:fixed;
@@ -228,7 +229,7 @@ button{
   font-weight:bold;
 }
 
-/* ================= DUPLICATE ================= */
+/* DUPLICATE */
 
 #duplicateOverlay{
   position:fixed;
@@ -294,7 +295,7 @@ button{
 
 <div id="version">V2.3</div>
 
-<!-- ================= LOGIN ================= -->
+<!-- LOGIN -->
 
 <div id="loginScreen">
 
@@ -334,7 +335,7 @@ button{
 </div>
 
 
-<!-- ================= APP ================= -->
+<!-- APP -->
 
 <div id="app">
 
@@ -404,7 +405,7 @@ button{
 </div>
 
 
-<!-- ================= START CAMERA ================= -->
+<!-- START CAMERA -->
 
 <div id="startScreen">
 
@@ -424,7 +425,7 @@ button{
 </div>
 
 
-<!-- ================= DUPLICATE ================= -->
+<!-- DUPLICATE -->
 
 <div id="duplicateOverlay">
 
@@ -802,11 +803,6 @@ function login(){
         data.worker;
 
 
-      /*
-       * Remember worker on this phone.
-       * Password is NOT stored.
-       */
-
       localStorage.setItem(
         "stockScannerWorker",
         currentWorker
@@ -849,7 +845,6 @@ function login(){
       loginError.textContent =
         error.message ||
         "Login failed";
-
 
     }
   )
@@ -990,23 +985,8 @@ async function toggleFlash(){
 
   if(!videoTrack){
 
-    return;
-
-  }
-
-
-  const capabilities =
-    videoTrack.getCapabilities
-      ? videoTrack.getCapabilities()
-      : {};
-
-
-  if(
-    !capabilities.torch
-  ){
-
     alert(
-      "Flashlight is not supported by this camera/browser."
+      "Camera is not ready."
     );
 
     return;
@@ -1015,6 +995,17 @@ async function toggleFlash(){
 
 
   try{
+
+    const capabilities =
+      videoTrack.getCapabilities
+        ? videoTrack.getCapabilities()
+        : {};
+
+
+    /*
+     * Try torch even if the browser
+     * did not advertise torch support.
+     */
 
     flashOn =
       !flashOn;
@@ -1045,11 +1036,17 @@ async function toggleFlash(){
       error
     );
 
+
     flashOn =
       false;
 
     flashButton.textContent =
       "🔦 FLASH";
+
+
+    alert(
+      "This phone/browser does not allow flashlight control from the camera."
+    );
 
   }
 
@@ -1160,11 +1157,6 @@ function processColumn(
     column;
 
 
-  /*
-   * New column resets
-   * consecutive duplicate.
-   */
-
   previousItemCode =
     "";
 
@@ -1172,6 +1164,7 @@ function processColumn(
   scanCount++;
 
   columnBeep();
+
 
   columnDisplay.textContent =
     "COLUMN: " +
@@ -1365,13 +1358,6 @@ function rejectDuplicate(){
     "none";
 
 
-  /*
-   * Clear previous code.
-   * Therefore another scan of the
-   * same code won't immediately
-   * produce another warning.
-   */
-
   previousItemCode =
     "";
 
@@ -1475,12 +1461,6 @@ function handleResult(
     Date.now();
 
 
-  /*
-   * Same barcode sitting in front
-   * of camera should not fire
-   * hundreds of times.
-   */
-
   if(
     value ===
       lastDetectedValue &&
@@ -1506,16 +1486,12 @@ function handleResult(
     now;
 
 
-  /* ================= QR ================= */
+  /* QR COLUMN */
 
   if(
     format ===
     ZXingBrowser.BarcodeFormat.QR_CODE
   ){
-
-    /*
-     * Only COLUMN QR is used.
-     */
 
     if(
       /^COLUMN/i.test(
@@ -1535,7 +1511,7 @@ function handleResult(
   }
 
 
-  /* ================= CODE 128 ================= */
+  /* CODE 128 ITEM */
 
   if(
     format ===
@@ -1568,10 +1544,6 @@ function handleResult(
 
     }
 
-
-    /*
-     * ONLY CONSECUTIVE DUPLICATE.
-     */
 
     if(
       value ===
@@ -1629,10 +1601,6 @@ async function startCamera(){
     }
 
 
-    /*
-     * Ask for camera explicitly.
-     */
-
     const stream =
       await navigator.mediaDevices
         .getUserMedia({
@@ -1656,10 +1624,6 @@ async function startCamera(){
         });
 
 
-    /*
-     * Attach stream.
-     */
-
     video.srcObject =
       stream;
 
@@ -1670,18 +1634,10 @@ async function startCamera(){
     findVideoTrack();
 
 
-    /*
-     * Start ZXing.
-     */
-
     scanner =
       new ZXingBrowser
         .BrowserMultiFormatReader();
 
-
-    /*
-     * Use the existing video stream.
-     */
 
     scanner.decodeFromVideoElement(
       video,
@@ -1720,33 +1676,18 @@ async function startCamera(){
 
 
     /*
-     * Check torch support.
+     * IMPORTANT:
+     * Flash button is ALWAYS visible.
      */
 
-    if(
-      videoTrack &&
-      videoTrack.getCapabilities
-    ){
+    flashButton.style.display =
+      "block";
 
-      const capabilities =
-        videoTrack.getCapabilities();
+    flashButton.textContent =
+      "🔦 FLASH";
 
-
-      if(
-        !capabilities.torch
-      ){
-
-        flashButton.style.display =
-          "none";
-
-      }else{
-
-        flashButton.style.display =
-          "block";
-
-      }
-
-    }
+    flashOn =
+      false;
 
 
   }catch(error){
@@ -1871,3 +1812,4 @@ console.log(
 
 </body>
 </html>
+```

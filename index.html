@@ -1,65 +1,102 @@
+
 <!DOCTYPE html>
 <html>
+
 <head>
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>Warehouse Inventory V3.0</title>
+
+<meta name="viewport"
+content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+
+<title>Stock Scanner V2.7</title>
+
 <script src="https://unpkg.com/@zxing/browser@0.1.5"></script>
 
 <style>
-*{box-sizing:border-box}
 
-html,body{
+*{
+  box-sizing:border-box;
+}
+
+html,
+body{
   margin:0;
   padding:0;
   width:100%;
   height:100%;
   overflow:hidden;
-  font-family:Arial,Helvetica,sans-serif;
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
   background:#f3f5f7;
   color:#17202a;
 }
 
-button,input,select{
-  font-family:inherit;
-}
 
-button{
-  cursor:pointer;
-}
+/* ==================================================
+   VERSION
+================================================== */
 
 #version{
   position:fixed;
-  top:0;
   right:0;
+  top:0;
+
   z-index:99999;
+
   padding:5px 9px;
+
   background:#111827;
   color:#fff;
+
   font-size:11px;
   font-weight:bold;
-  border-radius:0 0 0 8px;
+
+  border-radius:
+    0 0 0 8px;
 }
 
-/* ================= LOGIN ================= */
+
+/* ==================================================
+   LOGIN
+================================================== */
 
 #loginScreen{
   position:fixed;
   inset:0;
+
   z-index:10000;
+
   display:flex;
   align-items:center;
   justify-content:center;
+
   padding:20px;
-  background:linear-gradient(145deg,#101827,#293548);
+
+  background:
+    linear-gradient(
+      145deg,
+      #101827,
+      #293548
+    );
 }
 
 #loginBox{
   width:100%;
   max-width:380px;
+
   padding:30px 24px;
+
   background:#fff;
+
   border-radius:20px;
-  box-shadow:0 20px 60px rgba(0,0,0,.25);
+
+  box-shadow:
+    0 20px 60px
+    rgba(0,0,0,.25);
+
   text-align:center;
 }
 
@@ -69,20 +106,31 @@ button{
 }
 
 #loginVersion{
-  margin:5px 0 25px;
+  margin-top:5px;
+  margin-bottom:25px;
+
   color:#7d8794;
+
   font-size:13px;
 }
 
 .loginInput{
   width:100%;
   height:52px;
+
   margin-bottom:12px;
+
   padding:0 15px;
-  border:1px solid #d8dee5;
+
+  border:
+    1px solid #d8dee5;
+
   border-radius:11px;
+
   outline:none;
+
   background:#f8fafc;
+
   font-size:17px;
 }
 
@@ -94,40 +142,148 @@ button{
 #loginButton{
   width:100%;
   height:52px;
+
   border:0;
   border-radius:11px;
+
   background:#111827;
   color:#fff;
+
   font-size:17px;
   font-weight:700;
 }
 
+#loginButton:disabled{
+  opacity:.6;
+}
+
 #loginError{
   min-height:22px;
+
   margin-top:14px;
+
   color:#dc2626;
+
   font-size:14px;
   font-weight:bold;
 }
 
-/* ================= APP ================= */
+
+/* ==================================================
+   MENU / GODOWN
+================================================== */
+
+#menuScreen,
+#godownScreen{
+  position:fixed;
+  inset:0;
+  z-index:9000;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  background:#f3f5f7;
+}
+
+#menuBox,
+#godownBox{
+  width:100%;
+  max-width:420px;
+  padding:22px;
+  background:#fff;
+  border-radius:18px;
+  box-shadow:0 12px 40px rgba(0,0,0,.12);
+}
+
+#menuTitle,
+#godownTitle{
+  font-size:24px;
+  font-weight:800;
+  color:#111827;
+}
+
+#menuWorker,
+#godownSubtitle{
+  margin-top:5px;
+  margin-bottom:20px;
+  color:#7b8490;
+  font-size:13px;
+}
+
+.menuButton,
+.godownButton{
+  width:100%;
+  min-height:54px;
+  margin-top:10px;
+  border:0;
+  border-radius:12px;
+  background:#111827;
+  color:#fff;
+  font-size:16px;
+  font-weight:800;
+}
+
+.menuButton.secondary,
+.godownButton.secondary{
+  background:#e5e7eb;
+  color:#111827;
+}
+
+#godownSelect{
+  width:100%;
+  height:54px;
+  padding:0 12px;
+  border:1px solid #d8dee5;
+  border-radius:11px;
+  background:#f8fafc;
+  font-size:16px;
+}
+
+#selectedGodown{
+  margin-top:4px;
+  color:#111827;
+  font-size:12px;
+  font-weight:bold;
+}
+
+#saveColumnButton{
+  display:none;
+}
+
+#saveColumnButton:disabled{
+  opacity:.5;
+}
+
+/* ==================================================
+   APP
+================================================== */
 
 #app{
   width:100%;
   height:100%;
+
   display:none;
   flex-direction:column;
 }
 
+
+/* ==================================================
+   HEADER
+================================================== */
+
 #header{
   flex-shrink:0;
-  padding:11px 12px;
+
+  padding:
+    13px 12px 10px;
+
   background:#111827;
   color:#fff;
 }
 
 #headerTop{
   display:flex;
+
   align-items:center;
   justify-content:space-between;
 }
@@ -139,7 +295,9 @@ button{
 
 #worker{
   margin-top:3px;
+
   color:#aeb8c5;
+
   font-size:12px;
 }
 
@@ -148,6 +306,11 @@ button{
   font-weight:bold;
 }
 
+
+/* ==================================================
+   CONTROLS
+================================================== */
+
 #controls{
   display:flex;
   gap:6px;
@@ -155,684 +318,439 @@ button{
 
 .controlButton{
   border:0;
+
   border-radius:8px;
-  padding:7px 9px;
+
+  padding:
+    7px 9px;
+
   background:#293548;
   color:#fff;
+
   font-size:11px;
   font-weight:bold;
 }
 
-#content{
-  flex:1;
-  min-height:0;
-  overflow-y:auto;
-  -webkit-overflow-scrolling:touch;
-}
 
-/* ================= MENU ================= */
+/* ==================================================
+   STATS — SAME ROW
+================================================== */
 
-#menuScreen{
-  padding:16px 12px 30px;
-}
-
-.menuTitle{
-  font-size:22px;
-  font-weight:800;
-  margin-bottom:4px;
-}
-
-.menuSub{
-  color:#7b8490;
-  font-size:13px;
-  margin-bottom:18px;
-}
-
-.menuGrid{
+#stats{
   display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
-}
 
-.menuButton{
-  min-height:92px;
-  border:0;
-  border-radius:15px;
-  background:#fff;
-  box-shadow:0 2px 8px rgba(0,0,0,.07);
-  text-align:left;
-  padding:15px;
-}
+  grid-template-columns:
+    1fr 1fr 1fr;
 
-.menuButton strong{
-  display:block;
-  font-size:17px;
-  color:#111827;
-}
+  gap:6px;
 
-.menuButton span{
-  display:block;
-  margin-top:5px;
-  color:#7b8490;
-  font-size:11px;
-  line-height:1.35;
-}
-
-.menuButton:active{
-  transform:scale(.98);
-}
-
-.menuStock{border-left:5px solid #16a34a}
-.menuOrders{border-left:5px solid #2563eb}
-.menuPicking{border-left:5px solid #d97706}
-.menuOut{border-left:5px solid #dc2626}
-.menuCurrent{border-left:5px solid #7c3aed}
-
-/* ================= COMMON PAGE ================= */
-
-.page{
-  display:none;
-  padding:12px;
-}
-
-.pageTitle{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  margin-bottom:10px;
-}
-
-.pageTitle h2{
-  margin:0;
-  font-size:20px;
-}
-
-.backButton{
-  border:0;
-  border-radius:9px;
-  padding:8px 11px;
-  background:#e5e7eb;
-  color:#111827;
-  font-weight:bold;
-}
-
-.card{
-  background:#fff;
-  border-radius:13px;
-  padding:12px;
-  margin-bottom:10px;
-  box-shadow:0 2px 7px rgba(0,0,0,.06);
-}
-
-.label{
-  display:block;
-  margin-bottom:5px;
-  color:#6b7280;
-  font-size:11px;
-  font-weight:bold;
-  text-transform:uppercase;
-}
-
-.textInput,
-.selectInput{
-  width:100%;
-  height:46px;
-  padding:0 12px;
-  border:1px solid #d5dae0;
-  border-radius:10px;
-  outline:none;
-  background:#fff;
-  font-size:16px;
-}
-
-.textInput:focus,
-.selectInput:focus{
-  border-color:#2563eb;
-}
-
-.primaryButton{
-  width:100%;
-  min-height:47px;
-  border:0;
-  border-radius:10px;
-  background:#111827;
-  color:#fff;
-  font-size:15px;
-  font-weight:bold;
-}
-
-.greenButton{
-  background:#16a34a;
-}
-
-.redButton{
-  background:#dc2626;
-}
-
-.blueButton{
-  background:#2563eb;
-}
-
-.orangeButton{
-  background:#d97706;
-}
-
-.smallButton{
-  min-height:38px;
-  border:0;
-  border-radius:9px;
-  padding:0 12px;
-  font-weight:bold;
-}
-
-/* ================= SEARCH RESULTS ================= */
-
-.searchResults{
-  margin-top:5px;
-  max-height:52vh;
-  overflow-y:auto;
-  border-radius:10px;
-}
-
-.searchResult{
-  width:100%;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:10px;
-  padding:10px 11px;
-  border:0;
-  border-bottom:1px solid #edf0f2;
-  background:#fff;
-  text-align:left;
-}
-
-.searchResult:last-child{
-  border-bottom:0;
-}
-
-.resultName{
-  flex:1;
-  min-width:0;
-  font-size:14px;
-  font-weight:700;
-  color:#17202a;
-}
-
-.resultCode{
-  margin-top:2px;
-  color:#8b95a1;
-  font-size:10px;
-}
-
-.stockBadge{
-  flex-shrink:0;
-  font-size:12px;
-  font-weight:800;
-  white-space:nowrap;
-}
-
-.stockGood{
-  color:#15803d;
-}
-
-.stockZero{
-  color:#dc2626;
-}
-
-/* ================= CUSTOMER ================= */
-
-.customerSearchWrap{
-  position:relative;
-}
-
-.customerResults{
-  max-height:55vh;
-}
-
-.addCustomer{
-  margin-top:8px;
-}
-
-/* ================= ORDER ENTRY ================= */
-
-.orderHeader{
-  display:flex;
-  align-items:center;
-  gap:8px;
-  min-width:0;
-  margin-bottom:9px;
-  padding:9px 10px;
-  background:#111827;
-  color:#fff;
-  border-radius:10px;
-}
-
-.orderHeaderId{
-  flex-shrink:0;
-  font-size:13px;
-  font-weight:800;
-}
-
-.orderHeaderSep{
-  color:#6b7280;
-}
-
-.orderHeaderCustomer{
-  min-width:0;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  white-space:nowrap;
-  font-size:13px;
-  font-weight:700;
-}
-
-.itemSearchArea{
-  position:relative;
-}
-
-.itemSearchInput{
-  height:48px;
-  font-size:17px;
-  padding-right:40px;
-}
-
-.clearSearch{
-  position:absolute;
-  top:7px;
-  right:7px;
-  width:34px;
-  height:34px;
-  border:0;
-  border-radius:8px;
-  background:#eef0f2;
-  color:#555;
-  font-size:18px;
-}
-
-.orderItems{
   margin-top:10px;
 }
 
-.orderLine{
-  display:flex;
-  align-items:center;
-  gap:8px;
-  padding:9px 0;
-  border-bottom:1px solid #edf0f2;
-}
-
-.orderLineName{
-  flex:1;
+.statCard{
   min-width:0;
-}
 
-.orderLineName strong{
-  display:block;
-  font-size:13px;
-}
+  padding:
+    7px 9px;
 
-.orderLineName span{
-  display:block;
-  margin-top:2px;
-  color:#15803d;
-  font-size:10px;
-}
-
-.qtyBox{
-  width:58px;
-  height:38px;
-  border:1px solid #d5dae0;
-  border-radius:8px;
-  text-align:center;
-  font-size:16px;
-  font-weight:bold;
-}
-
-.removeLine{
-  width:34px;
-  height:34px;
-  border:0;
-  border-radius:8px;
-  background:#fee2e2;
-  color:#dc2626;
-  font-weight:bold;
-}
-
-.orderTotals{
-  display:flex;
-  justify-content:space-between;
-  margin:12px 0;
-  padding-top:10px;
-  border-top:1px solid #e5e7eb;
-  font-size:13px;
-  font-weight:bold;
-}
-
-/* ================= ORDERS LIST ================= */
-
-.orderCard{
   background:#fff;
-  border-radius:12px;
-  padding:12px;
-  margin-bottom:8px;
-  box-shadow:0 2px 7px rgba(0,0,0,.06);
-}
 
-.orderCardTop{
-  display:flex;
-  justify-content:space-between;
-  gap:10px;
-}
-
-.orderId{
-  font-weight:800;
-  font-size:15px;
-}
-
-.orderCustomer{
-  margin-top:3px;
-  font-size:13px;
-}
-
-.orderStatus{
-  flex-shrink:0;
-  font-size:10px;
-  font-weight:800;
-  padding:5px 7px;
-  border-radius:7px;
-  background:#eef2ff;
-  color:#3730a3;
-}
-
-.orderMeta{
-  display:flex;
-  justify-content:space-between;
-  margin-top:8px;
-  color:#6b7280;
-  font-size:11px;
-}
-
-.orderSelect{
-  width:100%;
-  margin-top:9px;
-}
-
-/* ================= PICKING ================= */
-
-.pickRow{
-  padding:10px 0;
-  border-bottom:1px solid #edf0f2;
-}
-
-.pickRowTop{
-  display:flex;
-  align-items:center;
-  gap:8px;
-}
-
-.pickCheck{
-  width:24px;
-  height:24px;
-}
-
-.pickName{
-  flex:1;
-  font-size:13px;
-  font-weight:700;
-}
-
-.pickQty{
-  font-size:12px;
-  font-weight:800;
-}
-
-.pickLocation{
-  margin:5px 0 0 32px;
-  color:#6b7280;
-  font-size:11px;
-}
-
-.pickQtyInput{
-  width:70px;
-  height:36px;
-  margin-left:32px;
-  margin-top:6px;
-  border:1px solid #d5dae0;
-  border-radius:8px;
-  text-align:center;
-  font-weight:bold;
-}
-
-/* ================= STOCK IN ================= */
-
-.stockInTop{
-  display:grid;
-  grid-template-columns:1fr;
-  gap:8px;
-}
-
-.stockModeInfo{
-  padding:10px;
-  background:#ecfdf5;
   border-radius:10px;
-  color:#166534;
-  font-size:12px;
-  line-height:1.45;
 }
 
-.stockSnapshotList{
-  max-height:38vh;
-  overflow-y:auto;
+.statLabel{
+  color:#7b8490;
+
+  font-size:9px;
+  font-weight:bold;
+
+  text-transform:uppercase;
+
+  white-space:nowrap;
 }
 
-.snapshotRow{
-  display:flex;
-  justify-content:space-between;
-  gap:10px;
-  padding:8px 0;
-  border-bottom:1px solid #edf0f2;
-}
+.statNumber{
+  margin-top:2px;
 
-.snapshotCode{
-  flex:1;
-  word-break:break-all;
-  font-size:13px;
-  font-weight:700;
-}
+  color:#111827;
 
-.snapshotQty{
-  width:52px;
-  text-align:center;
+  font-size:20px;
   font-weight:800;
+
+  white-space:nowrap;
 }
 
-.scannerArea{
+#currentColumnNumber{
+  color:#b77900;
+}
+
+
+/* ==================================================
+   CAMERA
+================================================== */
+
+#cameraArea{
   position:relative;
-  height:45vh;
-  min-height:280px;
+
+  flex:1;
+  min-height:0;
+
   background:#000;
-  border-radius:12px;
+
+  display:flex;
+
+  align-items:center;
+  justify-content:center;
+
   overflow:hidden;
 }
 
 #video{
   width:100%;
   height:100%;
+
   object-fit:cover;
+
+  background:#000;
 }
 
-.scanFrame{
+#scanBox{
   position:absolute;
-  left:8%;
-  right:8%;
-  top:35%;
-  height:30%;
-  border:2px solid rgba(255,255,255,.9);
+
+  width:84vw;
+  height:34vw;
+
+  max-width:450px;
+  max-height:210px;
+
+  border:
+    2px solid rgba(255,255,255,.9);
+
   border-radius:12px;
+
   pointer-events:none;
 }
 
-.scanStats{
-  display:grid;
-  grid-template-columns:1fr 1fr 1fr;
-  gap:6px;
-  margin-top:8px;
-}
 
-.scanStat{
+/* ==================================================
+   CURRENT COLUMN LIST
+================================================== */
+
+#scanListPanel{
+  flex-shrink:0;
+
+  height:145px;
+
   background:#fff;
-  border-radius:9px;
-  padding:7px;
-  text-align:center;
-}
 
-.scanStat small{
-  display:block;
-  color:#7b8490;
-  font-size:9px;
-  font-weight:bold;
-}
+  border-top:
+    1px solid #dfe4e9;
 
-.scanStat strong{
-  display:block;
-  margin-top:2px;
-  font-size:18px;
-}
-
-#scanStatus{
-  margin-top:7px;
-  padding:8px;
-  border-radius:9px;
-  background:#fff;
-  text-align:center;
-  font-size:12px;
-  font-weight:bold;
-}
-
-#flashButton{
-  display:none;
-}
-
-/* ================= CURRENT STOCK ================= */
-
-.stockSearchResults{
-  max-height:62vh;
-  overflow-y:auto;
-}
-
-.stockLocationRow{
-  padding:9px 0;
-  border-bottom:1px solid #edf0f2;
-}
-
-.stockLocationTop{
   display:flex;
-  justify-content:space-between;
+
+  flex-direction:column;
 }
 
-.stockLocation{
-  font-size:12px;
+#scanListHeader{
+  flex-shrink:0;
+
+  padding:
+    6px 12px;
+
+  display:flex;
+
+  justify-content:space-between;
+  align-items:center;
+
+  border-bottom:
+    1px solid #edf0f2;
+}
+
+#scanListTitle{
+  font-size:11px;
+  font-weight:800;
+
+  color:#374151;
+
+  text-transform:uppercase;
+}
+
+#scanListColumn{
+  font-size:11px;
+  font-weight:bold;
+
+  color:#b77900;
+}
+
+#scanList{
+  flex:1;
+
+  overflow-y:auto;
+
+  padding:
+    3px 12px 8px;
+
+  -webkit-overflow-scrolling:touch;
+}
+
+.scanRow{
+  display:flex;
+
+  align-items:center;
+
+  min-height:23px;
+
+  border-bottom:
+    1px solid #f0f2f4;
+}
+
+.scanIndex{
+  width:30px;
+
+  flex-shrink:0;
+
+  color:#8b95a1;
+
+  font-size:11px;
   font-weight:bold;
 }
 
-.stockQty{
-  color:#15803d;
+.scanCode{
+  flex:1;
+
+  color:#17202a;
+
   font-size:13px;
-  font-weight:800;
+  font-weight:600;
+
+  word-break:break-all;
 }
 
-.stockItemName{
-  margin-top:3px;
-  color:#6b7280;
+.emptyList{
+  padding-top:15px;
+
+  color:#9aa3ad;
+
+  text-align:center;
+
+  font-size:12px;
+}
+
+
+/* ==================================================
+   STATUS
+================================================== */
+
+#bottom{
+  flex-shrink:0;
+
+  min-height:51px;
+
+  padding:
+    6px 12px;
+
+  background:#fff;
+
+  border-top:
+    1px solid #e2e6ea;
+
+  text-align:center;
+}
+
+#lastScan{
+  font-size:17px;
+  font-weight:800;
+
+  word-break:break-all;
+}
+
+#lastType{
+  margin-top:2px;
+
+  color:#7b8490;
+
   font-size:11px;
 }
 
-/* ================= TOAST ================= */
-
-#toast{
-  position:fixed;
-  left:50%;
-  bottom:18px;
-  z-index:50000;
-  transform:translateX(-50%) translateY(100px);
-  max-width:90%;
-  padding:11px 15px;
-  border-radius:10px;
-  background:#111827;
-  color:#fff;
-  font-size:13px;
-  font-weight:bold;
-  text-align:center;
-  transition:.2s;
-  pointer-events:none;
+.columnColor{
+  color:#b77900 !important;
 }
 
-#toast.show{
-  transform:translateX(-50%) translateY(0);
+.itemColor{
+  color:#15803d !important;
 }
 
-#toast.good{
-  background:#15803d;
+.errorColor{
+  color:#dc2626 !important;
 }
 
-#toast.bad{
-  background:#dc2626;
-}
 
-/* ================= LOADING ================= */
+/* ==================================================
+   START SCREEN
+================================================== */
 
-#loading{
+#startScreen{
   position:fixed;
   inset:0;
-  z-index:30000;
+
+  z-index:2000;
+
   display:none;
+
   align-items:center;
   justify-content:center;
-  background:rgba(17,24,39,.55);
+
+  background:
+    rgba(17,24,39,.97);
+
+  text-align:center;
 }
 
-.loadingBox{
-  padding:20px 25px;
-  border-radius:13px;
-  background:#fff;
+#startBox{
+  padding:25px;
+}
+
+#startTitle{
+  color:#fff;
+
+  font-size:25px;
+  font-weight:800;
+}
+
+#startSubtitle{
+  margin-top:7px;
+  margin-bottom:22px;
+
+  color:#aeb8c5;
+
+  font-size:14px;
+}
+
+#startButton{
+  padding:
+    16px 34px;
+
+  border:0;
+  border-radius:12px;
+
+  font-size:19px;
+  font-weight:800;
+}
+
+#cameraMessage{
+  margin-top:15px;
+
+  font-size:13px;
+}
+
+
+/* ==================================================
+   DUPLICATE
+================================================== */
+
+#duplicateOverlay{
+  position:fixed;
+  inset:0;
+
+  z-index:5000;
+
+  display:none;
+
+  flex-direction:column;
+
+  align-items:center;
+  justify-content:center;
+
+  padding:20px;
+
+  background:
+    rgba(17,24,39,.97);
+
   text-align:center;
+}
+
+#duplicateTitle{
+  color:#ef4444;
+
+  font-size:38px;
+  font-weight:900;
+}
+
+#duplicateCode{
+  margin:
+    12px 0 27px;
+
+  color:#fff;
+
+  font-size:25px;
+  font-weight:800;
+
+  word-break:break-all;
+}
+
+#duplicateButtons{
+  display:flex;
+  gap:22px;
+}
+
+.duplicateButton{
+  width:125px;
+  height:92px;
+
+  border:0;
+  border-radius:16px;
+
+  font-size:50px;
   font-weight:bold;
 }
 
-/* ================= MOBILE ================= */
-
-@media(max-width:430px){
-  .menuGrid{
-    gap:8px;
-  }
-
-  .menuButton{
-    min-height:86px;
-    padding:12px;
-  }
-
-  .menuButton strong{
-    font-size:15px;
-  }
-
-  .orderHeader{
-    padding:8px;
-  }
+#rejectButton{
+  background:#dc2626;
+  color:#fff;
 }
+
+#acceptButton{
+  background:#16a34a;
+  color:#fff;
+}
+
+#duplicateHint{
+  margin-top:18px;
+
+  color:#aeb8c5;
+
+  font-size:13px;
+  line-height:1.6;
+}
+
 </style>
+
 </head>
+
 
 <body>
 
-<div id="version">V3.0</div>
 
-<!-- LOGIN -->
+<div id="version">
+  V2.7
+</div>
+
+
+<!-- ==================================================
+     LOGIN
+================================================== -->
 
 <div id="loginScreen">
+
   <div id="loginBox">
-    <div id="loginTitle">WAREHOUSE</div>
-    <div id="loginVersion">Inventory System • V3.0</div>
+
+    <div id="loginTitle">
+      STOCK SCANNER
+    </div>
+
+    <div id="loginVersion">
+      Warehouse Inventory • V2.7
+    </div>
 
     <input
       id="loginId"
@@ -848,31 +766,132 @@ button{
       placeholder="Password"
       autocomplete="current-password">
 
-    <button id="loginButton">LOGIN</button>
+    <button id="loginButton">
+      LOGIN
+    </button>
 
     <div id="loginError"></div>
+
   </div>
+
 </div>
 
 
-<!-- APP -->
+<!-- ==================================================
+     MAIN MENU
+================================================== -->
+
+<div id="menuScreen">
+
+  <div id="menuBox">
+
+    <div id="menuTitle">
+      WAREHOUSE MENU
+    </div>
+
+    <div id="menuWorker">
+      Logged in as:
+      <b id="menuWorkerName">-</b>
+    </div>
+
+    <button
+      id="stockInMenuButton"
+      class="menuButton">
+      STOCK IN
+    </button>
+
+    <button
+      id="menuLogoutButton"
+      class="menuButton secondary">
+      LOGOUT
+    </button>
+
+  </div>
+
+</div>
+
+
+<!-- ==================================================
+     GODOWN SELECTION
+================================================== -->
+
+<div id="godownScreen">
+
+  <div id="godownBox">
+
+    <div id="godownTitle">
+      SELECT GODOWN
+    </div>
+
+    <div id="godownSubtitle">
+      Choose where this column is physically located.
+    </div>
+
+    <select id="godownSelect">
+      <option value="">Loading godowns...</option>
+    </select>
+
+    <div id="selectedGodownChoice"></div>
+
+    <button
+      id="continueGodownButton
+      class="godownButton">
+      CONTINUE TO SCANNER
+    </button>
+
+    <button
+      id="backMenuButton"
+      class="godownButton secondary">
+      BACK
+    </button>
+
+    <div
+      id="godownError"
+      class="errorColor"
+      style="margin-top:12px;text-align:center;font-size:13px;font-weight:bold;">
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- ==================================================
+     APP
+================================================== -->
 
 <div id="app">
 
+
   <div id="header">
+
 
     <div id="headerTop">
 
       <div>
-        <div id="title">WAREHOUSE</div>
+
+        <div id="title">
+          STOCK SCANNER
+        </div>
 
         <div id="worker">
           Worker:
           <span id="workerName">-</span>
+          <div id="selectedGodown">
+            Godown: —
+          </div>
         </div>
+
       </div>
 
+
       <div id="controls">
+
+        <button
+          id="saveColumnButton"
+          class="controlButton">
+          SAVE COLUMN
+        </button>
 
         <button
           id="flashButton"
@@ -890,450 +909,122 @@ button{
 
     </div>
 
+
+    <!-- SAME ROW -->
+
+    <div id="stats">
+
+
+      <div class="statCard">
+
+        <div class="statLabel">
+          Column
+        </div>
+
+        <div
+          id="currentColumnNumber"
+          class="statNumber">
+          —
+        </div>
+
+      </div>
+
+
+      <div class="statCard">
+
+        <div class="statLabel">
+          Total Boxes
+        </div>
+
+        <div
+          id="boxCount"
+          class="statNumber">
+          0
+        </div>
+
+      </div>
+
+
+      <div class="statCard">
+
+        <div class="statLabel">
+          Columns
+        </div>
+
+        <div
+          id="columnCount"
+          class="statNumber">
+          0
+        </div>
+
+      </div>
+
+
+    </div>
+
   </div>
 
 
-  <div id="content">
+  <!-- ==================================================
+       CAMERA
+  ================================================== -->
 
-    <!-- ================= MENU ================= -->
+  <div id="cameraArea">
 
-    <div id="menuScreen">
+    <video
+      id="video"
+      autoplay
+      playsinline
+      muted>
+    </video>
 
-      <div class="menuTitle">Operations</div>
+    <div id="scanBox"></div>
 
-      <div class="menuSub">
-        Select what you want to do.
+  </div>
+
+
+  <!-- ==================================================
+       CURRENT COLUMN SCANS
+  ================================================== -->
+
+  <div id="scanListPanel">
+
+    <div id="scanListHeader">
+
+      <div id="scanListTitle">
+        SCANNED ITEMS
       </div>
 
-      <div class="menuGrid">
-
-        <button
-          class="menuButton menuStock"
-          onclick="openStockIn()">
-          <strong>Stock In</strong>
-          <span>Scan a complete column and replace its physical snapshot.</span>
-        </button>
-
-        <button
-          class="menuButton menuOrders"
-          onclick="openOrdersEntry()">
-          <strong>Orders</strong>
-          <span>Create a customer order quickly from your phone.</span>
-        </button>
-
-        <button
-          class="menuButton menuPicking"
-          onclick="openPickingList()">
-          <strong>Picking</strong>
-          <span>See open orders and pick their available items.</span>
-        </button>
-
-        <button
-          class="menuButton menuOut"
-          onclick="openOutList()">
-          <strong>Out / Sold</strong>
-          <span>Complete picked orders and remove stock.</span>
-        </button>
-
-        <button
-          class="menuButton menuCurrent"
-          onclick="openCurrentStock()">
-          <strong>Current Stock</strong>
-          <span>Search stock and see its godown / column locations.</span>
-        </button>
-
+      <div id="scanListColumn">
+        COLUMN —
       </div>
 
     </div>
 
 
-    <!-- ================= STOCK IN ================= -->
+    <div id="scanList">
 
-    <div id="stockInPage" class="page">
-
-      <div class="pageTitle">
-        <h2>Stock In</h2>
-
-        <button
-          class="backButton"
-          onclick="goMenu()">
-          ← Menu
-        </button>
-      </div>
-
-      <div class="card">
-
-        <label class="label">
-          Choose Godown
-        </label>
-
-        <select
-          id="stockGodown"
-          class="selectInput">
-          <option value="">Select Godown</option>
-        </select>
-
-      </div>
-
-      <div
-        id="stockInfo"
-        class="stockModeInfo"
-        style="display:none">
-        Scan the column QR first.
-        Then scan every box in that column.
-        When you move to another column, the previous
-        column is automatically saved as a complete snapshot.
-      </div>
-
-      <div
-        id="scannerCard"
-        class="card"
-        style="display:none">
-
-        <div class="scannerArea">
-
-          <video
-            id="video"
-            autoplay
-            playsinline
-            muted>
-          </video>
-
-          <div class="scanFrame"></div>
-
-        </div>
-
-        <div class="scanStats">
-
-          <div class="scanStat">
-            <small>COLUMN</small>
-            <strong id="scanColumn">—</strong>
-          </div>
-
-          <div class="scanStat">
-            <small>BOXES</small>
-            <strong id="scanBoxes">0</strong>
-          </div>
-
-          <div class="scanStat">
-            <small>COLUMNS</small>
-            <strong id="scanColumns">0</strong>
-          </div>
-
-        </div>
-
-        <div id="scanStatus">
-          Select a godown, then scan a COLUMN QR.
-        </div>
-
-        <div
-          style="display:flex;gap:7px;margin-top:8px">
-
-          <button
-            id="finishColumnButton"
-            class="primaryButton greenButton"
-            onclick="finishCurrentColumn()">
-            FINISH COLUMN
-          </button>
-
-          <button
-            id="stopScannerButton"
-            class="primaryButton"
-            onclick="stopScanner()">
-            STOP
-          </button>
-
-        </div>
-
-      </div>
-
-      <div
-        id="snapshotCard"
-        class="card"
-        style="display:none">
-
-        <div
-          style="display:flex;justify-content:space-between;align-items:center">
-
-          <strong>
-            Current Column Snapshot
-          </strong>
-
-          <span
-            id="snapshotColumn"
-            style="font-size:12px;font-weight:bold">
-            —
-          </span>
-
-        </div>
-
-        <div
-          id="snapshotList"
-          class="stockSnapshotList">
-        </div>
-
+      <div class="emptyList">
+        No boxes scanned yet
       </div>
 
     </div>
 
+  </div>
 
-    <!-- ================= CUSTOMER ================= -->
 
-    <div id="customerPage" class="page">
+  <!-- ==================================================
+       STATUS
+  ================================================== -->
 
-      <div class="pageTitle">
+  <div id="bottom">
 
-        <h2>New Order</h2>
-
-        <button
-          class="backButton"
-          onclick="goMenu()">
-          ← Menu
-        </button>
-
-      </div>
-
-      <div class="card">
-
-        <label class="label">
-          Customer
-        </label>
-
-        <div class="customerSearchWrap">
-
-          <input
-            id="customerSearch"
-            class="textInput"
-            type="search"
-            placeholder="Search customer..."
-            autocomplete="off">
-
-          <div
-            id="customerResults"
-            class="searchResults customerResults">
-          </div>
-
-        </div>
-
-        <div
-          id="customerCreateArea"
-          class="addCustomer"
-          style="display:none">
-
-          <button
-            class="primaryButton blueButton"
-            onclick="createCustomerFromSearch()">
-            + CREATE NEW CUSTOMER
-          </button>
-
-        </div>
-
-      </div>
-
+    <div id="lastScan">
+      READY
     </div>
 
-
-    <!-- ================= ORDER ENTRY ================= -->
-
-    <div id="orderEntryPage" class="page">
-
-      <div class="pageTitle">
-
-        <h2>Order</h2>
-
-        <button
-          class="backButton"
-          onclick="cancelOrderEntry()">
-          ← Back
-        </button>
-
-      </div>
-
-      <div class="orderHeader">
-
-        <span
-          id="orderPreviewId"
-          class="orderHeaderId">
-          ORD-.....
-        </span>
-
-        <span class="orderHeaderSep">|</span>
-
-        <span
-          id="orderCustomerName"
-          class="orderHeaderCustomer">
-          Customer
-        </span>
-
-      </div>
-
-      <div class="card">
-
-        <div class="itemSearchArea">
-
-          <input
-            id="itemSearch"
-            class="textInput itemSearchInput"
-            type="search"
-            placeholder="Search item..."
-            autocomplete="off"
-            inputmode="search">
-
-          <button
-            class="clearSearch"
-            onclick="clearItemSearch()">
-            ×
-          </button>
-
-        </div>
-
-        <div
-          id="itemResults"
-          class="searchResults">
-        </div>
-
-      </div>
-
-      <div
-        id="orderLinesCard"
-        class="card">
-
-        <strong>Order Items</strong>
-
-        <div
-          id="orderLines"
-          class="orderItems">
-        </div>
-
-        <div class="orderTotals">
-
-          <span>
-            Total Boxes
-          </span>
-
-          <span id="orderTotalBoxes">
-            0
-          </span>
-
-        </div>
-
-        <button
-          id="placeOrderButton"
-          class="primaryButton blueButton"
-          onclick="placeOrder()">
-          PLACE ORDER
-        </button>
-
-      </div>
-
-    </div>
-
-
-    <!-- ================= ORDERS LIST ================= -->
-
-    <div id="ordersListPage" class="page">
-
-      <div class="pageTitle">
-
-        <h2 id="ordersListTitle">
-          Open Orders
-        </h2>
-
-        <button
-          class="backButton"
-          onclick="goMenu()">
-          ← Menu
-        </button>
-
-      </div>
-
-      <div id="ordersList"></div>
-
-    </div>
-
-
-    <!-- ================= PICKING ================= -->
-
-    <div id="pickingPage" class="page">
-
-      <div class="pageTitle">
-
-        <h2 id="pickingTitle">
-          Picking
-        </h2>
-
-        <button
-          class="backButton"
-          onclick="openPickingList()">
-          ← Orders
-        </button>
-
-      </div>
-
-      <div
-        id="pickingContent">
-      </div>
-
-    </div>
-
-
-    <!-- ================= OUT ================= -->
-
-    <div id="outPage" class="page">
-
-      <div class="pageTitle">
-
-        <h2 id="outTitle">
-          Out / Sold
-        </h2>
-
-        <button
-          class="backButton"
-          onclick="openOutList()">
-          ← Orders
-        </button>
-
-      </div>
-
-      <div
-        id="outContent">
-      </div>
-
-    </div>
-
-
-    <!-- ================= CURRENT STOCK ================= -->
-
-    <div id="currentStockPage" class="page">
-
-      <div class="pageTitle">
-
-        <h2>Current Stock</h2>
-
-        <button
-          class="backButton"
-          onclick="goMenu()">
-          ← Menu
-        </button>
-
-      </div>
-
-      <div class="card">
-
-        <input
-          id="stockSearch"
-          class="textInput"
-          type="search"
-          placeholder="Search product name..."
-          autocomplete="off">
-
-      </div>
-
-      <div
-        id="currentStockResults"
-        class="card stockSearchResults">
-      </div>
-
+    <div id="lastType">
+      SCAN COLUMN QR
     </div>
 
   </div>
@@ -1341,462 +1032,1208 @@ button{
 </div>
 
 
-<div id="toast"></div>
+<!-- ==================================================
+     START CAMERA
+================================================== -->
 
-<div id="loading">
-  <div class="loadingBox">
-    <div id="loadingText">Please wait...</div>
+<div id="startScreen">
+
+  <div id="startBox">
+
+    <div id="startTitle">
+      CAMERA READY
+    </div>
+
+    <div id="startSubtitle">
+      Tap once to start continuous scanning
+    </div>
+
+    <button id="startButton">
+      START CAMERA
+    </button>
+
+    <div id="cameraMessage"></div>
+
   </div>
+
+</div>
+
+
+<!-- ==================================================
+     DUPLICATE
+================================================== -->
+
+<div id="duplicateOverlay">
+
+  <div id="duplicateTitle">
+    DUPLICATE
+  </div>
+
+  <div id="duplicateCode">
+    -
+  </div>
+
+  <div id="duplicateButtons">
+
+    <button
+      id="rejectButton"
+      class="duplicateButton">
+      ✕
+    </button>
+
+    <button
+      id="acceptButton"
+      class="duplicateButton">
+      ✓
+    </button>
+
+  </div>
+
+  <div id="duplicateHint">
+
+    ✕ Ignore this box
+
+    <br>
+
+    ✓ Record this box too
+
+  </div>
+
 </div>
 
 
 <script>
 
-/* =========================================================
-   VERSION / BACKEND
-========================================================= */
 
-const VERSION = "V3.0";
+/* ==================================================
+   VERSION / SETTINGS
+================================================== */
+
+const VERSION =
+  "V2.7";
+
 
 const APPS_SCRIPT_URL =
 "https://script.google.com/macros/s/AKfycbwSd26j_QkkD0WiEPgDXAFsLuJx6cAWePwZnT_WV9h8525cjibUVHksF5YbP64Dmzd-eA/exec";
 
-const DETECTION_COOLDOWN = 800;
+
+/*
+ * 800 ms cooldown.
+ */
+
+const DETECTION_COOLDOWN =
+  800;
 
 
-/* =========================================================
-   STATE
-========================================================= */
-
-let currentWorker = "";
-
-let currentMode = "MENU";
-
-let customers = [];
-let items = [];
-let stockRows = [];
-
-let itemByCode = {};
-let stockByCode = {};
-
-let currentCustomer = "";
-let currentOrderId = "";
-
-let orderLines = {};
-
-let stockGodown = "";
-let currentColumn = "";
-let columnSnapshot = {};
-
-let scanner = null;
-let scannerControls = null;
-let videoTrack = null;
-
-let flashOn = false;
-
-let previousItemCode = "";
-let pendingDuplicate = null;
-let duplicateBusy = false;
-
-let lastDetectedValue = "";
-let lastDetectedFormat = "";
-let lastDetectedTime = 0;
-
-let columnCount = 0;
-let totalBoxes = 0;
-
-let audioContext = null;
-
-
-/* =========================================================
+/* ==================================================
    ELEMENTS
-========================================================= */
+================================================== */
 
 const loginScreen =
-  document.getElementById("loginScreen");
+  document.getElementById(
+    "loginScreen"
+  );
 
-const app =
-  document.getElementById("app");
+const loginIdInput =
+  document.getElementById(
+    "loginId"
+  );
 
-const loginId =
-  document.getElementById("loginId");
-
-const password =
-  document.getElementById("password");
+const passwordInput =
+  document.getElementById(
+    "password"
+  );
 
 const loginButton =
-  document.getElementById("loginButton");
+  document.getElementById(
+    "loginButton"
+  );
 
 const loginError =
-  document.getElementById("loginError");
+  document.getElementById(
+    "loginError"
+  );
+
+const menuScreen =
+  document.getElementById(
+    "menuScreen"
+  );
+
+const menuWorkerName =
+  document.getElementById(
+    "menuWorkerName"
+  );
+
+const stockInMenuButton =
+  document.getElementById(
+    "stockInMenuButton"
+  );
+
+const menuLogoutButton =
+  document.getElementById(
+    "menuLogoutButton"
+  );
+
+const godownScreen =
+  document.getElementById(
+    "godownScreen"
+  );
+
+const godownSelect =
+  document.getElementById(
+    "godownSelect"
+  );
+
+const continueGodownButton =
+  document.getElementById(
+    "continueGodownButton"
+  );
+
+const backMenuButton =
+  document.getElementById(
+    "backMenuButton"
+  );
+
+const godownError =
+  document.getElementById(
+    "godownError"
+  );
+
+const saveColumnButton =
+  document.getElementById(
+    "saveColumnButton"
+  );
 
 const workerName =
-  document.getElementById("workerName");
+  document.getElementById(
+    "workerName"
+  );
 
-const content =
-  document.getElementById("content");
+const app =
+  document.getElementById(
+    "app"
+  );
 
 const video =
-  document.getElementById("video");
+  document.getElementById(
+    "video"
+  );
+
+const currentColumnNumber =
+  document.getElementById(
+    "currentColumnNumber"
+  );
+
+const columnCountDisplay =
+  document.getElementById(
+    "columnCount"
+  );
+
+const boxCountDisplay =
+  document.getElementById(
+    "boxCount"
+  );
+
+const scanList =
+  document.getElementById(
+    "scanList"
+  );
+
+const scanListColumn =
+  document.getElementById(
+    "scanListColumn"
+  );
+
+const lastScan =
+  document.getElementById(
+    "lastScan"
+  );
+
+const lastType =
+  document.getElementById(
+    "lastType"
+  );
 
 const flashButton =
-  document.getElementById("flashButton");
+  document.getElementById(
+    "flashButton"
+  );
 
-const toast =
-  document.getElementById("toast");
+const logoutButton =
+  document.getElementById(
+    "logoutButton"
+  );
 
-const loading =
-  document.getElementById("loading");
+const startScreen =
+  document.getElementById(
+    "startScreen"
+  );
 
-const loadingText =
-  document.getElementById("loadingText");
+const startButton =
+  document.getElementById(
+    "startButton"
+  );
+
+const cameraMessage =
+  document.getElementById(
+    "cameraMessage"
+  );
+
+const duplicateOverlay =
+  document.getElementById(
+    "duplicateOverlay"
+  );
+
+const duplicateCode =
+  document.getElementById(
+    "duplicateCode"
+  );
 
 
-/* =========================================================
-   HELPERS
-========================================================= */
+/* ==================================================
+   STATE
+================================================== */
 
-function normalize(value){
-  return String(value || "")
-    .toLowerCase()
-    .replace(/[^a-z0-9]/g,"");
+let currentWorker =
+  "";
+
+let currentColumn =
+  "";
+
+let currentGodown =
+  "";
+
+let currentColumnSnapshot =
+  [];
+
+let savingColumn =
+  false;
+
+let columnCount =
+  0;
+
+let boxCount =
+  0;
+
+
+/*
+ * THIS IS THE IMPORTANT
+ * DUPLICATE STATE.
+ *
+ * We keep the last barcode.
+ *
+ * Therefore:
+ *
+ * ABC
+ * ABC
+ * ABC
+ * ABC
+ *
+ * produces:
+ *
+ * normal
+ * duplicate
+ * duplicate
+ * duplicate
+ */
+
+let previousItemCode =
+  "";
+
+
+let scanner =
+  null;
+
+let scannerControls =
+  null;
+
+let videoTrack =
+  null;
+
+let flashOn =
+  false;
+
+let pendingDuplicate =
+  null;
+
+let lastDetectedValue =
+  "";
+
+let lastDetectedFormat =
+  "";
+
+let lastDetectedTime =
+  0;
+
+
+/*
+ * Prevents the same camera frame
+ * from firing continuously.
+ */
+
+let processingDuplicate =
+  false;
+
+
+/* ==================================================
+   COUNTERS
+================================================== */
+
+function updateCounters(){
+
+  columnCountDisplay.textContent =
+    columnCount;
+
+  boxCountDisplay.textContent =
+    boxCount;
+
 }
 
 
-function escapeHtml(value){
-  return String(value || "")
-    .replace(/&/g,"&amp;")
-    .replace(/</g,"&lt;")
-    .replace(/>/g,"&gt;")
-    .replace(/"/g,"&quot;")
-    .replace(/'/g,"&#039;");
+/* ==================================================
+   CURRENT COLUMN LIST
+================================================== */
+
+function resetColumnList(){
+
+  scanList.innerHTML =
+    "";
+
+  const empty =
+    document.createElement(
+      "div"
+    );
+
+  empty.className =
+    "emptyList";
+
+  empty.textContent =
+    "No boxes scanned yet";
+
+  scanList.appendChild(
+    empty
+  );
+
 }
 
 
-function showLoading(text){
-  loadingText.textContent =
-    text || "Please wait...";
-  loading.style.display = "flex";
-}
+function addScanToList(
+  value
+){
 
+  /*
+   * Remove empty message.
+   */
 
-function hideLoading(){
-  loading.style.display = "none";
-}
+  const empty =
+    scanList.querySelector(
+      ".emptyList"
+    );
 
-
-let toastTimer = null;
-
-function showToast(message,type){
-  clearTimeout(toastTimer);
-
-  toast.textContent = message;
-  toast.className = "";
-
-  if(type){
-    toast.classList.add(type);
+  if(empty){
+    empty.remove();
   }
 
-  toast.classList.add("show");
 
-  toastTimer =
-    setTimeout(function(){
-      toast.classList.remove("show");
-    },2800);
+  const row =
+    document.createElement(
+      "div"
+    );
+
+  row.className =
+    "scanRow";
+
+
+  const index =
+    document.createElement(
+      "div"
+    );
+
+  index.className =
+    "scanIndex";
+
+  index.textContent =
+    scanList
+      .querySelectorAll(
+        ".scanRow"
+      ).length + 1;
+
+
+  const code =
+    document.createElement(
+      "div"
+    );
+
+  code.className =
+    "scanCode";
+
+  code.textContent =
+    value;
+
+
+  row.appendChild(
+    index
+  );
+
+  row.appendChild(
+    code
+  );
+
+
+  scanList.appendChild(
+    row
+  );
+
+
+  /*
+   * Always show newest scan.
+   */
+
+  scanList.scrollTop =
+    scanList.scrollHeight;
+
 }
 
 
-function api(action,params={}){
-  const q =
-    new URLSearchParams();
+/* ==================================================
+   AUDIO
+================================================== */
 
-  q.append("action",action);
+let audioContext =
+  null;
 
-  Object.keys(params).forEach(function(k){
-    q.append(k,String(params[k]));
-  });
 
-  q.append("t",Date.now());
+function initializeAudio(){
 
-  return fetch(
-    APPS_SCRIPT_URL +
-    "?" +
-    q.toString(),
-    {
-      method:"GET",
-      cache:"no-store"
+  try{
+
+    const AudioContext =
+      window.AudioContext ||
+      window.webkitAudioContext;
+
+    if(!AudioContext){
+      return;
     }
-  )
-  .then(function(response){
-    return response.json();
-  })
-  .then(function(data){
-    if(!data.success){
-      throw new Error(
-        data.error ||
-        "Request failed"
+
+    if(!audioContext){
+
+      audioContext =
+        new AudioContext();
+
+    }
+
+    if(
+      audioContext.state ===
+      "suspended"
+    ){
+
+      audioContext.resume();
+
+    }
+
+  }catch(e){
+
+    console.log(e);
+
+  }
+
+}
+
+
+function beep(
+  frequency,
+  duration
+){
+
+  try{
+
+    initializeAudio();
+
+    if(!audioContext){
+      return;
+    }
+
+    const oscillator =
+      audioContext
+        .createOscillator();
+
+    const gain =
+      audioContext
+        .createGain();
+
+
+    oscillator.type =
+      "sine";
+
+    oscillator.frequency.value =
+      frequency;
+
+    gain.gain.value =
+      .15;
+
+
+    oscillator.connect(
+      gain
+    );
+
+    gain.connect(
+      audioContext.destination
+    );
+
+
+    oscillator.start();
+
+
+    oscillator.stop(
+      audioContext.currentTime +
+      duration / 1000
+    );
+
+  }catch(e){
+
+    console.log(e);
+
+  }
+
+}
+
+
+function itemBeep(){
+
+  beep(
+    1000,
+    80
+  );
+
+}
+
+
+function columnBeep(){
+
+  beep(
+    650,
+    140
+  );
+
+}
+
+
+function duplicateAlert(){
+
+  beep(
+    450,
+    120
+  );
+
+
+  setTimeout(
+    function(){
+
+      beep(
+        250,
+        220
       );
+
+    },
+    140
+  );
+
+
+  try{
+
+    if(
+      "speechSynthesis"
+      in window
+    ){
+
+      speechSynthesis.cancel();
+
+
+      const speech =
+        new SpeechSynthesisUtterance(
+          "Duplicate"
+        );
+
+
+      speech.rate =
+        1.1;
+
+      speech.pitch =
+        .8;
+
+
+      speechSynthesis.speak(
+        speech
+      );
+
     }
 
-    return data;
-  });
+  }catch(e){
+
+    console.log(e);
+
+  }
+
 }
 
 
-/* =========================================================
-   PAGE MANAGEMENT
-========================================================= */
-
-function hidePages(){
-
-  document
-    .querySelectorAll(".page")
-    .forEach(function(p){
-      p.style.display = "none";
-    });
-
-  document
-    .getElementById("menuScreen")
-    .style.display = "none";
-}
-
-
-function showPage(id){
-
-  hidePages();
-
-  document
-    .getElementById(id)
-    .style.display = "block";
-
-  content.scrollTop = 0;
-}
-
-
-function goMenu(){
-
-  stopScanner();
-
-  currentMode = "MENU";
-
-  hidePages();
-
-  document
-    .getElementById("menuScreen")
-    .style.display = "block";
-
-  content.scrollTop = 0;
-}
-
-
-/* =========================================================
+/* ==================================================
    LOGIN
-========================================================= */
+================================================== */
 
 function login(){
 
   const id =
-    loginId.value.trim();
+    loginIdInput.value
+      .trim();
 
-  const pw =
-    password.value;
+  const password =
+    passwordInput.value;
 
-  loginError.textContent = "";
 
-  if(!id || !pw){
+  loginError.textContent =
+    "";
+
+
+  if(
+    !id ||
+    !password
+  ){
+
     loginError.textContent =
       "Enter Worker ID and Password";
+
     return;
+
   }
 
-  loginButton.disabled = true;
+
+  loginButton.disabled =
+    true;
+
   loginButton.textContent =
     "LOGGING IN...";
 
-  api(
-    "login",
-    {
-      loginId:id,
-      password:pw
+
+  const params =
+    new URLSearchParams();
+
+
+  params.append(
+    "action",
+    "login"
+  );
+
+
+  params.append(
+    "loginId",
+    id
+  );
+
+
+  params.append(
+    "password",
+    password
+  );
+
+
+  fetch(
+    APPS_SCRIPT_URL +
+    "?" +
+    params.toString() +
+    "&t=" +
+    Date.now()
+  )
+
+  .then(
+    response =>
+      response.json()
+  )
+
+  .then(
+    data => {
+
+      if(
+        !data.success
+      ){
+
+        throw new Error(
+          data.error ||
+          "Login failed"
+        );
+
+      }
+
+
+      currentWorker =
+        data.worker;
+
+
+      localStorage.setItem(
+        "stockScannerWorker",
+        currentWorker
+      );
+
+
+      workerName.textContent =
+        currentWorker;
+
+
+      loginScreen.style.display =
+        "none";
+
+      menuWorkerName.textContent =
+        currentWorker;
+
+      menuScreen.style.display =
+        "flex";
+
+      app.style.display =
+        "none";
+
+
+      loginIdInput.value =
+        "";
+
+      passwordInput.value =
+        "";
+
+
+      startScreen.style.display =
+        "flex";
+
+
+      startButton.focus();
+
     }
   )
-  .then(function(data){
 
-    currentWorker =
-      data.worker;
+  .catch(
+    error => {
 
-    localStorage.setItem(
-      "warehouseWorker",
-      currentWorker
-    );
+      console.error(
+        "Login error:",
+        error
+      );
 
-    workerName.textContent =
-      currentWorker;
 
-    loginScreen.style.display =
-      "none";
+      loginError.textContent =
+        error.message ||
+        "Login failed";
 
-    app.style.display =
-      "flex";
+    }
+  )
 
-    loginId.value = "";
-    password.value = "";
+  .finally(
+    function(){
 
-    /*
-     * IMPORTANT:
-     * Login now goes directly
-     * to the Operations menu.
-     */
-    goMenu();
+      loginButton.disabled =
+        false;
 
-    /*
-     * Preload the data in background.
-     * This prevents the lag after
-     * selecting a customer.
-     */
-    preloadData();
+      loginButton.textContent =
+        "LOGIN";
 
-  })
-  .catch(function(error){
+    }
+  );
 
-    loginError.textContent =
-      error.message ||
-      "Login failed";
-
-  })
-  .finally(function(){
-
-    loginButton.disabled = false;
-    loginButton.textContent =
-      "LOGIN";
-
-  });
 }
 
+
+/* ==================================================
+   SAVED LOGIN
+================================================== */
 
 function checkSavedWorker(){
 
   const saved =
     localStorage.getItem(
-      "warehouseWorker"
+      "stockScannerWorker"
     );
+
 
   if(saved){
 
-    currentWorker = saved;
+    currentWorker =
+      saved;
+
 
     workerName.textContent =
       currentWorker;
 
+
     loginScreen.style.display =
       "none";
 
-    app.style.display =
+
+    startScreen.style.display =
       "flex";
-
-    goMenu();
-
-    preloadData();
 
   }else{
 
     loginScreen.style.display =
       "flex";
 
-    app.style.display =
+
+    startScreen.style.display =
       "none";
 
+  }
+
+}
+
+
+/* ==================================================
+   LOGOUT
+================================================== */
+
+function logout(){
+
+  try{
+
+    if(
+      scannerControls &&
+      scannerControls.stop
+    ){
+
+      scannerControls.stop();
+
+    }
+
+  }catch(e){}
+
+
+  try{
+
+    if(
+      scanner &&
+      scanner.reset
+    ){
+
+      scanner.reset();
+
+    }
+
+  }catch(e){}
+
+
+  if(
+    video.srcObject
+  ){
+
+    video.srcObject
+      .getTracks()
+      .forEach(
+        track =>
+          track.stop()
+      );
+
+
+    video.srcObject =
+      null;
+
+  }
+
+
+  scanner =
+    null;
+
+  scannerControls =
+    null;
+
+  videoTrack =
+    null;
+
+
+  currentWorker =
+    "";
+
+  currentColumn =
+    "";
+
+  currentGodown =
+    "";
+
+  currentColumnSnapshot =
+    [];
+
+  savingColumn =
+    false;
+
+  columnCount =
+    0;
+
+  boxCount =
+    0;
+
+  previousItemCode =
+    "";
+
+  processingDuplicate =
+    false;
+
+  pendingDuplicate =
+    null;
+
+
+  flashOn =
+    false;
+
+
+  localStorage.removeItem(
+    "stockScannerWorker"
+  );
+
+
+  workerName.textContent =
+    "-";
+
+
+  currentColumnNumber.textContent =
+    "—";
+
+
+  scanListColumn.textContent =
+    "COLUMN —";
+
+
+  resetColumnList();
+
+  updateCounters();
+
+
+  loginScreen.style.display =
+    "flex";
+
+
+  startScreen.style.display =
+    "none";
+
+}
+
+
+/* ==================================================
+   GODOWN / STOCK IN MENU
+================================================== */
+
+async function loadGodowns(){
+
+  godownError.textContent =
+    "";
+
+  godownSelect.innerHTML =
+    '<option value="">Loading godowns...</option>';
+
+  try{
+
+    const response =
+      await fetch(
+        APPS_SCRIPT_URL +
+        "?action=getGodowns&t=" +
+        Date.now(),
+        {
+          method:"GET",
+          cache:"no-store"
+        }
+      );
+
+    const data =
+      await response.json();
+
+    if(!data.success){
+      throw new Error(
+        data.error ||
+        "Unable to load godowns"
+      );
+    }
+
+    godownSelect.innerHTML =
+      '<option value="">Select Godown</option>';
+
+    (data.godowns || [])
+      .forEach(function(g){
+
+        const option =
+          document.createElement(
+            "option"
+          );
+
+        option.value =
+          g.id;
+
+        option.textContent =
+          g.name +
+          (g.floor
+            ? " • " + g.floor
+            : "");
+
+        godownSelect.appendChild(
+          option
+        );
+      });
+
+  }catch(error){
+
+    godownSelect.innerHTML =
+      '<option value="">Unable to load godowns</option>';
+
+    godownError.textContent =
+      error.message;
   }
 }
 
 
-function logout(){
+function openStockIn(){
 
-  stopScanner();
+  godownError.textContent =
+    "";
 
-  localStorage.removeItem(
-    "warehouseWorker"
-  );
+  menuScreen.style.display =
+    "none";
 
-  currentWorker = "";
+  godownScreen.style.display =
+    "flex";
 
-  customers = [];
-  items = [];
-  stockRows = [];
-  itemByCode = {};
-  stockByCode = {};
-
-  currentCustomer = "";
-  currentOrderId = "";
-
-  loginId.value = "";
-  password.value = "";
-
-  app.style.display = "none";
-  loginScreen.style.display = "flex";
-
+  loadGodowns();
 }
 
 
-/* =========================================================
-   PRELOAD
-========================================================= */
+function continueToScanner(){
 
-async function preloadData(){
+  const value =
+    String(
+      godownSelect.value || ""
+    ).trim();
+
+  if(!value){
+
+    godownError.textContent =
+      "Please select a godown.";
+
+    return;
+  }
+
+  currentGodown =
+    value;
+
+  const option =
+    godownSelect.options[
+      godownSelect.selectedIndex
+    ];
+
+  const headerGodown =
+    document.querySelector(
+      "#header #selectedGodown"
+    );
+
+  if(headerGodown){
+
+    headerGodown.textContent =
+      "Godown: " +
+      (
+        option
+          ? option.textContent
+          : value
+      );
+  }
+
+  godownScreen.style.display =
+    "none";
+
+  app.style.display =
+    "flex";
+
+  startScreen.style.display =
+    "flex";
+
+  lastScan.textContent =
+    "READY";
+
+  lastScan.className =
+    "";
+
+  lastType.textContent =
+    "GODOWN • " +
+    (
+      option
+        ? option.textContent
+        : value
+    );
+
+  lastType.className =
+    "columnColor";
+}
+
+
+function backToMenu(){
+
+  godownScreen.style.display =
+    "none";
+
+  menuScreen.style.display =
+    "flex";
+}
+
+
+/* ==================================================
+   FLASH
+================================================== */
+
+async function toggleFlash(){
+
+  if(!videoTrack){
+
+    alert(
+      "Camera is not ready."
+    );
+
+    return;
+
+  }
+
 
   try{
 
-    const results =
-      await Promise.all([
+    flashOn =
+      !flashOn;
 
-        api("getCustomers"),
 
-        api(
-          "getItems",
+    await videoTrack
+      .applyConstraints({
+
+        advanced:[
           {
-            all:"1"
+            torch:
+              flashOn
           }
-        ),
+        ]
 
-        api("getStock"),
+      });
 
-        api("getGodowns")
 
-      ]);
+    flashButton.textContent =
+      flashOn
+      ? "🔦 ON"
+      : "🔦 FLASH";
 
-    customers =
-      results[0].customers || [];
-
-    items =
-      results[1].items || [];
-
-    stockRows =
-      results[2].stock || [];
-
-    const godowns =
-      results[3].godowns || [];
-
-    itemByCode = {};
-
-    items.forEach(function(item){
-      itemByCode[item.itemCode] =
-        item;
-    });
-
-    buildStockMap();
-
-    populateGodowns(godowns);
 
   }catch(error){
 
     console.error(
-      "Preload error:",
+      "Flash error:",
       error
     );
 
-    showToast(
-      "Background data loading failed. It will retry when needed.",
-      "bad"
+
+    flashOn =
+      false;
+
+
+    flashButton.textContent =
+      "🔦 FLASH";
+
+
+    alert(
+      "This phone/browser does not allow flashlight control from the camera."
     );
 
   }
@@ -1804,448 +2241,468 @@ async function preloadData(){
 }
 
 
-function buildStockMap(){
-
-  stockByCode = {};
-
-  stockRows.forEach(function(row){
-
-    const code =
-      String(row.itemCode || "").trim();
-
-    if(!code){
-      return;
-    }
-
-    stockByCode[code] =
-      (stockByCode[code] || 0) +
-      Number(row.quantity || 0);
-
-  });
-
-}
-
-
-function refreshStockData(){
-
-  return api("getStock")
-    .then(function(data){
-
-      stockRows =
-        data.stock || [];
-
-      buildStockMap();
-
-    });
-}
-
-
-/* =========================================================
-   GODOWNS
-========================================================= */
-
-function populateGodowns(godowns){
-
-  const select =
-    document.getElementById(
-      "stockGodown"
-    );
-
-  select.innerHTML =
-    '<option value="">Select Godown</option>';
-
-  godowns.forEach(function(g){
-
-    const option =
-      document.createElement("option");
-
-    option.value = g.id;
-
-    option.textContent =
-      g.name +
-      (g.floor
-        ? " • " + g.floor
-        : "");
-
-    select.appendChild(option);
-
-  });
-
-}
-
-
-/* =========================================================
-   STOCK IN
-========================================================= */
-
-function openStockIn(){
-
-  stopScanner();
-
-  currentMode =
-    "STOCK_IN";
-
-  stockGodown = "";
-  currentColumn = "";
-  columnSnapshot = {};
-
-  columnCount = 0;
-  totalBoxes = 0;
-
-  previousItemCode = "";
-
-  document.getElementById(
-    "stockGodown"
-  ).value = "";
-
-  document.getElementById(
-    "stockInfo"
-  ).style.display = "none";
-
-  document.getElementById(
-    "scannerCard"
-  ).style.display = "none";
-
-  document.getElementById(
-    "snapshotCard"
-  ).style.display = "none";
-
-  updateScanStats();
-
-  showPage("stockInPage");
-
-}
-
-
-document
-  .getElementById("stockGodown")
-  .addEventListener(
-    "change",
-    function(){
-
-      const value =
-        this.value;
-
-      if(!value){
-
-        stopScanner();
-
-        document.getElementById(
-          "stockInfo"
-        ).style.display = "none";
-
-        document.getElementById(
-          "scannerCard"
-        ).style.display = "none";
-
-        return;
-      }
-
-      stockGodown = value;
-
-      document.getElementById(
-        "stockInfo"
-      ).style.display = "block";
-
-      document.getElementById(
-        "scannerCard"
-      ).style.display = "block";
-
-      startScanner();
-
-    }
-  );
-
-
-function updateScanStats(){
-
-  document.getElementById(
-    "scanColumn"
-  ).textContent =
-    currentColumn || "—";
-
-  document.getElementById(
-    "scanBoxes"
-  ).textContent =
-    totalBoxes;
-
-  document.getElementById(
-    "scanColumns"
-  ).textContent =
-    columnCount;
-
-}
-
-
-function updateSnapshotDisplay(){
-
-  const list =
-    document.getElementById(
-      "snapshotList"
-    );
-
-  const card =
-    document.getElementById(
-      "snapshotCard"
-    );
-
-  if(!currentColumn){
-
-    card.style.display =
-      "none";
-
-    return;
-  }
-
-  card.style.display =
-    "block";
-
-  document.getElementById(
-    "snapshotColumn"
-  ).textContent =
-    "COLUMN " + currentColumn;
-
-  const codes =
-    Object.keys(columnSnapshot);
-
-  if(!codes.length){
-
-    list.innerHTML =
-      '<div class="emptyList">No boxes scanned yet</div>';
-
-    return;
-  }
-
-  list.innerHTML =
-    codes.map(function(code){
-
-      return `
-        <div class="snapshotRow">
-          <div class="snapshotCode">
-            ${escapeHtml(code)}
-          </div>
-
-          <div class="snapshotQty">
-            ${columnSnapshot[code]}
-          </div>
-        </div>
-      `;
-
-    }).join("");
-
-}
-
-
-async function saveColumnSnapshot(){
-
-  if(!stockGodown || !currentColumn){
-    return;
-  }
-
-  const itemsForSnapshot =
-    Object.keys(columnSnapshot)
-      .map(function(code){
-        return {
-          itemCode:code,
-          quantity:columnSnapshot[code]
-        };
-      });
+/* ==================================================
+   VIDEO TRACK
+================================================== */
+
+function findVideoTrack(){
 
   try{
 
-    showLoading(
-      "Saving COLUMN " +
-      currentColumn +
-      "..."
-    );
+    if(
+      video.srcObject
+    ){
 
-    const data =
-      await api(
-        "stockSnapshot",
-        {
-          godown:stockGodown,
-          column:currentColumn,
-          items:JSON.stringify(
-            itemsForSnapshot
-          ),
-          worker:currentWorker,
-          device:navigator.userAgent
-        }
-      );
+      const tracks =
+        video.srcObject
+          .getVideoTracks();
 
-    hideLoading();
 
-    showToast(
-      "Column saved • +" +
-      data.added +
-      " / -" +
-      data.removed +
-      " boxes",
-      "good"
-    );
+      if(
+        tracks.length
+      ){
 
-    /*
-     * Refresh local stock immediately.
-     */
-    await refreshStockData();
+        videoTrack =
+          tracks[0];
 
-  }catch(error){
+      }
 
-    hideLoading();
+    }
 
-    showToast(
-      "Stock save failed: " +
-      error.message,
-      "bad"
-    );
+  }catch(e){
+
+    console.log(e);
 
   }
 
 }
 
 
-async function finishCurrentColumn(){
+/* ==================================================
+   COLUMN DETECTION
+================================================== */
 
-  if(!currentColumn){
+function getColumnNumber(
+  text
+){
 
-    showToast(
-      "Scan a column first.",
-      "bad"
-    );
+  const value =
+    String(
+      text || ""
+    ).trim();
 
-    return;
-  }
-
-  await saveColumnSnapshot();
-
-  currentColumn = "";
-  columnSnapshot = {};
-  previousItemCode = "";
-
-  updateScanStats();
-  updateSnapshotDisplay();
-
-  document.getElementById(
-    "scanStatus"
-  ).textContent =
-    "Column saved. Scan the next COLUMN QR.";
-
-}
-
-
-async function processColumn(text){
 
   const match =
-    String(text || "")
-      .trim()
-      .match(
-        /^COLUMN\s*[:\-_]?\s*(.+)$/i
-      );
+    value.match(
+      /^COLUMN\s*[:\-_]?\s*(\d+)/i
+    );
+
 
   if(!match){
-    return;
+    return null;
   }
 
+
+  return String(
+    Number(
+      match[1]
+    )
+  );
+
+}
+
+
+/* ==================================================
+   PROCESS COLUMN
+================================================== */
+
+async function processColumn(
+  text
+){
+
   const column =
-    String(match[1] || "")
-      .trim();
+    getColumnNumber(
+      text
+    );
 
   if(!column){
     return;
   }
 
-  if(column === currentColumn){
+  if(
+    column === currentColumn
+  ){
     return;
   }
 
   /*
-   * Automatically save the previous
-   * complete column before moving on.
+   * When the next column is scanned,
+   * save the complete physical snapshot
+   * of the previous column first.
    */
-  if(currentColumn){
+  if(
+    currentColumn &&
+    currentColumnSnapshot.length
+  ){
 
-    await saveColumnSnapshot();
+    const saved =
+      await saveCurrentColumn();
 
+    if(!saved){
+      return;
+    }
   }
 
   currentColumn =
     column;
 
-  columnSnapshot = {};
+  currentColumnSnapshot =
+    [];
 
-  previousItemCode = "";
+  previousItemCode =
+    "";
 
   columnCount++;
 
-  totalBoxes = 0;
+  columnBeep();
 
-  updateScanStats();
-  updateSnapshotDisplay();
+  currentColumnNumber.textContent =
+    currentColumn;
 
-  document.getElementById(
-    "scanStatus"
-  ).textContent =
+  scanListColumn.textContent =
     "COLUMN " +
-    currentColumn +
-    " active • scan all boxes";
+    currentColumn;
 
-  saveScanLog(
+  resetColumnList();
+
+  lastScan.textContent =
+    "COLUMN " +
+    currentColumn;
+
+  lastScan.className =
+    "columnColor";
+
+  lastType.textContent =
+    "NEW COLUMN";
+
+  lastType.className =
+    "columnColor";
+
+  saveColumnButton.style.display =
+    "block";
+
+  saveColumnButton.disabled =
+    true;
+
+  updateCounters();
+
+  saveScan(
     text,
     "COLUMN",
     currentColumn,
     ""
   );
+}
 
-  columnBeep();
+
+/* ==================================================
+   SAVE
+================================================== */
+
+function saveScan(
+  value,
+  type,
+  column,
+  itemCode
+){
+
+  const params =
+    new URLSearchParams();
+
+  params.append(
+    "action",
+    "scan"
+  );
+
+  params.append(
+    "value",
+    value
+  );
+
+  params.append(
+    "type",
+    type
+  );
+
+  params.append(
+    "column",
+    column || ""
+  );
+
+  params.append(
+    "itemCode",
+    itemCode || ""
+  );
+
+  params.append(
+    "worker",
+    currentWorker
+  );
+
+  params.append(
+    "device",
+    navigator.userAgent
+  );
+
+  params.append(
+    "t",
+    Date.now()
+  );
+
+  fetch(
+    APPS_SCRIPT_URL +
+    "?" +
+    params.toString(),
+    {
+      method:"GET",
+      mode:"no-cors",
+      cache:"no-store"
+    }
+  )
+  .catch(
+    error =>
+      console.error(
+        "Scan log error:",
+        error
+      )
+  );
 
 }
 
 
-function recordStockBox(value){
+/* ==================================================
+   SAVE COMPLETE PHYSICAL COLUMN
+================================================== */
+
+async function saveCurrentColumn(){
+
+  if(!currentGodown){
+    lastScan.textContent =
+      "SELECT GODOWN FIRST";
+
+    lastScan.className =
+      "errorColor";
+
+    return false;
+  }
 
   if(!currentColumn){
+    return false;
+  }
 
-    showToast(
-      "Scan the COLUMN QR first.",
-      "bad"
+  if(!currentColumnSnapshot.length){
+    lastScan.textContent =
+      "NO BOXES IN COLUMN";
+
+    lastScan.className =
+      "errorColor";
+
+    return false;
+  }
+
+  if(savingColumn){
+    return false;
+  }
+
+  savingColumn =
+    true;
+
+  saveColumnButton.disabled =
+    true;
+
+  lastScan.textContent =
+    "SAVING COLUMN...";
+
+  lastScan.className =
+    "columnColor";
+
+  const snapshot =
+    currentColumnSnapshot.map(
+      function(item,index){
+        return {
+          itemCode:item,
+          position:index+1
+        };
+      }
     );
 
-    return;
+  const params =
+    new URLSearchParams();
+
+  params.append(
+    "action",
+    "reconcilePhysicalColumn"
+  );
+
+  params.append(
+    "godown",
+    currentGodown
+  );
+
+  params.append(
+    "column",
+    currentColumn
+  );
+
+  params.append(
+    "worker",
+    currentWorker
+  );
+
+  params.append(
+    "device",
+    navigator.userAgent
+  );
+
+  params.append(
+    "snapshot",
+    JSON.stringify(snapshot)
+  );
+
+  try{
+
+    const response =
+      await fetch(
+        APPS_SCRIPT_URL +
+        "?" +
+        params.toString() +
+        "&t=" +
+        Date.now(),
+        {
+          method:"GET",
+          cache:"no-store"
+        }
+      );
+
+    const data =
+      await response.json();
+
+    if(!data.success){
+
+      throw new Error(
+        data.error ||
+        "Column save failed"
+      );
+    }
+
+    lastScan.textContent =
+      "COLUMN SAVED ✓";
+
+    lastScan.className =
+      "itemColor";
+
+    lastType.textContent =
+      currentColumn +
+      " • " +
+      data.scanned +
+      " BOXES • +" +
+      data.added +
+      " / -" +
+      data.removed;
+
+    lastType.className =
+      "itemColor";
+
+    return true;
+
+  }catch(error){
+
+    console.error(
+      "Column save error:",
+      error
+    );
+
+    lastScan.textContent =
+      "STOCK SAVE FAILED";
+
+    lastScan.className =
+      "errorColor";
+
+    lastType.textContent =
+      error.message;
+
+    lastType.className =
+      "errorColor";
+
+    saveColumnButton.disabled =
+      false;
+
+    return false;
+
+  }finally{
+
+    savingColumn =
+      false;
   }
+}
+
+
+/* ==================================================
+   RECORD NORMAL BOX
+================================================== */
+
+function recordBox(
+  value
+){
 
   /*
-   * Consecutive duplicate warning.
+   * Keep this barcode as the
+   * current consecutive barcode.
    */
-  if(value === previousItemCode){
-
-    showDuplicate(value);
-
-    return;
-  }
 
   previousItemCode =
     value;
 
-  columnSnapshot[value] =
-    (columnSnapshot[value] || 0) +
-    1;
+  currentColumnSnapshot.push(
+    value
+  );
 
-  totalBoxes++;
 
-  updateScanStats();
-  updateSnapshotDisplay();
+  boxCount++;
 
-  document.getElementById(
-    "scanStatus"
-  ).textContent =
-    "BOX " +
-    value +
-    " • COLUMN " +
-    currentColumn;
 
   itemBeep();
 
-  saveScanLog(
+
+  addScanToList(
+    value
+  );
+
+  saveColumnButton.disabled =
+    false;
+
+
+  lastScan.textContent =
+    value;
+
+
+  lastScan.className =
+    "itemColor";
+
+
+  lastType.textContent =
+    "BOX • COLUMN " +
+    currentColumn;
+
+
+  lastType.className =
+    "itemColor";
+
+
+  updateCounters();
+
+
+  saveScan(
     value,
     "ITEM",
     currentColumn,
@@ -2255,47 +2712,453 @@ function recordStockBox(value){
 }
 
 
-/* =========================================================
-   SCAN LOG
-========================================================= */
+/* ==================================================
+   DUPLICATE
+================================================== */
 
-function saveScanLog(
-  value,
-  type,
-  column,
-  itemCode
+function showDuplicate(
+  value
 ){
 
-  const params = {
-    value:value,
-    type:type,
-    column:column || "",
-    itemCode:itemCode || "",
-    worker:currentWorker,
-    device:navigator.userAgent
-  };
+  /*
+   * Do not clear previousItemCode.
+   *
+   * This is important.
+   *
+   * If 5 boxes have:
+   *
+   * ABC
+   * ABC
+   * ABC
+   * ABC
+   * ABC
+   *
+   * then every scan after
+   * the first is DUPLICATE.
+   */
 
-  api(
-    "scan",
-    params
-  )
-  .catch(function(error){
-    console.error(
-      "Scan log error:",
-      error
-    );
-  });
+  pendingDuplicate =
+    value;
+
+
+  duplicateCode.textContent =
+    value;
+
+
+  duplicateOverlay.style.display =
+    "flex";
+
+
+  processingDuplicate =
+    true;
+
+
+  duplicateAlert();
 
 }
 
 
-/* =========================================================
-   CAMERA
-========================================================= */
+/* ==================================================
+   REJECT DUPLICATE
+================================================== */
 
-async function startScanner(){
+function rejectDuplicate(){
 
-  stopScanner();
+  const value =
+    pendingDuplicate;
+
+
+  pendingDuplicate =
+    null;
+
+
+  duplicateOverlay.style.display =
+    "none";
+
+
+  processingDuplicate =
+    false;
+
+
+  /*
+   * IMPORTANT:
+   *
+   * Do NOT clear previousItemCode.
+   *
+   * The next identical box must
+   * still be a duplicate.
+   */
+
+  lastScan.textContent =
+    "IGNORED";
+
+
+  lastScan.className =
+    "errorColor";
+
+
+  lastType.textContent =
+    "DUPLICATE NOT RECORDED";
+
+
+  lastType.className =
+    "errorColor";
+
+}
+
+
+/* ==================================================
+   ACCEPT DUPLICATE
+================================================== */
+
+function acceptDuplicate(){
+
+  const value =
+    pendingDuplicate;
+
+
+  pendingDuplicate =
+    null;
+
+
+  duplicateOverlay.style.display =
+    "none";
+
+
+  processingDuplicate =
+    false;
+
+
+  /*
+   * IMPORTANT:
+   *
+   * Keep previousItemCode.
+   *
+   * Therefore the next identical
+   * physical box will ALSO show
+   * DUPLICATE.
+   */
+
+
+  boxCount++;
+
+  currentColumnSnapshot.push(
+    value
+  );
+
+
+  itemBeep();
+
+
+  addScanToList(
+    value
+  );
+
+  saveColumnButton.disabled =
+    false;
+
+
+  lastScan.textContent =
+    value;
+
+
+  lastScan.className =
+    "itemColor";
+
+
+  lastType.textContent =
+    "BOX ACCEPTED • COLUMN " +
+    currentColumn;
+
+
+  lastType.className =
+    "itemColor";
+
+
+  updateCounters();
+
+
+  saveScan(
+    value,
+    "ITEM",
+    currentColumn,
+    value
+  );
+
+}
+
+
+/* ==================================================
+   FORMAT DETECTION
+================================================== */
+
+function getFormatName(
+  result
+){
+
+  try{
+
+    const format =
+      result.getBarcodeFormat();
+
+
+    /*
+     * ZXing BarcodeFormat values.
+     *
+     * QR_CODE = 11
+     * CODE_128 = 4
+     */
+
+    if(
+      format === 11 ||
+      String(format)
+        .toUpperCase()
+        .includes("QR")
+    ){
+
+      return "QR";
+
+    }
+
+
+    if(
+      format === 4 ||
+      String(format)
+        .toUpperCase()
+        .includes("CODE_128")
+    ){
+
+      return "CODE_128";
+
+    }
+
+
+    return String(
+      format
+    );
+
+  }catch(e){
+
+    return "";
+
+  }
+
+}
+
+
+/* ==================================================
+   RESULT
+================================================== */
+
+function handleResult(
+  result
+){
+
+  if(!result){
+    return;
+  }
+
+
+  const value =
+    String(
+      result.getText() || ""
+    ).trim();
+
+
+  if(!value){
+    return;
+  }
+
+
+  const formatName =
+    getFormatName(
+      result
+    );
+
+
+  const now =
+    Date.now();
+
+
+  /*
+   * 800 ms camera cooldown.
+   */
+
+  if(
+    value ===
+      lastDetectedValue &&
+
+    formatName ===
+      lastDetectedFormat &&
+
+    now -
+      lastDetectedTime <
+      DETECTION_COOLDOWN
+  ){
+
+    return;
+
+  }
+
+
+  lastDetectedValue =
+    value;
+
+
+  lastDetectedFormat =
+    formatName;
+
+
+  lastDetectedTime =
+    now;
+
+
+  /* =================================================
+     COLUMN QR
+  ================================================= */
+
+  if(
+    formatName === "QR"
+  ){
+
+    /*
+     * Only QR values beginning
+     * with COLUMN are useful.
+     */
+
+    if(
+      /^COLUMN/i.test(
+        value
+      )
+    ){
+
+      processColumn(
+        value
+      );
+
+    }
+
+
+    return;
+
+  }
+
+
+  /* =================================================
+     CODE 128
+  ================================================= */
+
+  if(
+    formatName === "CODE_128"
+  ){
+
+    if(!currentColumn){
+
+      beep(
+        300,
+        250
+      );
+
+
+      lastScan.textContent =
+        "SCAN COLUMN FIRST";
+
+
+      lastScan.className =
+        "errorColor";
+
+
+      lastType.textContent =
+        "CODE 128";
+
+
+      lastType.className =
+        "errorColor";
+
+
+      return;
+
+    }
+
+
+    /*
+     * CONSECUTIVE DUPLICATE RULE
+     *
+     * First ABC:
+     *     record
+     *
+     * Next ABC:
+     *     duplicate
+     *
+     * Next ABC:
+     *     duplicate
+     *
+     * Different XYZ:
+     *     record
+     *
+     * Next XYZ:
+     *     duplicate
+     */
+
+    if(
+      value ===
+      previousItemCode
+    ){
+
+      showDuplicate(
+        value
+      );
+
+      return;
+
+    }
+
+
+    /*
+     * Different barcode.
+     *
+     * This becomes the new
+     * consecutive barcode.
+     */
+
+    recordBox(
+      value
+    );
+
+  }
+
+}
+
+
+/* ==================================================
+   START CAMERA
+================================================== */
+
+async function startCamera(){
+
+  app.style.display =
+    "flex";
+
+  menuScreen.style.display =
+    "none";
+
+  godownScreen.style.display =
+    "none";
+
+  startButton.disabled =
+    true;
+
+
+  startButton.textContent =
+    "STARTING...";
+
+
+  cameraMessage.textContent =
+    "";
+
+
+  initializeAudio();
+
 
   try{
 
@@ -2303,22 +3166,28 @@ async function startScanner(){
       typeof ZXingBrowser ===
       "undefined"
     ){
+
       throw new Error(
         "ZXingBrowser did not load."
       );
+
     }
 
-    if(!navigator.mediaDevices){
-      throw new Error(
-        "Camera is not available in this browser."
-      );
-    }
+
+    /*
+     * Ask for the rear camera.
+     *
+     * Keep the existing 1280x720
+     * request so we don't change
+     * the performance profile.
+     */
 
     const stream =
       await navigator.mediaDevices
         .getUserMedia({
 
           video:{
+
             facingMode:{
               ideal:"environment"
             },
@@ -2337,16 +3206,27 @@ async function startScanner(){
 
         });
 
+
     video.srcObject =
       stream;
 
+
     await video.play();
 
+
     findVideoTrack();
+
+
+    /*
+     * Multi-format scanner.
+     *
+     * Reads QR + 1D barcodes.
+     */
 
     scanner =
       new ZXingBrowser
         .BrowserMultiFormatReader();
+
 
     scannerControls =
       await scanner
@@ -2359,2007 +3239,151 @@ async function startScanner(){
           ){
 
             if(result){
-              handleScanResult(
+
+              handleResult(
                 result
               );
+
             }
 
           }
         );
 
+
+    startScreen.style.display =
+      "none";
+
+
+    lastScan.textContent =
+      "READY";
+
+
+    lastScan.className =
+      "";
+
+
+    lastType.textContent =
+      "SCAN COLUMN QR • " +
+      currentGodown;
+
+
+    lastType.className =
+      "";
+
+
     flashButton.style.display =
       "block";
 
-    document.getElementById(
-      "scanStatus"
-    ).textContent =
-      currentColumn
-        ? "COLUMN " + currentColumn + " active"
-        : "SCAN COLUMN QR";
-
-  }catch(error){
-
-    console.error(
-      "Camera error:",
-      error
-    );
-
-    showToast(
-      "Camera error: " +
-      error.message,
-      "bad"
-    );
-
-  }
-
-}
-
-
-function stopScanner(){
-
-  try{
-
-    if(
-      scannerControls &&
-      scannerControls.stop
-    ){
-      scannerControls.stop();
-    }
-
-  }catch(e){}
-
-  try{
-
-    if(
-      scanner &&
-      scanner.reset
-    ){
-      scanner.reset();
-    }
-
-  }catch(e){}
-
-  if(video.srcObject){
-
-    video.srcObject
-      .getTracks()
-      .forEach(function(track){
-        track.stop();
-      });
-
-    video.srcObject = null;
-
-  }
-
-  scanner = null;
-  scannerControls = null;
-  videoTrack = null;
-
-  flashOn = false;
-
-  flashButton.textContent =
-    "🔦 FLASH";
-
-  flashButton.style.display =
-    "none";
-
-}
-
-
-function findVideoTrack(){
-
-  try{
-
-    if(video.srcObject){
-
-      const tracks =
-        video.srcObject
-          .getVideoTracks();
-
-      if(tracks.length){
-        videoTrack =
-          tracks[0];
-      }
-
-    }
-
-  }catch(e){}
-
-}
-
-
-async function toggleFlash(){
-
-  if(!videoTrack){
-
-    showToast(
-      "Camera is not ready.",
-      "bad"
-    );
-
-    return;
-  }
-
-  try{
-
-    flashOn = !flashOn;
-
-    await videoTrack
-      .applyConstraints({
-        advanced:[
-          {
-            torch:flashOn
-          }
-        ]
-      });
-
-    flashButton.textContent =
-      flashOn
-        ? "🔦 ON"
-        : "🔦 FLASH";
-
-  }catch(error){
-
-    flashOn = false;
 
     flashButton.textContent =
       "🔦 FLASH";
 
-    showToast(
-      "Flash not supported on this device.",
-      "bad"
-    );
 
-  }
+    flashOn =
+      false;
 
-}
-
-
-/* =========================================================
-   SCANNER RESULT
-========================================================= */
-
-function getFormatName(result){
-
-  try{
-
-    const format =
-      result.getBarcodeFormat();
-
-    if(
-      format === 11 ||
-      String(format)
-        .toUpperCase()
-        .includes("QR")
-    ){
-      return "QR";
-    }
-
-    if(
-      format === 4 ||
-      String(format)
-        .toUpperCase()
-        .includes("CODE_128")
-    ){
-      return "CODE_128";
-    }
-
-    return String(format);
-
-  }catch(e){
-
-    return "";
-
-  }
-
-}
-
-
-function handleScanResult(result){
-
-  if(
-    currentMode !==
-    "STOCK_IN"
-  ){
-    return;
-  }
-
-  const value =
-    String(
-      result.getText() || ""
-    ).trim();
-
-  if(!value){
-    return;
-  }
-
-  const format =
-    getFormatName(result);
-
-  const now =
-    Date.now();
-
-  if(
-    value === lastDetectedValue &&
-    format === lastDetectedFormat &&
-    now - lastDetectedTime <
-      DETECTION_COOLDOWN
-  ){
-    return;
-  }
-
-  lastDetectedValue =
-    value;
-
-  lastDetectedFormat =
-    format;
-
-  lastDetectedTime =
-    now;
-
-  if(format === "QR"){
-
-    if(
-      /^COLUMN/i.test(value)
-    ){
-
-      processColumn(value);
-
-    }
-
-    return;
-  }
-
-  if(format === "CODE_128"){
-
-    recordStockBox(value);
-
-  }
-
-}
-
-
-/* =========================================================
-   DUPLICATE
-========================================================= */
-
-function showDuplicate(value){
-
-  if(duplicateBusy){
-    return;
-  }
-
-  duplicateBusy = true;
-  pendingDuplicate = value;
-
-  duplicateBeep();
-
-  const answer =
-    window.confirm(
-      "DUPLICATE BOX\n\n" +
-      value +
-      "\n\n" +
-      "Press OK to count this box again.\n" +
-      "Press Cancel to ignore it."
-    );
-
-  duplicateBusy = false;
-
-  if(answer){
-
-    columnSnapshot[value] =
-      (columnSnapshot[value] || 0) +
-      1;
-
-    totalBoxes++;
-
-    updateScanStats();
-    updateSnapshotDisplay();
-
-    itemBeep();
-
-    saveScanLog(
-      value,
-      "ITEM",
-      currentColumn,
-      value
-    );
-
-  }
-
-  pendingDuplicate = null;
-
-}
-
-
-/* =========================================================
-   AUDIO
-========================================================= */
-
-function initializeAudio(){
-
-  try{
-
-    const AC =
-      window.AudioContext ||
-      window.webkitAudioContext;
-
-    if(!AC){
-      return;
-    }
-
-    if(!audioContext){
-      audioContext =
-        new AC();
-    }
-
-    if(
-      audioContext.state ===
-      "suspended"
-    ){
-      audioContext.resume();
-    }
-
-  }catch(e){}
-
-}
-
-
-function beep(freq,duration){
-
-  try{
-
-    initializeAudio();
-
-    if(!audioContext){
-      return;
-    }
-
-    const osc =
-      audioContext.createOscillator();
-
-    const gain =
-      audioContext.createGain();
-
-    osc.type = "sine";
-    osc.frequency.value = freq;
-
-    gain.gain.value = .15;
-
-    osc.connect(gain);
-    gain.connect(
-      audioContext.destination
-    );
-
-    osc.start();
-
-    osc.stop(
-      audioContext.currentTime +
-      duration / 1000
-    );
-
-  }catch(e){}
-
-}
-
-
-function itemBeep(){
-  beep(1000,80);
-}
-
-
-function columnBeep(){
-  beep(650,140);
-}
-
-
-function duplicateBeep(){
-
-  beep(450,120);
-
-  setTimeout(function(){
-    beep(250,220);
-  },140);
-
-}
-
-
-/* =========================================================
-   CUSTOMER SEARCH
-========================================================= */
-
-function openOrdersEntry(){
-
-  currentMode =
-    "CUSTOMER";
-
-  currentCustomer = "";
-  currentOrderId = "";
-  orderLines = {};
-
-  document.getElementById(
-    "customerSearch"
-  ).value = "";
-
-  document.getElementById(
-    "customerResults"
-  ).innerHTML = "";
-
-  document.getElementById(
-    "customerCreateArea"
-  ).style.display = "none";
-
-  showPage("customerPage");
-
-  setTimeout(function(){
-    document
-      .getElementById("customerSearch")
-      .focus();
-  },100);
-
-}
-
-
-function renderCustomerResults(query){
-
-  const q =
-    normalize(query);
-
-  const box =
-    document.getElementById(
-      "customerResults"
-    );
-
-  const createArea =
-    document.getElementById(
-      "customerCreateArea"
-    );
-
-  if(!q){
-
-    box.innerHTML = "";
-
-    createArea.style.display =
-      "none";
-
-    return;
-  }
-
-  const matches =
-    customers
-      .filter(function(c){
-        return normalize(
-          c.customerName
-        ).includes(q);
-      })
-      .slice(0,20);
-
-  if(!matches.length){
-
-    box.innerHTML =
-      '<div class="searchResult">' +
-      '<div class="resultName">No customer found</div>' +
-      '</div>';
-
-    createArea.style.display =
-      "block";
-
-    return;
-  }
-
-  createArea.style.display =
-    "none";
-
-  box.innerHTML =
-    matches.map(function(c){
-
-      return `
-        <button
-          class="searchResult"
-          onclick='selectCustomer(${JSON.stringify(c.customerName)})'>
-
-          <div class="resultName">
-            ${escapeHtml(c.customerName)}
-          </div>
-
-        </button>
-      `;
-
-    }).join("");
-
-}
-
-
-document
-  .getElementById("customerSearch")
-  .addEventListener(
-    "input",
-    function(){
-      renderCustomerResults(
-        this.value
-      );
-    }
-  );
-
-
-function selectCustomer(name){
-
-  currentCustomer =
-    name;
-
-  beginOrderEntry();
-
-}
-
-
-async function createCustomerFromSearch(){
-
-  const name =
-    document
-      .getElementById("customerSearch")
-      .value
-      .trim();
-
-  if(!name){
-    return;
-  }
-
-  try{
-
-    showLoading(
-      "Creating customer..."
-    );
-
-    const data =
-      await api(
-        "createCustomer",
-        {
-          customerName:name
-        }
-      );
-
-    hideLoading();
-
-    const finalName =
-      data.customerName ||
-      name;
-
-    if(
-      !customers.some(function(c){
-        return c.customerName
-          .toLowerCase() ===
-          finalName.toLowerCase();
-      })
-    ){
-      customers.push({
-        customerName:finalName
-      });
-    }
-
-    selectCustomer(finalName);
 
   }catch(error){
 
-    hideLoading();
-
-    showToast(
-      error.message,
-      "bad"
+    console.error(
+      "V2.7 CAMERA ERROR:",
+      error
     );
+
+
+    startButton.disabled =
+      false;
+
+
+    startButton.textContent =
+      "START CAMERA";
+
+
+    cameraMessage.innerHTML =
+      '<span class="errorColor">' +
+      "<b>CAMERA ERROR</b><br><br>" +
+      (error.name || "Unknown") +
+      "<br>" +
+      (error.message || "") +
+      "</span>";
 
   }
 
 }
 
 
-/* =========================================================
-   ORDER ENTRY
-========================================================= */
-
-async function beginOrderEntry(){
-
-  currentMode =
-    "ORDER";
-
-  orderLines = {};
-
-  try{
-
-    const data =
-      await api(
-        "getNextOrderId"
-      );
-
-    currentOrderId =
-      data.orderId;
-
-  }catch(error){
-
-    showToast(
-      error.message,
-      "bad"
-    );
-
-    return;
-  }
-
-  document.getElementById(
-    "orderPreviewId"
-  ).textContent =
-    currentOrderId;
-
-  document.getElementById(
-    "orderCustomerName"
-  ).textContent =
-    currentCustomer;
-
-  document.getElementById(
-    "itemSearch"
-  ).value = "";
-
-  document.getElementById(
-    "itemResults"
-  ).innerHTML = "";
-
-  renderOrderLines();
-
-  showPage("orderEntryPage");
-
-  /*
-   * Keyboard opens immediately.
-   */
-  setTimeout(function(){
-
-    const input =
-      document.getElementById(
-        "itemSearch"
-      );
-
-    input.focus();
-
-  },120);
-
-}
-
-
-function cancelOrderEntry(){
-
-  currentCustomer = "";
-  currentOrderId = "";
-  orderLines = {};
-
-  openOrdersEntry();
-
-}
-
-
-/* =========================================================
-   ITEM SEARCH
-========================================================= */
-
-function getItemAvailability(code){
-
-  return Number(
-    stockByCode[code] || 0
-  );
-
-}
-
-
-function searchItems(query){
-
-  const q =
-    normalize(query);
-
-  if(!q){
-    return [];
-  }
-
-  return items
-    .filter(function(item){
-
-      return normalize(
-        item.itemName
-      ).includes(q);
-
-    })
-    .slice(0,30);
-
-}
-
-
-function renderItemResults(query){
-
-  const box =
-    document.getElementById(
-      "itemResults"
-    );
-
-  if(!query.trim()){
-
-    box.innerHTML = "";
-
-    return;
-  }
-
-  const matches =
-    searchItems(query);
-
-  if(!matches.length){
-
-    box.innerHTML =
-      '<div class="searchResult">' +
-      '<div class="resultName">No item found</div>' +
-      '</div>';
-
-    return;
-  }
-
-  box.innerHTML =
-    matches.map(function(item){
-
-      const stock =
-        getItemAvailability(
-          item.itemCode
-        );
-
-      const stockClass =
-        stock > 0
-          ? "stockGood"
-          : "stockZero";
-
-      return `
-        <button
-          class="searchResult"
-          onclick='selectOrderItem(${JSON.stringify(item.itemCode)})'>
-
-          <div class="resultName">
-
-            ${escapeHtml(item.itemName)}
-
-            <div class="resultCode">
-              ${escapeHtml(item.itemCode)}
-            </div>
-
-          </div>
-
-          <div class="stockBadge ${stockClass}">
-            ${stock} boxes
-          </div>
-
-        </button>
-      `;
-
-    }).join("");
-
-}
-
-
-document
-  .getElementById("itemSearch")
-  .addEventListener(
-    "input",
-    function(){
-      renderItemResults(
-        this.value
-      );
-    }
-  );
-
-
-function clearItemSearch(){
-
-  const input =
-    document.getElementById(
-      "itemSearch"
-    );
-
-  input.value = "";
-
-  document.getElementById(
-    "itemResults"
-  ).innerHTML = "";
-
-  input.focus();
-
-}
-
-
-/* =========================================================
-   SELECT ITEM
-========================================================= */
-
-function selectOrderItem(code){
-
-  const item =
-    itemByCode[code];
-
-  if(!item){
-    return;
-  }
-
-  const stock =
-    getItemAvailability(code);
-
-  /*
-   * We still allow ordering even
-   * when stock is zero.
-   *
-   * This is important because the
-   * backend separates available
-   * stock from TO BE ORDERED.
-   */
-  orderLines[code] =
-    orderLines[code] || {
-      itemCode:code,
-      itemName:item.itemName,
-      quantity:0,
-      stock:stock
-    };
-
-  renderOrderLines();
-
-  const qty =
-    document.querySelector(
-      '#qty-' +
-      CSS.escape(code)
-    );
-
-  if(qty){
-
-    qty.focus();
-
-    qty.select();
-
-  }
-
-}
-
-
-/* =========================================================
-   ORDER LINES
-========================================================= */
-
-function renderOrderLines(){
-
-  const box =
-    document.getElementById(
-      "orderLines"
-    );
-
-  const codes =
-    Object.keys(orderLines);
-
-  if(!codes.length){
-
-    box.innerHTML =
-      '<div style="padding:12px 0;color:#9aa3ad;font-size:12px;text-align:center">' +
-      'No items added yet' +
-      '</div>';
-
-  }else{
-
-    box.innerHTML =
-      codes.map(function(code){
-
-        const line =
-          orderLines[code];
-
-        const stock =
-          getItemAvailability(
-            code
-          );
-
-        return `
-          <div class="orderLine">
-
-            <div class="orderLineName">
-
-              <strong>
-                ${escapeHtml(line.itemName)}
-              </strong>
-
-              <span>
-                ${stock} boxes available
-              </span>
-
-            </div>
-
-            <input
-              id="qty-${escapeHtml(code)}"
-              class="qtyBox"
-              type="number"
-              min="1"
-              inputmode="numeric"
-              value="${line.quantity || ""}"
-              onchange='changeOrderQty(${JSON.stringify(code)},this.value)'
-              onkeydown='orderQtyKey(event,${JSON.stringify(code)})'>
-
-            <button
-              class="removeLine"
-              onclick='removeOrderLine(${JSON.stringify(code)})'>
-              ×
-            </button>
-
-          </div>
-        `;
-
-      }).join("");
-
-  }
-
-  let total = 0;
-
-  codes.forEach(function(code){
-    total +=
-      Number(
-        orderLines[code].quantity
-      ) || 0;
-  });
-
-  document.getElementById(
-    "orderTotalBoxes"
-  ).textContent =
-    total;
-
-}
-
-
-function changeOrderQty(
-  code,
-  value
-){
-
-  const qty =
-    Math.max(
-      0,
-      Math.floor(
-        Number(value) || 0
-      )
-    );
-
-  if(!orderLines[code]){
-    return;
-  }
-
-  orderLines[code].quantity =
-    qty;
-
-  if(qty <= 0){
-
-    delete orderLines[code];
-
-  }
-
-  renderOrderLines();
-
-  /*
-   * Return to search automatically.
-   */
-  setTimeout(function(){
-
-    const input =
-      document.getElementById(
-        "itemSearch"
-      );
-
-    input.value = "";
-
-    document.getElementById(
-      "itemResults"
-    ).innerHTML = "";
-
-    input.focus();
-
-  },50);
-
-}
-
-
-function orderQtyKey(
-  event,
-  code
-){
-
-  if(event.key === "Enter"){
-
-    event.preventDefault();
-
-    changeOrderQty(
-      code,
-      event.target.value
-    );
-
-  }
-
-}
-
-
-function removeOrderLine(code){
-
-  delete orderLines[code];
-
-  renderOrderLines();
-
-  document
-    .getElementById("itemSearch")
-    .focus();
-
-}
-
-
-/* =========================================================
-   PLACE ORDER
-========================================================= */
-
-async function placeOrder(){
-
-  const codes =
-    Object.keys(orderLines);
-
-  const valid =
-    codes.filter(function(code){
-      return Number(
-        orderLines[code].quantity
-      ) > 0;
-    });
-
-  if(!valid.length){
-
-    showToast(
-      "Add at least one item.",
-      "bad"
-    );
-
-    return;
-  }
-
-  const payload =
-    valid.map(function(code){
-
-      return {
-        itemCode:code,
-        quantity:
-          Number(
-            orderLines[code].quantity
-          )
-      };
-
-    });
-
-  try{
-
-    showLoading(
-      "Placing order..."
-    );
-
-    const data =
-      await api(
-        "createOrder",
-        {
-          customer:currentCustomer,
-          createdBy:currentWorker,
-          items:JSON.stringify(
-            payload
-          )
-        }
-      );
-
-    hideLoading();
-
-    /*
-     * Refresh availability after
-     * reservation is created.
-     */
-    await refreshStockData();
-
-    showToast(
-      data.orderId +
-      " created • " +
-      data.totalAvailableNow +
-      " available • " +
-      data.totalToOrder +
-      " to be ordered",
-      "good"
-    );
-
-    currentCustomer = "";
-    currentOrderId = "";
-    orderLines = {};
-
-    setTimeout(
-      goMenu,
-      700
-    );
-
-  }catch(error){
-
-    hideLoading();
-
-    showToast(
-      error.message,
-      "bad"
-    );
-
-  }
-
-}
-
-
-/* =========================================================
-   OPEN ORDERS
-========================================================= */
-
-async function openPickingList(){
-
-  currentMode =
-    "PICKING_LIST";
-
-  showPage(
-    "ordersListPage"
-  );
-
-  document.getElementById(
-    "ordersListTitle"
-  ).textContent =
-    "Open Orders";
-
-  const box =
-    document.getElementById(
-      "ordersList"
-    );
-
-  box.innerHTML =
-    '<div class="card">Loading orders...</div>';
-
-  try{
-
-    const data =
-      await api(
-        "getOrders",
-        {
-          open:"1"
-        }
-      );
-
-    renderOrdersForAction(
-      data.orders || [],
-      "PICK"
-    );
-
-  }catch(error){
-
-    box.innerHTML =
-      '<div class="card" style="color:#dc2626">' +
-      escapeHtml(error.message) +
-      '</div>';
-
-  }
-
-}
-
-
-async function openOutList(){
-
-  currentMode =
-    "OUT_LIST";
-
-  showPage(
-    "ordersListPage"
-  );
-
-  document.getElementById(
-    "ordersListTitle"
-  ).textContent =
-    "Ready / Open Orders";
-
-  const box =
-    document.getElementById(
-      "ordersList"
-    );
-
-  box.innerHTML =
-    '<div class="card">Loading orders...</div>';
-
-  try{
-
-    const data =
-      await api(
-        "getOrders",
-        {
-          open:"1"
-        }
-      );
-
-    renderOrdersForAction(
-      data.orders || [],
-      "OUT"
-    );
-
-  }catch(error){
-
-    box.innerHTML =
-      '<div class="card" style="color:#dc2626">' +
-      escapeHtml(error.message) +
-      '</div>';
-
-  }
-
-}
-
-
-function renderOrdersForAction(
-  orders,
-  mode
-){
-
-  const box =
-    document.getElementById(
-      "ordersList"
-    );
-
-  if(!orders.length){
-
-    box.innerHTML =
-      '<div class="card" style="text-align:center;color:#7b8490">' +
-      'No open orders.' +
-      '</div>';
-
-    return;
-  }
-
-  box.innerHTML =
-    orders
-      .slice()
-      .reverse()
-      .map(function(order){
-
-        let actionText =
-          mode === "PICK"
-            ? "OPEN PICKING"
-            : "OPEN OUT";
-
-        return `
-          <div class="orderCard">
-
-            <div class="orderCardTop">
-
-              <div>
-                <div class="orderId">
-                  ${escapeHtml(order.orderId)}
-                </div>
-
-                <div class="orderCustomer">
-                  ${escapeHtml(order.customer)}
-                </div>
-              </div>
-
-              <div class="orderStatus">
-                ${escapeHtml(order.status)}
-              </div>
-
-            </div>
-
-            <div class="orderMeta">
-
-              <span>
-                ${order.totalItems} items
-              </span>
-
-              <span>
-                ${order.totalPicked}/${order.totalOrdered} picked
-              </span>
-
-            </div>
-
-            <button
-              class="primaryButton ${mode === "PICK" ? "orangeButton" : "redButton"} orderSelect"
-              onclick='selectActionOrder(${JSON.stringify(order.orderId)},${JSON.stringify(mode)})'>
-              ${actionText}
-            </button>
-
-          </div>
-        `;
-
-      }).join("");
-
-}
-
-
-function selectActionOrder(
-  orderId,
-  mode
-){
-
-  if(mode === "PICK"){
-    openPickingOrder(
-      orderId
-    );
-  }else{
-    openOutOrder(
-      orderId
-    );
-  }
-
-}
-
-
-/* =========================================================
-   PICKING
-========================================================= */
-
-async function openPickingOrder(
-  orderId
-){
-
-  currentMode =
-    "PICKING";
-
-  showPage(
-    "pickingPage"
-  );
-
-  document.getElementById(
-    "pickingTitle"
-  ).textContent =
-    "Picking • " +
-    orderId;
-
-  const box =
-    document.getElementById(
-      "pickingContent"
-    );
-
-  box.innerHTML =
-    '<div class="card">Loading picking list...</div>';
-
-  try{
-
-    /*
-     * First check current availability.
-     */
-    await api(
-      "checkOrder",
-      {
-        orderId:orderId
-      }
-    );
-
-    const data =
-      await api(
-        "getPicking",
-        {
-          orderId:orderId
-        }
-      );
-
-    renderPicking(
-      data.picking || [],
-      orderId
-    );
-
-  }catch(error){
-
-    box.innerHTML =
-      '<div class="card" style="color:#dc2626">' +
-      escapeHtml(error.message) +
-      '</div>';
-
-  }
-
-}
-
-
-function renderPicking(
-  rows,
-  orderId
-){
-
-  const box =
-    document.getElementById(
-      "pickingContent"
-    );
-
-  if(!rows.length){
-
-    box.innerHTML =
-      '<div class="card">' +
-      '<strong>No items available for picking.</strong>' +
-      '<div style="margin-top:5px;color:#7b8490;font-size:12px">' +
-      'Unavailable items remain pending / to be ordered.' +
-      '</div>' +
-      '</div>';
-
-    return;
-  }
-
-  box.innerHTML = `
-    <div class="card">
-
-      <strong>
-        Pick List
-      </strong>
-
-      <div
-        id="pickRows"
-        style="margin-top:8px">
-      </div>
-
-      <button
-        class="primaryButton orangeButton"
-        style="margin-top:10px"
-        onclick='submitPicking(${JSON.stringify(orderId)})'>
-        SAVE PICKING
-      </button>
-
-    </div>
-  `;
-
-  const pickRows =
-    document.getElementById(
-      "pickRows"
-    );
-
-  pickRows.innerHTML =
-    rows.map(function(row,index){
-
-      return `
-        <div class="pickRow">
-
-          <div class="pickRowTop">
-
-            <input
-              id="pickCheck-${index}"
-              class="pickCheck"
-              type="checkbox">
-
-            <div class="pickName">
-              ${escapeHtml(row.itemName || row.itemCode)}
-            </div>
-
-            <div class="pickQty">
-              ${row.required}
-            </div>
-
-          </div>
-
-          <div class="pickLocation">
-            ${escapeHtml(row.godown)}
-            /
-            ${escapeHtml(row.column)}
-            • Available ${row.available}
-          </div>
-
-          <input
-            id="pickQty-${index}"
-            class="pickQtyInput"
-            type="number"
-            min="0"
-            max="${row.required}"
-            value="0"
-            inputmode="numeric">
-
-          <input
-            type="hidden"
-            id="pickData-${index}"
-            value='${escapeHtml(JSON.stringify(row))}'>
-
-        </div>
-      `;
-
-    }).join("");
-
-  /*
-   * Keep data in JS instead of relying
-   * on parsing hidden HTML.
-   */
-  window.currentPickingRows =
-    rows;
-
-}
-
-
-async function submitPicking(
-  orderId
-){
-
-  const rows =
-    window.currentPickingRows ||
-    [];
-
-  if(!rows.length){
-    return;
-  }
-
-  const worker =
-    currentWorker;
-
-  let pickedSomething = false;
-
-  try{
-
-    showLoading(
-      "Saving picking..."
-    );
-
-    for(
-      let i=0;
-      i<rows.length;
-      i++
-    ){
-
-      const row =
-        rows[i];
-
-      const check =
-        document.getElementById(
-          "pickCheck-" + i
-        );
-
-      const qtyInput =
-        document.getElementById(
-          "pickQty-" + i
-        );
-
-      let qty =
-        Number(
-          qtyInput.value
-        ) || 0;
-
-      if(check.checked && qty <= 0){
-        qty =
-          Number(
-            row.required
-          ) || 0;
-      }
-
-      if(qty <= 0){
-        continue;
-      }
-
-      qty =
-        Math.min(
-          qty,
-          Number(row.required) || 0
-        );
-
-      await api(
-        "pickItem",
-        {
-          orderId:orderId,
-          itemCode:row.itemCode,
-          godown:row.godown,
-          column:row.column,
-          quantity:qty,
-          worker:worker
-        }
-      );
-
-      pickedSomething = true;
-
-    }
-
-    hideLoading();
-
-    if(!pickedSomething){
-
-      showToast(
-        "Select at least one item to pick.",
-        "bad"
-      );
-
-      return;
-    }
-
-    showToast(
-      "Picking saved.",
-      "good"
-    );
-
-    setTimeout(
-      openPickingList,
-      600
-    );
-
-  }catch(error){
-
-    hideLoading();
-
-    showToast(
-      error.message,
-      "bad"
-    );
-
-  }
-
-}
-
-
-/* =========================================================
-   OUT / SOLD
-========================================================= */
-
-async function openOutOrder(
-  orderId
-){
-
-  currentMode =
-    "OUT";
-
-  showPage(
-    "outPage"
-  );
-
-  document.getElementById(
-    "outTitle"
-  ).textContent =
-    "Out / Sold • " +
-    orderId;
-
-  const box =
-    document.getElementById(
-      "outContent"
-    );
-
-  box.innerHTML =
-    '<div class="card">Loading picked items...</div>';
-
-  try{
-
-    const data =
-      await api(
-        "getPicking",
-        {
-          orderId:orderId,
-          mode:"out"
-        }
-      );
-
-    renderOut(
-      data.picking || [],
-      orderId
-    );
-
-  }catch(error){
-
-    box.innerHTML =
-      '<div class="card" style="color:#dc2626">' +
-      escapeHtml(error.message) +
-      '</div>';
-
-  }
-
-}
-
-
-function renderOut(
-  rows,
-  orderId
-){
-
-  const box =
-    document.getElementById(
-      "outContent"
-    );
-
-  if(!rows.length){
-
-    box.innerHTML =
-      '<div class="card">' +
-      '<strong>No picked stock is waiting for OUT.</strong>' +
-      '</div>';
-
-    return;
-  }
-
-  box.innerHTML = `
-
-    <div class="card">
-
-      <strong>
-        Ready to OUT
-      </strong>
-
-      <div style="margin-top:8px">
-
-        ${
-          rows.map(function(row){
-
-            const item =
-              itemByCode[
-                row.itemCode
-              ];
-
-            const name =
-              item
-                ? item.itemName
-                : row.itemCode;
-
-            return `
-              <div class="pickRow">
-
-                <div class="pickRowTop">
-
-                  <div class="pickName">
-                    ${escapeHtml(name)}
-                  </div>
-
-                  <div class="pickQty">
-                    ${row.required}
-                  </div>
-
-                </div>
-
-                <div class="pickLocation">
-                  ${escapeHtml(row.godown)}
-                  /
-                  ${escapeHtml(row.column)}
-                </div>
-
-              </div>
-            `;
-
-          }).join("")
-        }
-
-      </div>
-
-      <button
-        class="primaryButton redButton"
-        style="margin-top:12px"
-        onclick='completeOrderSale(${JSON.stringify(orderId)})'>
-        PUSH OUT / SOLD
-      </button>
-
-    </div>
-  `;
-
-}
-
-
-async function completeOrderSale(
-  orderId
-){
-
-  const ok =
-    window.confirm(
-      "Push " +
-      orderId +
-      " OUT / SOLD?\n\n" +
-      "This will remove the picked quantities from physical stock."
-    );
-
-  if(!ok){
-    return;
-  }
-
-  try{
-
-    showLoading(
-      "Processing OUT..."
-    );
-
-    const data =
-      await api(
-        "completeSale",
-        {
-          orderId:orderId,
-          worker:currentWorker,
-          device:navigator.userAgent
-        }
-      );
-
-    hideLoading();
-
-    await refreshStockData();
-
-    showToast(
-      orderId +
-      " • " +
-      data.status +
-      " • " +
-      data.totalOut +
-      " boxes OUT",
-      "good"
-    );
-
-    setTimeout(
-      openOutList,
-      700
-    );
-
-  }catch(error){
-
-    hideLoading();
-
-    showToast(
-      error.message,
-      "bad"
-    );
-
-  }
-
-}
-
-
-/* =========================================================
-   CURRENT STOCK
-========================================================= */
-
-function openCurrentStock(){
-
-  currentMode =
-    "CURRENT_STOCK";
-
-  showPage(
-    "currentStockPage"
-  );
-
-  const input =
-    document.getElementById(
-      "stockSearch"
-    );
-
-  input.value = "";
-
-  renderCurrentStock("");
-
-  setTimeout(function(){
-    input.focus();
-  },100);
-
-}
-
-
-function renderCurrentStock(
-  query
-){
-
-  const box =
-    document.getElementById(
-      "currentStockResults"
-    );
-
-  const q =
-    normalize(query);
-
-  let matchedItems =
-    items;
-
-  if(q){
-
-    matchedItems =
-      items.filter(function(item){
-
-        return normalize(
-          item.itemName
-        ).includes(q);
-
-      });
-
-  }
-
-  matchedItems =
-    matchedItems.slice(0,50);
-
-  if(!matchedItems.length){
-
-    box.innerHTML =
-      '<div style="text-align:center;color:#7b8490;padding:20px">' +
-      'No item found.' +
-      '</div>';
-
-    return;
-  }
-
-  const codes =
-    new Set(
-      matchedItems.map(function(i){
-        return i.itemCode;
-      })
-    );
-
-  const rows =
-    stockRows.filter(function(row){
-      return codes.has(
-        row.itemCode
-      );
-    });
-
-  if(!rows.length){
-
-    box.innerHTML =
-      '<div style="text-align:center;color:#7b8490;padding:20px">' +
-      'No physical stock found for these items.' +
-      '</div>';
-
-    return;
-  }
-
-  box.innerHTML =
-    rows.map(function(row){
-
-      const item =
-        itemByCode[
-          row.itemCode
-        ];
-
-      return `
-        <div class="stockLocationRow">
-
-          <div class="stockLocationTop">
-
-            <div class="stockLocation">
-              ${escapeHtml(row.godown)}
-              /
-              ${escapeHtml(row.column)}
-            </div>
-
-            <div class="stockQty">
-              ${Number(row.quantity || 0)} boxes
-            </div>
-
-          </div>
-
-          <div class="stockItemName">
-            ${escapeHtml(
-              item
-                ? item.itemName
-                : row.itemCode
-            )}
-          </div>
-
-        </div>
-      `;
-
-    }).join("");
-
-}
-
-
-document
-  .getElementById("stockSearch")
-  .addEventListener(
-    "input",
-    function(){
-      renderCurrentStock(
-        this.value
-      );
-    }
-  );
-
-
-/* =========================================================
+/* ==================================================
    EVENTS
-========================================================= */
+================================================== */
 
 loginButton.addEventListener(
   "click",
   login
 );
 
+stockInMenuButton.addEventListener(
+  "click",
+  openStockIn
+);
 
-password.addEventListener(
+continueGodownButton.addEventListener(
+  "click",
+  continueToScanner
+);
+
+backMenuButton.addEventListener(
+  "click",
+  backToMenu
+);
+
+menuLogoutButton.addEventListener(
+  "click",
+  logout
+);
+
+saveColumnButton.addEventListener(
+  "click",
+  async function(){
+    await saveCurrentColumn();
+  }
+);
+
+
+passwordInput.addEventListener(
   "keydown",
   function(e){
 
-    if(e.key === "Enter"){
+    if(
+      e.key === "Enter"
+    ){
+
       login();
+
     }
 
   }
 );
 
 
-loginId.addEventListener(
+loginIdInput.addEventListener(
   "keydown",
   function(e){
 
-    if(e.key === "Enter"){
-      password.focus();
+    if(
+      e.key === "Enter"
+    ){
+
+      passwordInput.focus();
+
     }
 
   }
+);
+
+
+startButton.addEventListener(
+  "click",
+  startCamera
 );
 
 
@@ -4369,25 +3393,60 @@ flashButton.addEventListener(
 );
 
 
+logoutButton.addEventListener(
+  "click",
+  logout
+);
+
+
 document
-  .getElementById("logoutButton")
+  .getElementById(
+    "rejectButton"
+  )
   .addEventListener(
     "click",
-    logout
+    rejectDuplicate
   );
 
 
-/* =========================================================
+document
+  .getElementById(
+    "acceptButton"
+  )
+  .addEventListener(
+    "click",
+    acceptDuplicate
+  );
+
+
+/* ==================================================
    START
-========================================================= */
+================================================== */
+
+updateCounters();
+
+resetColumnList();
+
+app.style.display =
+  "none";
+
+menuScreen.style.display =
+  "none";
+
+godownScreen.style.display =
+  "none";
 
 checkSavedWorker();
 
+
 console.log(
-  "Warehouse Inventory V3.0 loaded."
+  "Stock Scanner " +
+  VERSION +
+  " loaded."
 );
 
 </script>
 
 </body>
+
 </html>

@@ -7,7 +7,7 @@
 <meta name="viewport"
 content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 
-<title>Stock Scanner V2.6</title>
+<title>Warehouse Inventory V2.7</title>
 
 <script src="https://unpkg.com/@zxing/browser@0.1.5"></script>
 
@@ -638,6 +638,62 @@ body{
   line-height:1.6;
 }
 
+
+
+/* ==================================================
+   V2.7 INVENTORY UI
+================================================== */
+#inventoryPanel{
+  position:fixed;
+  inset:0;
+  z-index:9000;
+  display:none;
+  flex-direction:column;
+  background:#f3f5f7;
+  overflow:hidden;
+}
+#inventoryHeader{
+  flex-shrink:0;
+  padding:13px 14px;
+  background:#111827;
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+#inventoryHeaderTitle{font-size:18px;font-weight:800}
+#inventoryHeaderSub{font-size:11px;color:#aeb8c5;margin-top:3px}
+#closeInventory{border:0;border-radius:8px;padding:8px 11px;background:#293548;color:#fff;font-weight:700}
+#inventoryBody{flex:1;overflow:auto;padding:12px;-webkit-overflow-scrolling:touch}
+.dashboardGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.dashboardButton{min-height:86px;border:0;border-radius:14px;background:#fff;box-shadow:0 2px 10px rgba(0,0,0,.07);font-size:16px;font-weight:800;color:#17202a;text-align:left;padding:15px}
+.dashboardButton span{display:block;font-size:11px;color:#7b8490;font-weight:600;margin-top:5px}
+.module{display:none;background:#fff;border-radius:14px;padding:14px;box-shadow:0 2px 10px rgba(0,0,0,.07)}
+.module.active{display:block}
+.moduleTitle{font-size:18px;font-weight:800;margin-bottom:12px}
+.formInput,.formSelect{width:100%;height:46px;border:1px solid #d8dee5;border-radius:10px;padding:0 12px;margin-bottom:9px;background:#f8fafc;font-size:15px;outline:none}
+.formInput:focus,.formSelect:focus{border-color:#111827;background:#fff}
+.actionButton{width:100%;height:46px;border:0;border-radius:10px;background:#111827;color:#fff;font-size:15px;font-weight:800;margin-top:3px}
+.secondaryButton{background:#e9edf2;color:#17202a}
+.dangerButton{background:#dc2626;color:#fff}
+.successButton{background:#15803d;color:#fff}
+.backButton{border:0;background:none;padding:0 0 12px;color:#4b5563;font-weight:700}
+.itemSearchWrap{position:relative}
+.itemResults{max-height:180px;overflow:auto;border:1px solid #d8dee5;border-radius:10px;margin-top:-6px;margin-bottom:9px;background:#fff;display:none}
+.itemResult{padding:11px 12px;border-bottom:1px solid #edf0f2;font-size:13px}
+.itemResult:last-child{border-bottom:0}
+.itemResult b{display:block}.itemResult small{color:#7b8490}
+.orderLines{margin:8px 0 12px}
+.orderLine{display:grid;grid-template-columns:1fr 70px 32px;gap:7px;align-items:center;padding:8px 0;border-bottom:1px solid #edf0f2;font-size:12px}
+.orderLine button{border:0;border-radius:7px;background:#fee2e2;color:#b91c1c;height:32px}
+.qtyInput{height:38px;border:1px solid #d8dee5;border-radius:8px;width:70px;text-align:center}
+.notice{padding:10px;border-radius:10px;background:#f3f4f6;font-size:13px;margin:8px 0}
+.notice.error{background:#fee2e2;color:#991b1b}.notice.ok{background:#dcfce7;color:#166534}.notice.warn{background:#fef3c7;color:#92400e}
+.resultTable{width:100%;border-collapse:collapse;font-size:12px}.resultTable th,.resultTable td{padding:8px 5px;border-bottom:1px solid #edf0f2;text-align:left;vertical-align:top}.resultTable th{font-size:10px;color:#7b8490;text-transform:uppercase}
+.pickCard{padding:10px 0;border-bottom:1px solid #edf0f2}.pickTop{display:flex;justify-content:space-between;gap:8px;font-weight:800;font-size:13px}.pickMeta{font-size:11px;color:#7b8490;margin:4px 0 7px}.pickActions{display:flex;gap:7px}.pickActions input{flex:1;height:38px;border:1px solid #d8dee5;border-radius:8px;padding:0 8px}.pickActions button{height:38px;border:0;border-radius:8px;padding:0 12px;background:#111827;color:#fff;font-weight:800}
+.stockRow{padding:9px 0;border-bottom:1px solid #edf0f2;font-size:12px}.stockRow b{font-size:13px}.muted{color:#7b8490}
+@media(max-width:420px){.dashboardGrid{grid-template-columns:1fr 1fr}.dashboardButton{min-height:78px;font-size:14px}}
+
 </style>
 
 </head>
@@ -647,7 +703,7 @@ body{
 
 
 <div id="version">
-  V2.6
+  V2.7
 </div>
 
 
@@ -664,7 +720,7 @@ body{
     </div>
 
     <div id="loginVersion">
-      Warehouse Inventory • V2.6
+      Warehouse Inventory • V2.7
     </div>
 
     <input
@@ -724,6 +780,12 @@ body{
           id="flashButton"
           class="controlButton">
           🔦 FLASH
+        </button>
+
+        <button
+          id="menuButton"
+          class="controlButton">
+          ☰ MENU
         </button>
 
         <button
@@ -859,6 +921,107 @@ body{
 </div>
 
 
+
+
+<!-- ==================================================
+     V2.7 INVENTORY PANEL
+================================================== -->
+<div id="inventoryPanel">
+  <div id="inventoryHeader">
+    <div>
+      <div id="inventoryHeaderTitle">WAREHOUSE INVENTORY</div>
+      <div id="inventoryHeaderSub">V2.7 • Worker: <span id="inventoryWorker">-</span></div>
+    </div>
+    <button id="closeInventory">CLOSE</button>
+  </div>
+
+  <div id="inventoryBody">
+    <div id="dashboardModule" class="module active">
+      <div class="moduleTitle">Operations</div>
+      <div class="dashboardGrid">
+        <button class="dashboardButton" data-module="stockInModule">📦 STOCK IN<span>Add received boxes to a godown/column</span></button>
+        <button class="dashboardButton" data-module="ordersModule">📋 ORDERS<span>Create an order by item name</span></button>
+        <button class="dashboardButton" data-module="availabilityModule">🔎 CHECK AVAILABILITY<span>Check full or partial availability</span></button>
+        <button class="dashboardButton" data-module="pickingModule">🧺 PICKING<span>See locations and record picked stock</span></button>
+        <button class="dashboardButton" data-module="outModule">🚚 OUT / SOLD<span>Deduct picked stock safely</span></button>
+        <button class="dashboardButton" data-module="stockModule">📊 CURRENT STOCK<span>View stock by godown and column</span></button>
+        <button class="dashboardButton" data-module="itemInfoModule">🗂 ITEM MASTER<span>Search your 730+ products</span></button>
+        <button class="dashboardButton" data-module="importInfoModule">🛡 ITEM IMPORT<span>Safe copy/paste workflow</span></button>
+      </div>
+    </div>
+
+    <div id="stockInModule" class="module">
+      <button class="backButton">← Operations</button><div class="moduleTitle">Stock IN</div>
+      <select id="stockInGodown" class="formSelect"><option value="">Select Godown</option></select>
+      <input id="stockInColumn" class="formInput" placeholder="Column ID / number">
+      <input id="stockInItem" class="formInput" placeholder="Item Code">
+      <input id="stockInQty" class="formInput" type="number" min="1" value="1" placeholder="Quantity">
+      <button id="stockInButton" class="actionButton">ADD STOCK</button>
+      <div id="stockInResult"></div>
+    </div>
+
+    <div id="ordersModule" class="module">
+      <button class="backButton">← Operations</button><div class="moduleTitle">New Order</div>
+      <input id="orderIdInput" class="formInput" placeholder="Order ID">
+      <input id="customerInput" class="formInput" placeholder="Customer name">
+      <div class="itemSearchWrap">
+        <input id="itemSearch" class="formInput" placeholder="Search product by name or code" autocomplete="off">
+        <div id="itemResults" class="itemResults"></div>
+      </div>
+      <div id="selectedItemNotice" class="notice">Select an item to add it to the order.</div>
+      <input id="orderQty" class="formInput" type="number" min="1" value="1" placeholder="Quantity">
+      <button id="addOrderItem" class="actionButton secondaryButton">ADD ITEM</button>
+      <div id="orderLines" class="orderLines"></div>
+      <button id="createOrderButton" class="actionButton">CREATE ORDER</button>
+      <div id="orderResult"></div>
+    </div>
+
+    <div id="availabilityModule" class="module">
+      <button class="backButton">← Operations</button><div class="moduleTitle">Check Availability</div>
+      <input id="availabilityOrderId" class="formInput" placeholder="Order ID">
+      <button id="checkAvailabilityButton" class="actionButton">CHECK</button>
+      <div id="availabilityResult"></div>
+    </div>
+
+    <div id="pickingModule" class="module">
+      <button class="backButton">← Operations</button><div class="moduleTitle">Picking</div>
+      <input id="pickingOrderId" class="formInput" placeholder="Order ID">
+      <button id="loadPickingButton" class="actionButton">LOAD PICKING</button>
+      <div id="pickingResult"></div>
+    </div>
+
+    <div id="outModule" class="module">
+      <button class="backButton">← Operations</button><div class="moduleTitle">OUT / SOLD</div>
+      <input id="outOrderId" class="formInput" placeholder="Order ID">
+      <div class="notice warn">Only unprocessed picking transactions are deducted. A second OUT/SOLD attempt cannot deduct them again.</div>
+      <button id="outButton" class="actionButton dangerButton">CONFIRM OUT / SOLD</button>
+      <div id="outResult"></div>
+    </div>
+
+    <div id="stockModule" class="module">
+      <button class="backButton">← Operations</button><div class="moduleTitle">Current Stock</div>
+      <select id="stockGodownFilter" class="formSelect"><option value="">All Godowns</option></select>
+      <input id="stockItemFilter" class="formInput" placeholder="Optional Item Code">
+      <button id="loadStockButton" class="actionButton">REFRESH STOCK</button>
+      <div id="stockResult"></div>
+    </div>
+
+    <div id="itemInfoModule" class="module">
+      <button class="backButton">← Operations</button><div class="moduleTitle">Item Master</div>
+      <input id="masterSearch" class="formInput" placeholder="Search item name or code">
+      <div id="masterResult"></div>
+    </div>
+
+    <div id="importInfoModule" class="module">
+      <button class="backButton">← Operations</button><div class="moduleTitle">Safe Item Import</div>
+      <div class="notice ok"><b>Recommended workflow</b><br>Paste new manufacturer lists into <b>ITEM IMPORT</b>, not directly into ITEM MASTER.</div>
+      <div class="notice">Before we activate the import button, the backend needs the dedicated validation/import endpoint. Your current V1.1 backend does not expose that endpoint yet, so this screen intentionally does <b>not</b> modify ITEM MASTER.</div>
+      <div class="notice">This prevents an accidental paste from overwriting your permanent 730+ item master.</div>
+    </div>
+  </div>
+</div>
+
+
 <!-- ==================================================
      START CAMERA
 ================================================== -->
@@ -937,7 +1100,7 @@ body{
 ================================================== */
 
 const VERSION =
-  "V2.6";
+  "V2.7";
 
 
 const APPS_SCRIPT_URL =
@@ -2716,6 +2879,208 @@ async function startCamera(){
 }
 
 
+
+
+/* ==================================================
+   V2.7 INVENTORY FUNCTIONS
+================================================== */
+const menuButton = document.getElementById("menuButton");
+const inventoryPanel = document.getElementById("inventoryPanel");
+const closeInventory = document.getElementById("closeInventory");
+const inventoryWorker = document.getElementById("inventoryWorker");
+let selectedOrderItem = null;
+let orderLines = [];
+let itemSearchTimer = null;
+
+function apiGet(action, params={}){
+  const q = new URLSearchParams({action, ...params, t:Date.now()});
+  return fetch(APPS_SCRIPT_URL + "?" + q.toString(), {cache:"no-store"})
+    .then(r => r.json());
+}
+
+function openInventory(){
+  inventoryWorker.textContent = currentWorker || "-";
+  inventoryPanel.style.display = "flex";
+  showInventoryModule("dashboardModule");
+  loadGodowns();
+}
+
+function closeInventoryPanel(){
+  inventoryPanel.style.display = "none";
+}
+
+function showInventoryModule(id){
+  document.querySelectorAll("#inventoryBody .module").forEach(m => m.classList.remove("active"));
+  const el = document.getElementById(id);
+  if(el) el.classList.add("active");
+}
+
+function inventoryBack(){ showInventoryModule("dashboardModule"); }
+
+function showResult(id, text, cls="notice"){
+  const el=document.getElementById(id);
+  el.innerHTML="";
+  const box=document.createElement("div"); box.className=cls; box.innerHTML=text; el.appendChild(box);
+}
+
+function loadGodowns(){
+  apiGet("getGodowns").then(data=>{
+    if(!data.success) throw new Error(data.error||"Could not load godowns");
+    const a=document.getElementById("stockInGodown"); const b=document.getElementById("stockGodownFilter");
+    a.innerHTML='<option value="">Select Godown</option>';
+    b.innerHTML='<option value="">All Godowns</option>';
+    (data.godowns||[]).forEach(g=>{
+      const label=(g.name||g.id)+(g.floor?" • "+g.floor:"");
+      a.insertAdjacentHTML("beforeend", `<option value="${escapeHtml(g.id)}">${escapeHtml(label)}</option>`);
+      b.insertAdjacentHTML("beforeend", `<option value="${escapeHtml(g.id)}">${escapeHtml(label)}</option>`);
+    });
+  }).catch(e=>console.error(e));
+}
+
+function escapeHtml(v){ return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;", "'":"&#39;"}[c])); }
+
+function searchItems(query, targetId, onSelect){
+  apiGet("getItems", {search:query}).then(data=>{
+    const box=document.getElementById(targetId); box.innerHTML="";
+    if(!data.success) throw new Error(data.error||"Search failed");
+    const items=data.items||[];
+    if(!items.length){box.style.display="none";return;}
+    items.forEach(item=>{
+      const div=document.createElement("div"); div.className="itemResult";
+      div.innerHTML=`<b>${escapeHtml(item.itemName)}</b><small>${escapeHtml(item.itemCode)}${item.description?" • "+escapeHtml(item.description):""}</small>`;
+      div.addEventListener("click",()=>{onSelect(item);box.style.display="none";}); box.appendChild(div);
+    });
+    box.style.display="block";
+  }).catch(e=>console.error(e));
+}
+
+function addOrderLine(){
+  if(!selectedOrderItem){showResult("orderResult","Select an item first.","notice error");return;}
+  const qty=Math.max(1,Number(document.getElementById("orderQty").value)||0);
+  const existing=orderLines.find(x=>x.itemCode===selectedOrderItem.itemCode);
+  if(existing) existing.quantity += qty;
+  else orderLines.push({itemCode:selectedOrderItem.itemCode,itemName:selectedOrderItem.itemName,quantity:qty});
+  renderOrderLines();
+  selectedOrderItem=null;
+  document.getElementById("itemSearch").value="";
+  document.getElementById("selectedItemNotice").textContent="Select an item to add it to the order.";
+}
+
+function renderOrderLines(){
+  const box=document.getElementById("orderLines"); box.innerHTML="";
+  orderLines.forEach((item,i)=>{
+    const row=document.createElement("div"); row.className="orderLine";
+    row.innerHTML=`<div><b>${escapeHtml(item.itemName)}</b><br><span class="muted">${escapeHtml(item.itemCode)}</span></div><input class="qtyInput" type="number" min="1" value="${item.quantity}"><button>✕</button>`;
+    row.querySelector("input").addEventListener("change",e=>{item.quantity=Math.max(1,Number(e.target.value)||1);});
+    row.querySelector("button").addEventListener("click",()=>{orderLines.splice(i,1);renderOrderLines();}); box.appendChild(row);
+  });
+}
+
+function createOrderUI(){
+  const orderId=document.getElementById("orderIdInput").value.trim();
+  const customer=document.getElementById("customerInput").value.trim();
+  if(!orderId || !customer || !orderLines.length){showResult("orderResult","Enter Order ID, Customer and at least one item.","notice error");return;}
+  const btn=document.getElementById("createOrderButton"); btn.disabled=true; btn.textContent="CREATING...";
+  apiGet("createOrder",{orderId,customer,createdBy:currentWorker,items:JSON.stringify(orderLines.map(x=>({itemCode:x.itemCode,quantity:x.quantity})))}).then(data=>{
+    if(!data.success) throw new Error(data.error||"Order creation failed");
+    showResult("orderResult",`Order <b>${escapeHtml(data.orderId)}</b> created. ${data.totalOrdered} boxes ordered.`,"notice ok");
+    document.getElementById("availabilityOrderId").value=data.orderId;
+    document.getElementById("pickingOrderId").value=data.orderId;
+    document.getElementById("outOrderId").value=data.orderId;
+    orderLines=[];renderOrderLines();
+  }).catch(e=>showResult("orderResult",escapeHtml(e.message),"notice error")).finally(()=>{btn.disabled=false;btn.textContent="CREATE ORDER";});
+}
+
+function checkAvailabilityUI(){
+  const id=document.getElementById("availabilityOrderId").value.trim(); if(!id){showResult("availabilityResult","Enter an Order ID.","notice error");return;}
+  apiGet("checkOrder",{orderId:id}).then(data=>{
+    if(!data.success) throw new Error(data.error||"Check failed");
+    let html=`<div class="notice ${data.orderStatus==="AVAILABLE"?"ok":data.orderStatus.includes("PART")?"warn":"error"}"><b>${escapeHtml(data.orderStatus)}</b><br>Ordered: ${data.totalOrdered} • Available to pick: ${data.totalAvailable}</div><table class="resultTable"><tr><th>Item</th><th>Ordered</th><th>Available</th><th>Status</th></tr>`;
+    (data.items||[]).forEach(x=>html+=`<tr><td>${escapeHtml(x.itemCode)}</td><td>${x.ordered}</td><td>${x.availableToPick}</td><td>${escapeHtml(x.status)}</td></tr>`); html+='</table>';
+    document.getElementById("availabilityResult").innerHTML=html;
+  }).catch(e=>showResult("availabilityResult",escapeHtml(e.message),"notice error"));
+}
+
+function loadPickingUI(){
+  const id=document.getElementById("pickingOrderId").value.trim(); if(!id){showResult("pickingResult","Enter an Order ID.","notice error");return;}
+  apiGet("getPicking",{orderId:id}).then(data=>{
+    if(!data.success) throw new Error(data.error||"Could not load picking");
+    const box=document.getElementById("pickingResult"); box.innerHTML="";
+    if(!(data.picking||[]).length){showResult("pickingResult","Nothing available to pick for this order.","notice warn");return;}
+    (data.picking||[]).forEach(x=>{
+      const card=document.createElement("div");card.className="pickCard";
+      card.innerHTML=`<div class="pickTop"><span>${escapeHtml(x.itemCode)}</span><span>${x.required} boxes</span></div><div class="pickMeta">${escapeHtml(x.godown)} • Column ${escapeHtml(x.column)} • Location stock ${x.available}</div><div class="pickActions"><input type="number" min="1" max="${x.required}" value="${x.required}"><button>PICK</button></div>`;
+      card.querySelector("button").addEventListener("click",()=>{
+        const qty=Math.max(1,Math.min(x.required,Number(card.querySelector("input").value)||0));
+        apiGet("pickItem",{orderId:x.orderId,itemCode:x.itemCode,godown:x.godown,column:x.column,quantity:qty,worker:currentWorker}).then(r=>{
+          if(!r.success) throw new Error(r.error||"Pick failed");
+          card.remove();
+          if(!box.children.length) showResult("pickingResult","Picking completed for the currently available quantities.","notice ok");
+        }).catch(e=>alert(e.message));
+      }); box.appendChild(card);
+    });
+  }).catch(e=>showResult("pickingResult",escapeHtml(e.message),"notice error"));
+}
+
+function completeOutUI(){
+  const id=document.getElementById("outOrderId").value.trim(); if(!id){showResult("outResult","Enter an Order ID.","notice error");return;}
+  if(!confirm("Confirm OUT / SOLD for order " + id + "?")) return;
+  const btn=document.getElementById("outButton");btn.disabled=true;btn.textContent="PROCESSING...";
+  apiGet("completeSale",{orderId:id,worker:currentWorker,device:navigator.userAgent}).then(data=>{
+    if(!data.success) throw new Error(data.error||"OUT/SOLD failed");
+    showResult("outResult",`<b>OUT / SOLD completed.</b><br>${data.totalOut} boxes deducted. Status: ${escapeHtml(data.status)}`,"notice ok");
+    loadStockUI();
+  }).catch(e=>showResult("outResult",escapeHtml(e.message),"notice error")).finally(()=>{btn.disabled=false;btn.textContent="CONFIRM OUT / SOLD";});
+}
+
+function stockInUI(){
+  const godown=document.getElementById("stockInGodown").value;const column=document.getElementById("stockInColumn").value.trim();const itemCode=document.getElementById("stockInItem").value.trim();const qty=Math.max(1,Number(document.getElementById("stockInQty").value)||0);
+  if(!godown||!column||!itemCode){showResult("stockInResult","Godown, Column and Item Code are required.","notice error");return;}
+  // Current V1.1 backend stockIn adds exactly one box per call. Keep the UI honest.
+  const btn=document.getElementById("stockInButton");btn.disabled=true;btn.textContent="ADDING...";
+  let chain=Promise.resolve();
+  for(let i=0;i<qty;i++) chain=chain.then(()=>apiGet("stockIn",{godown,column,itemCode,worker:currentWorker,device:navigator.userAgent,reference:"STOCK IN"}).then(r=>{if(!r.success)throw new Error(r.error||"Stock IN failed");}));
+  chain.then(()=>showResult("stockInResult",`${qty} box(es) added to <b>${escapeHtml(godown)} / ${escapeHtml(column)}</b>.`,"notice ok")).catch(e=>showResult("stockInResult",escapeHtml(e.message),"notice error")).finally(()=>{btn.disabled=false;btn.textContent="ADD STOCK";});
+}
+
+function loadStockUI(){
+  const godown=document.getElementById("stockGodownFilter").value;const itemCode=document.getElementById("stockItemFilter").value.trim();
+  apiGet("getStock",{godown,itemCode}).then(data=>{
+    if(!data.success) throw new Error(data.error||"Could not load stock");
+    const rows=data.stock||[];let html=`<div class="notice"><b>${rows.length}</b> stock location row(s)</div>`;
+    if(rows.length) html+='<table class="resultTable"><tr><th>Godown</th><th>Column</th><th>Item</th><th>Qty</th></tr>'+rows.map(x=>`<tr><td>${escapeHtml(x.godown)}</td><td>${escapeHtml(x.column)}</td><td>${escapeHtml(x.itemCode)}</td><td><b>${x.quantity}</b></td></tr>`).join('')+'</table>';
+    else html+='<div class="notice">No stock found.</div>';
+    document.getElementById("stockResult").innerHTML=html;
+  }).catch(e=>showResult("stockResult",escapeHtml(e.message),"notice error"));
+}
+
+function loadMasterSearch(){
+  const q=document.getElementById("masterSearch").value.trim();
+  if(!q){document.getElementById("masterResult").innerHTML="";return;}
+  apiGet("getItems",{search:q}).then(data=>{
+    if(!data.success) throw new Error(data.error||"Search failed");
+    const items=data.items||[];let html=`<div class="notice">Showing up to ${items.length} matching item(s).</div>`;
+    html+=items.map(x=>`<div class="stockRow"><b>${escapeHtml(x.itemName)}</b><br><span class="muted">${escapeHtml(x.itemCode)}${x.description?" • "+escapeHtml(x.description):""}</span></div>`).join('');
+    document.getElementById("masterResult").innerHTML=html;
+  }).catch(e=>showResult("masterResult",escapeHtml(e.message),"notice error"));
+}
+
+menuButton.addEventListener("click",openInventory);
+closeInventory.addEventListener("click",closeInventoryPanel);
+document.querySelectorAll(".dashboardButton").forEach(b=>b.addEventListener("click",()=>showInventoryModule(b.dataset.module)));
+document.querySelectorAll(".backButton").forEach(b=>b.addEventListener("click",inventoryBack));
+document.getElementById("stockInButton").addEventListener("click",stockInUI);
+document.getElementById("addOrderItem").addEventListener("click",addOrderLine);
+document.getElementById("createOrderButton").addEventListener("click",createOrderUI);
+document.getElementById("checkAvailabilityButton").addEventListener("click",checkAvailabilityUI);
+document.getElementById("loadPickingButton").addEventListener("click",loadPickingUI);
+document.getElementById("outButton").addEventListener("click",completeOutUI);
+document.getElementById("loadStockButton").addEventListener("click",loadStockUI);
+document.getElementById("masterSearch").addEventListener("input",()=>{clearTimeout(itemSearchTimer);itemSearchTimer=setTimeout(loadMasterSearch,250);});
+document.getElementById("itemSearch").addEventListener("input",e=>{clearTimeout(itemSearchTimer);const q=e.target.value.trim();if(!q){document.getElementById("itemResults").style.display="none";return;}itemSearchTimer=setTimeout(()=>searchItems(q,"itemResults",item=>{selectedOrderItem=item;document.getElementById("selectedItemNotice").innerHTML=`<b>${escapeHtml(item.itemName)}</b><br><span class="muted">${escapeHtml(item.itemCode)}</span>`;}),250);});
+document.getElementById("itemSearch").addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();addOrderLine();}});
+
+
 /* ==================================================
    EVENTS
 ================================================== */
@@ -2808,7 +3173,7 @@ checkSavedWorker();
 
 
 console.log(
-  "Stock Scanner " +
+  "Warehouse Inventory " +
   VERSION +
   " loaded."
 );
@@ -2818,4 +3183,3 @@ console.log(
 </body>
 
 </html>
-
